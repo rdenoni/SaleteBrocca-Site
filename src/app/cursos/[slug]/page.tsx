@@ -115,10 +115,10 @@ export default async function CoursePage({ params }: CoursePageProps) {
           <section className={styles.teacher} aria-labelledby="professora">
             <div className={styles.teacherFigure}>
               <Image
-                src="/images/about/salete-retrato.jpg"
+                src="/images/about/salete-avatar.jpg"
                 alt="Maria Salete Brocca Denoni"
-                width={384}
-                height={384}
+                width={480}
+                height={480}
                 sizes="120px"
                 className={styles.teacherPhoto}
               />

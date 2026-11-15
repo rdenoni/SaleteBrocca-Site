@@ -2,17 +2,17 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import styles from "./AboutPreview.module.css";
 
-/* Texto real (FAZER.txt e Paleta.txt da cliente). Retrato provisório em 384px. */
+/* Texto real (FAZER.txt e Paleta.txt da cliente). Foto oficial em plano médio (recorte 4:5), a mesma da página Sobre. */
 export function AboutPreview() {
   return (
     <section className={styles.section} aria-labelledby="sobre-titulo">
       <div className={`container ${styles.grid}`}>
         <div className={styles.photo}>
           <Image
-            src="/images/about/salete-retrato.jpg"
-            alt="Maria Salete Brocca Denoni sorrindo, ao ar livre"
-            width={384}
-            height={384}
+            src="/images/about/salete-perfil.jpg"
+            alt="Maria Salete Brocca Denoni, de blazer azul-marinho e óculos, em seu escritório diante de uma estante de livros"
+            width={900}
+            height={1125}
             sizes="(max-width: 1099px) 80vw, 400px"
           />
         </div>

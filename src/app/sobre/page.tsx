@@ -37,10 +37,10 @@ export default function AboutPage() {
         <div className={`container ${styles.introGrid}`}>
           <div className={styles.portrait}>
             <Image
-              src="/images/about/salete-retrato.jpg"
-              alt="Maria Salete Brocca Denoni sorrindo, ao ar livre"
-              width={384}
-              height={384}
+              src="/images/about/salete-perfil.jpg"
+              alt="Maria Salete Brocca Denoni, de blazer azul-marinho e óculos, em seu escritório diante de uma estante de livros"
+              width={900}
+              height={1125}
               priority
               sizes="(max-width: 767px) 80vw, 340px"
             />
