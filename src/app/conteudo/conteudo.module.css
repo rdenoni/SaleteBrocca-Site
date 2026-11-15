@@ -1,0 +1,24 @@
+.page {
+  padding-block: var(--space-12) var(--space-24);
+}
+
+.heading {
+  margin-bottom: var(--space-8);
+  font: 800 34px/42px var(--font-sans);
+  color: var(--navy);
+}
+
+.back {
+  margin-top: var(--space-12);
+}
+
+@media (max-width: 767px) {
+  .page {
+    padding-block: var(--space-8) var(--space-16);
+  }
+
+  .heading {
+    font-size: 26px;
+    line-height: 32px;
+  }
+}

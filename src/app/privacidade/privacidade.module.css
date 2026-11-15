@@ -1,0 +1,166 @@
+.page {
+  padding-block: var(--space-12) var(--space-24);
+}
+
+/* Coluna de leitura como a dos artigos. */
+.column {
+  display: grid;
+  gap: var(--space-8);
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-sm);
+  background: var(--light-blue);
+  font: 400 15px/24px var(--font-sans);
+  color: var(--navy);
+}
+
+.notice svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+.updated {
+  margin-top: calc(var(--space-4) * -1);
+  font: 400 15px/22px var(--font-sans);
+  color: var(--charcoal);
+}
+
+.toc ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toc a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 var(--space-4);
+  border: 2px solid var(--light-gray);
+  border-radius: var(--radius-pill);
+  color: var(--navy);
+  font: 700 14px/20px var(--font-sans);
+  text-decoration: none;
+}
+
+.toc a:hover {
+  border-color: var(--cyan);
+}
+
+.section {
+  display: grid;
+  gap: var(--space-4);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--light-gray);
+  scroll-margin-top: var(--space-6);
+  font: 400 18px/32px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.section h2 {
+  font: 800 26px/34px var(--font-sans);
+  color: var(--navy);
+}
+
+.section a {
+  color: var(--blue-strong);
+  font-weight: 700;
+}
+
+.forms,
+.pendingList {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.forms div,
+.pendingList div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--light-gray);
+  font: 400 16px/24px var(--font-sans);
+}
+
+.forms dt,
+.pendingList dt {
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.forms dd,
+.pendingList dd {
+  margin: 0;
+  color: var(--charcoal);
+}
+
+.forms dt a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+}
+
+.rights {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rights li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font: 400 17px/26px var(--font-serif);
+}
+
+.rights svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+  color: var(--navy);
+}
+
+@media (max-width: 767px) {
+  .page {
+    padding-block: var(--space-8) var(--space-16);
+  }
+
+  .section {
+    font-size: 17px;
+    line-height: 30px;
+  }
+
+  .section h2 {
+    font-size: 22px;
+    line-height: 30px;
+  }
+
+  /* Rótulo em cima, valor embaixo: todas as linhas alinhadas à esquerda. */
+  .forms div,
+  .pendingList div {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

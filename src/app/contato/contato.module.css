@@ -1,0 +1,239 @@
+/* Desktop: canais à esquerda, formulário largo à direita subindo sobre o banner.
+   Mobile: WhatsApp primeiro, depois agendamento, formulário e outros canais. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  grid-template-areas:
+    "whatsapp form"
+    "schedule form"
+    "channels form";
+  grid-template-rows: auto auto 1fr;
+  gap: var(--space-6) var(--space-12);
+  align-items: start;
+  padding-block: var(--space-12) var(--space-24);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-8);
+  border-radius: var(--radius-lg);
+  scroll-margin-top: var(--space-6);
+}
+
+.whatsapp {
+  grid-area: whatsapp;
+  background: var(--navy);
+  color: var(--white);
+}
+
+.schedule {
+  grid-area: schedule;
+  background: var(--light-blue);
+  color: var(--navy);
+}
+
+.formCard {
+  grid-area: form;
+  /* Posicionado para pintar acima do banner (que também é posicionado). */
+  position: relative;
+  z-index: 1;
+  display: block;
+  /* Sobe só até abaixo do subtítulo do banner. */
+  margin-top: -80px;
+  padding: var(--space-12);
+  background: var(--white);
+  box-shadow: var(--shadow-card);
+}
+
+.channels {
+  grid-area: channels;
+  border: 2px solid var(--light-gray);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+  color: var(--navy);
+}
+
+.schedule .icon {
+  background: var(--white);
+  color: var(--blue-strong);
+}
+
+.icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.cardTitle {
+  font: 800 26px/32px var(--font-sans);
+}
+
+.phone {
+  font: 800 28px/34px var(--font-sans);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.whatsapp :global(.pending) {
+  border-color: var(--on-navy-muted);
+  color: var(--on-navy-muted);
+}
+
+.note {
+  font: 400 15px/24px var(--font-sans);
+  color: var(--on-navy-muted);
+}
+
+.text {
+  font: 400 17px/28px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.details {
+  display: grid;
+  gap: var(--space-3);
+  width: 100%;
+  margin: 0 0 var(--space-2);
+}
+
+.details div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid color-mix(in srgb, var(--navy) 15%, transparent);
+  font: 400 15px/22px var(--font-sans);
+}
+
+.details dt {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.details dt svg {
+  width: 18px;
+  height: 18px;
+  color: var(--blue-strong);
+}
+
+.details dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.details :global(.pending) {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+.channelsTitle {
+  font: 700 13px/16px var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blue-strong);
+}
+
+.channelList {
+  display: grid;
+  gap: var(--space-4);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.channelList li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  font: 400 16px/24px var(--font-sans);
+  color: var(--navy);
+}
+
+.channelList svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: var(--blue-strong);
+}
+
+.channelValue {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.channelList a {
+  color: var(--blue-strong);
+  font-weight: 700;
+}
+
+.privacy {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--light-gray);
+  font: 400 15px/22px var(--font-sans);
+  color: var(--text-muted);
+}
+
+.privacy a {
+  color: var(--blue-strong);
+  font-weight: 700;
+}
+
+@media (max-width: 1099px) {
+  .layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "whatsapp schedule"
+      "form form"
+      "channels channels";
+    grid-template-rows: none;
+    gap: var(--space-6);
+  }
+
+  .formCard {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "whatsapp"
+      "schedule"
+      "form"
+      "channels";
+    gap: var(--space-4);
+    padding-block: var(--space-8) var(--space-16);
+  }
+
+  .card {
+    padding: var(--space-6);
+  }
+
+  .formCard {
+    padding: var(--space-6);
+  }
+
+  .cardTitle {
+    font-size: 22px;
+    line-height: 28px;
+  }
+
+  .phone {
+    font-size: 24px;
+    line-height: 30px;
+  }
+}

@@ -1,0 +1,95 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 32px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  font: 700 15px/20px var(--font-sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--duration) var(--ease),
+    color var(--duration) var(--ease),
+    border-color var(--duration) var(--ease),
+    transform var(--duration) var(--ease);
+}
+
+.button svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.primary {
+  background: var(--blue-strong);
+  color: var(--white);
+}
+
+.primary:hover {
+  background: var(--navy);
+}
+
+.accent {
+  background: var(--cyan);
+  color: var(--navy);
+}
+
+.accent:hover {
+  background: var(--navy);
+  color: var(--white);
+}
+
+/* Sobre navy/foto o hover navy engoliria o botão: inverte para branco. */
+:global([data-surface="dark"]) .accent:hover,
+:global([data-surface="dark"]) .primary:hover,
+:global([data-surface="photo"]) .accent:hover,
+:global([data-surface="photo"]) .primary:hover {
+  background: var(--white);
+  color: var(--navy);
+}
+
+.outline {
+  background: transparent;
+  color: var(--navy);
+  border-color: var(--navy);
+}
+
+.outline:hover {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--white);
+  border-color: var(--white);
+}
+
+.ghost:hover {
+  background: var(--white);
+  color: var(--navy);
+}
+
+.button:disabled,
+.button[aria-disabled="true"] {
+  background: var(--light-gray);
+  border-color: var(--light-gray);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.sm {
+  min-height: 44px;
+  padding: 10px 20px;
+  font-size: 13px;
+}

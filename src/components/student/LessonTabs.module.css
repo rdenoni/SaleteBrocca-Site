@@ -1,0 +1,74 @@
+.tabs {
+  display: grid;
+}
+
+.list {
+  display: flex;
+  gap: var(--space-6);
+  /* 3 abas com rótulos longos podem passar de 375px: a rolagem fica, sem cortar o indicador. */
+  overflow-x: auto;
+  /* Linha de base desenhada por dentro: a barra ativa fica em bottom:0 e não gera rolagem vertical. */
+  box-shadow: inset 0 -2px 0 var(--light-gray);
+}
+
+.tab {
+  position: relative;
+  flex: none;
+  min-height: 52px;
+  padding: 0 var(--space-1);
+  border: 0;
+  background: none;
+  color: var(--text-muted);
+  font: 700 15px/20px var(--font-sans);
+  cursor: pointer;
+}
+
+.tab:hover {
+  color: var(--navy);
+}
+
+.tab:focus-visible {
+  outline-offset: -3px;
+}
+
+/* Aba ativa: texto navy e barra ciano por baixo. */
+.tab[aria-selected="true"] {
+  color: var(--navy);
+}
+
+.tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-4);
+  padding-top: var(--space-6);
+  font: 400 17px/28px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.panel:focus-visible {
+  outline-offset: 4px;
+}
+
+@media (max-width: 767px) {
+  .list {
+    gap: var(--space-4);
+  }
+
+  .tab {
+    font-size: 14px;
+  }
+}

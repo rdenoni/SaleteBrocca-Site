@@ -1,0 +1,49 @@
+.form {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 48px;
+  justify-self: start;
+  font: 400 15px/22px var(--font-sans);
+  color: var(--charcoal);
+  cursor: pointer;
+}
+
+.toggle input {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--blue-strong);
+}
+
+.submit {
+  width: 100%;
+}
+
+.status p {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--light-blue);
+  font: 400 15px/22px var(--font-sans);
+  color: var(--navy);
+}
+
+.status svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: var(--blue-strong);
+}
+
+.status a {
+  color: var(--navy);
+  font-weight: 700;
+  text-decoration: underline;
+}

@@ -1,0 +1,111 @@
+.wrap {
+  display: grid;
+  gap: var(--space-12);
+}
+
+.timeline {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Trilho que liga os pontos (desktop). */
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 51px;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+}
+
+.item {
+  position: relative;
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+}
+
+.year {
+  display: flex;
+  align-items: flex-end;
+  min-height: 36px;
+  font: 800 30px/36px var(--font-sans);
+  color: var(--navy);
+}
+
+.dot {
+  width: 22px;
+  height: 22px;
+  border: 5px solid var(--white);
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+}
+
+.title {
+  max-width: 28ch;
+  font: 700 19px/28px var(--font-sans);
+  color: var(--navy);
+}
+
+.register {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  justify-self: start;
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  font: 700 15px/22px var(--font-sans);
+  color: var(--navy);
+}
+
+.register svg {
+  width: 22px;
+  height: 22px;
+  color: var(--blue-strong);
+}
+
+@media (max-width: 767px) {
+  .timeline {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    padding-left: var(--space-8);
+  }
+
+  .timeline::before {
+    left: 9px;
+    right: auto;
+    top: 8px;
+    bottom: 8px;
+    width: 4px;
+    height: auto;
+  }
+
+  .item {
+    gap: var(--space-1);
+  }
+
+  .year {
+    min-height: 0;
+    font-size: 24px;
+    line-height: 30px;
+  }
+
+  .dot {
+    position: absolute;
+    left: calc(-1 * var(--space-8));
+    top: 4px;
+  }
+
+  .register {
+    justify-self: stretch;
+  }
+}

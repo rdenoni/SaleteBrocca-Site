@@ -1,0 +1,108 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-12);
+  border-radius: var(--radius-lg);
+  color: var(--navy);
+}
+
+/* Assimetria da referência: a segunda coluna desce meio passo. */
+.card:nth-child(even) {
+  transform: translateY(var(--space-12));
+}
+
+.card[data-tone="light"] {
+  background: var(--light-blue);
+}
+
+.card[data-tone="cyan"] {
+  background: var(--cyan);
+}
+
+.card[data-tone="blue"] {
+  background: var(--blue-strong);
+  color: var(--white);
+}
+
+.card[data-tone="navy"] {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--blue-strong);
+}
+
+.card[data-tone="navy"] .icon {
+  background: var(--cyan);
+  color: var(--navy);
+}
+
+.icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.title {
+  font: 800 26px/32px var(--font-sans);
+}
+
+.text {
+  max-width: 42ch;
+  font: 400 17px/28px var(--font-serif);
+}
+
+.card[data-tone="light"] .pending,
+.card[data-tone="cyan"] .pending {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+.card[data-tone="blue"] .pending,
+.card[data-tone="navy"] .pending {
+  border-color: currentColor;
+  color: inherit;
+}
+
+@media (max-width: 1099px) {
+  .card {
+    padding: var(--space-8);
+  }
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .card:nth-child(even) {
+    transform: none;
+  }
+
+  .card {
+    padding: var(--space-6);
+  }
+
+  .title {
+    font-size: 22px;
+    line-height: 28px;
+  }
+}

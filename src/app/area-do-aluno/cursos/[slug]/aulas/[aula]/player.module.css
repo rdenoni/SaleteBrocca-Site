@@ -1,0 +1,172 @@
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 48px;
+  margin-bottom: var(--space-6);
+  color: var(--blue-strong);
+  font: 700 15px/20px var(--font-sans);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+  transition:
+    color var(--duration) var(--ease),
+    text-decoration-color var(--duration) var(--ease);
+}
+
+.back:hover {
+  color: var(--navy);
+  text-decoration-color: currentColor;
+}
+
+.back svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Player largo à esquerda, lista de aulas rolável à direita. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: var(--space-12);
+  align-items: start;
+}
+
+.main {
+  display: grid;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+/* Espaço reservado do vídeo: o disco é só ilustração, em tom apagado, sem aparência de botão. */
+.player {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-4);
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  margin: 0;
+  padding: var(--space-6);
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(circle at 70% 30%, var(--navy-raised), transparent 60%),
+    var(--navy);
+  color: var(--white);
+  text-align: center;
+  cursor: default;
+}
+
+.play {
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius-pill);
+  background: var(--navy-raised);
+  color: var(--on-navy-muted);
+}
+
+.play svg {
+  width: 36px;
+  height: 36px;
+  margin-left: 4px;
+  fill: currentColor;
+}
+
+.screenText {
+  font: 400 16px/24px var(--font-sans);
+  color: var(--on-navy-muted);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.actions > :first-child {
+  justify-self: start;
+}
+
+.actions > :last-child {
+  justify-self: end;
+}
+
+.saveNote {
+  margin-top: calc(var(--space-3) * -1);
+  font: 400 14px/20px var(--font-sans);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.sidebar {
+  position: sticky;
+  top: var(--space-6);
+  display: grid;
+  gap: var(--space-4);
+  max-height: calc(100vh - var(--space-12));
+  overflow-y: auto;
+  padding: var(--space-6);
+  border-radius: var(--radius-md);
+  background: var(--light-blue);
+}
+
+.sidebarTitle {
+  font: 700 13px/16px var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  /* Sobre azul-claro o texto pequeno é navy (blue-strong fica abaixo de 4.5:1). */
+  color: var(--navy);
+}
+
+@media (max-width: 1099px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+
+  .sidebar {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 767px) {
+  .play {
+    width: 64px;
+    height: 64px;
+  }
+
+  .play svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .screenText {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  /* Empilha: anterior e próxima lado a lado, concluir em cima, largura total. */
+  .actions {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .actions > :nth-child(2) {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .actions > :first-child,
+  .actions > :last-child {
+    justify-self: stretch;
+  }
+
+  .sidebar {
+    padding: var(--space-4);
+  }
+}

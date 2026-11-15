@@ -1,0 +1,88 @@
+/* O header flutua sobre o topo: o padding reserva o espaço dele. */
+.page {
+  position: relative;
+  overflow: hidden;
+  /* O header começa 40px abaixo do topo: header-height + 96px deixa folga de ~56px sob ele. */
+  padding-block: calc(var(--header-height) + var(--space-24)) var(--space-24);
+  background: var(--light-blue);
+}
+
+.pieces {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  height: 80%;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+}
+
+.card {
+  display: grid;
+  gap: var(--space-4);
+  width: min(100%, 520px);
+  padding: var(--space-12);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  box-shadow: var(--shadow-card);
+}
+
+.title {
+  font: 800 40px/48px var(--font-sans);
+  color: var(--navy);
+}
+
+.lead {
+  margin-bottom: var(--space-2);
+  font: 400 17px/28px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.note {
+  font: 400 14px/20px var(--font-sans);
+  color: var(--text-muted);
+}
+
+.alt {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--light-gray);
+  font: 400 15px/22px var(--font-sans);
+  color: var(--charcoal);
+}
+
+.alt a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  color: var(--blue-strong);
+  font-weight: 700;
+}
+
+@media (max-width: 1099px) {
+  .page {
+    padding-top: calc(var(--header-height-compact) + var(--space-16));
+  }
+
+  .pieces {
+    height: 50%;
+    opacity: 0.35;
+  }
+}
+
+@media (max-width: 767px) {
+  .page {
+    padding-block: calc(var(--header-height-compact) + var(--space-12)) var(--space-16);
+  }
+
+  .card {
+    padding: var(--space-6);
+  }
+
+  .title {
+    font-size: 32px;
+    line-height: 38px;
+  }
+}

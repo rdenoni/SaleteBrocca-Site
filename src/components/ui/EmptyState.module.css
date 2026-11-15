@@ -1,0 +1,44 @@
+/* Legível sobre branco e sobre --light-blue: bordas vêm do navy translúcido, não de uma cor de fundo. */
+.empty {
+  --empty-line: color-mix(in srgb, var(--navy) 22%, transparent);
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-8);
+  border: 2px dashed var(--empty-line);
+  border-radius: var(--radius-md);
+  color: var(--navy);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--empty-line);
+  color: var(--blue-strong);
+}
+
+.icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.title {
+  font: 800 20px/28px var(--font-sans);
+}
+
+.text {
+  font: 400 16px/26px var(--font-serif);
+  color: var(--charcoal);
+}
+
+@media (max-width: 767px) {
+  .empty {
+    padding: var(--space-6);
+  }
+}

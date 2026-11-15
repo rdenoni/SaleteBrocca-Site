@@ -1,0 +1,87 @@
+.shell {
+  padding-block: var(--space-8) var(--space-24);
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-8);
+  margin-bottom: var(--space-12);
+  padding-bottom: var(--space-6);
+  border-bottom: 2px solid var(--light-gray);
+}
+
+/* Abas em pílula; no mobile rolam na horizontal dentro da própria faixa. */
+.nav {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.nav ul {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  /* Folga para o anel de foco (3px + 3px de recuo) não ser cortado pela rolagem. */
+  padding: var(--space-2);
+  overflow-x: auto;
+  list-style: none;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 var(--space-6);
+  border-radius: var(--radius-pill);
+  color: var(--navy);
+  font: 700 15px/20px var(--font-sans);
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color var(--duration) var(--ease);
+}
+
+.tab:hover {
+  background-color: var(--light-blue);
+}
+
+.tab[aria-current="page"],
+.tab[aria-current="true"] {
+  background-color: var(--cyan);
+}
+
+.demo {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  max-width: 440px;
+  font: 400 14px/20px var(--font-sans);
+  color: var(--text-muted);
+}
+
+.demo svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  color: var(--blue-strong);
+}
+
+.demo strong {
+  color: var(--navy);
+}
+
+@media (max-width: 767px) {
+  .shell {
+    padding-block: var(--space-6) var(--space-16);
+  }
+
+  .bar {
+    margin-bottom: var(--space-8);
+  }
+
+  .tab {
+    padding: 0 var(--space-4);
+  }
+}

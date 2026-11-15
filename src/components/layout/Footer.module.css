@@ -1,0 +1,134 @@
+/* PSD: bloco navy 400px + faixa 97px @1920 → 300 + 73 @1440. */
+.footer {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.main {
+  display: grid;
+  grid-template-columns: repeat(4, max-content) 1fr;
+  column-gap: var(--space-16);
+  row-gap: var(--space-12);
+  align-items: start;
+  max-width: calc(var(--container) + 2 * var(--page-gutter));
+  margin-inline: auto;
+  padding: 72px var(--page-gutter) 64px;
+}
+
+.title {
+  margin-bottom: var(--space-6);
+  font: 700 14px/20px var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.links {
+  display: grid;
+  gap: 0; /* o respiro vem dos 44px de altura de cada link */
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font: 400 15px/22px var(--font-sans);
+  color: var(--on-navy-muted);
+  text-decoration: none;
+}
+
+.links a:hover {
+  color: var(--white);
+  text-decoration: underline;
+  text-decoration-color: var(--cyan);
+  text-underline-offset: 4px;
+}
+
+.social {
+  display: flex;
+  gap: var(--space-6);
+  justify-self: end;
+  align-self: end;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.social a {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+  color: var(--navy);
+  transition:
+    background-color var(--duration) var(--ease),
+    transform var(--duration) var(--ease);
+}
+
+.social a:hover {
+  background: var(--white);
+  transform: translateY(-2px);
+}
+
+.social svg {
+  width: 26px;
+  height: 26px;
+}
+
+.bar {
+  background: var(--navy-raised);
+}
+
+.barInner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0 var(--space-6);
+  max-width: calc(var(--container) + 2 * var(--page-gutter));
+  margin-inline: auto;
+  padding: var(--space-3) var(--page-gutter);
+  font: 400 14px/20px var(--font-sans);
+  text-align: center;
+  color: var(--white);
+}
+
+.barInner p {
+  padding-block: var(--space-3);
+}
+
+.legal {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  color: var(--white);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.legal:hover {
+  text-decoration-color: var(--cyan);
+}
+
+@media (max-width: 1099px) {
+  .main {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--space-8);
+  }
+
+  .social {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
+
+@media (max-width: 767px) {
+  .main {
+    padding-block: 56px 40px;
+  }
+}

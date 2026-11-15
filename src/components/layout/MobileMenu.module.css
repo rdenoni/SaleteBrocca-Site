@@ -1,0 +1,131 @@
+.trigger {
+  display: none;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--light-gray);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--navy);
+  cursor: pointer;
+}
+
+.trigger svg {
+  width: 22px;
+  height: 22px;
+}
+
+@media (max-width: 1099px) {
+  .trigger {
+    display: inline-flex;
+  }
+}
+
+.panel {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: var(--space-4) var(--page-gutter) var(--space-12);
+  border: 0;
+  background: var(--navy);
+  color: var(--white);
+  flex-direction: column;
+  gap: var(--space-12);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.panel[open] {
+  display: flex;
+}
+
+/* Trava a rolagem da página enquanto o menu está aberto. */
+:global(html):has(.panel[open]) {
+  overflow: hidden;
+}
+
+.panel::backdrop {
+  background: color-mix(in srgb, var(--navy) 60%, transparent);
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--header-height-compact);
+  padding-inline: var(--space-4) var(--space-3);
+}
+
+.logo {
+  width: auto;
+  height: 40px;
+}
+
+.close {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--navy-raised);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--white);
+  cursor: pointer;
+}
+
+.close svg {
+  width: 24px;
+  height: 24px;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  display: block;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-pill);
+  font: 700 26px/34px var(--font-sans);
+  color: var(--white);
+  text-decoration: none;
+}
+
+.link:hover {
+  color: var(--cyan);
+}
+
+.link[aria-current="page"] {
+  background: var(--cyan);
+  color: var(--navy);
+}
+
+.student {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 12px 28px;
+  margin-left: var(--space-6);
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+  color: var(--navy);
+  font: 700 15px/20px var(--font-sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.student svg {
+  width: 18px;
+  height: 18px;
+}

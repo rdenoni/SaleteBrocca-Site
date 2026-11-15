@@ -1,0 +1,52 @@
+.section {
+  position: relative;
+  background: var(--light-blue);
+}
+
+/* Triângulo navy da referência: o painel do depoimento "escorre" sobre o terceiro bloco
+   (PSD: 131×97 @1920 → 98×73 @1440). */
+.section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: calc(200% / 3);
+  z-index: 2;
+  width: 98px;
+  height: 73px;
+  background: var(--navy);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  pointer-events: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Some quando ARTICLES_ARE_EXAMPLES virar false. */
+.note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--page-gutter);
+  font: 400 14px/20px var(--font-sans);
+  color: var(--navy);
+  text-align: center;
+}
+
+.note svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 1099px) {
+  .section::after {
+    display: none;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

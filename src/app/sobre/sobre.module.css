@@ -1,0 +1,297 @@
+.heading {
+  margin: var(--space-3) 0 var(--space-12);
+  font: 800 34px/42px var(--font-sans);
+}
+
+.anchor {
+  scroll-margin-top: var(--space-6);
+}
+
+/* ---------- Apresentação: retrato sobe sobre o banner ---------- */
+
+.intro {
+  padding-bottom: var(--space-16);
+}
+
+.introGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  grid-template-areas: "text portrait";
+  gap: var(--space-16);
+  align-items: end;
+}
+
+.portrait {
+  grid-area: portrait;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 340px;
+  justify-self: center;
+  margin-top: -200px;
+}
+
+/* Peças deslocadas do símbolo (mesmo recurso da prévia na Home). */
+.portrait::before,
+.portrait::after {
+  content: "";
+  position: absolute;
+  border-radius: var(--radius-lg);
+}
+
+.portrait::before {
+  left: -24px;
+  bottom: -24px;
+  width: 70%;
+  height: 60%;
+  background: var(--cyan);
+}
+
+.portrait::after {
+  right: -24px;
+  top: -24px;
+  width: 45%;
+  height: 40%;
+  background: var(--navy);
+}
+
+.portrait img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+}
+
+.introText {
+  grid-area: text;
+  display: grid;
+  gap: var(--space-8);
+  padding-top: var(--space-16);
+}
+
+.lead {
+  max-width: 30ch;
+  font: 700 28px/38px var(--font-sans);
+  color: var(--navy);
+}
+
+.tocLabel {
+  margin-bottom: var(--space-3);
+  font: 700 13px/16px var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.toc ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toc a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 var(--space-6);
+  border: 2px solid var(--light-blue);
+  border-radius: var(--radius-pill);
+  font: 700 15px/20px var(--font-sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--navy);
+  transition:
+    background-color var(--duration) var(--ease),
+    border-color var(--duration) var(--ease);
+}
+
+.toc a:hover {
+  border-color: var(--cyan);
+  background: var(--cyan);
+}
+
+/* ---------- História ---------- */
+
+.history {
+  padding-block: var(--space-16) var(--space-24);
+}
+
+.historyGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--space-16);
+  align-items: start;
+}
+
+.historyHeading {
+  margin-bottom: var(--space-6);
+}
+
+.bigYear {
+  display: block;
+  font: 800 128px/1 var(--font-sans);
+  letter-spacing: -0.04em;
+  color: var(--light-blue);
+  user-select: none;
+}
+
+.historyText {
+  display: grid;
+  gap: var(--space-6);
+  padding-top: var(--space-8);
+  border-top: 6px solid var(--cyan);
+}
+
+.historyText p {
+  max-width: 640px;
+  font: 400 18px/32px var(--font-serif);
+  color: var(--charcoal);
+}
+
+/* ---------- Formação ---------- */
+
+.formation {
+  padding-block: var(--space-24);
+  background: var(--light-blue);
+}
+
+/* blue-strong a 13px sobre light-blue dá 4.36:1; navy passa. */
+.formation :global(.eyebrow) {
+  color: var(--navy);
+}
+
+/* ---------- Atuação ---------- */
+
+.activities {
+  padding-block: var(--space-24) calc(var(--space-24) + var(--space-12));
+}
+
+/* ---------- Frase-conceito ---------- */
+
+.quote {
+  position: relative;
+  overflow: hidden;
+  padding-block: var(--space-24);
+  background: var(--navy);
+  color: var(--white);
+}
+
+.quoteInner {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: var(--space-8);
+}
+
+.quoteMark {
+  position: absolute;
+  top: -72px;
+  left: calc(var(--page-gutter) - 12px);
+  font: 800 280px/1 var(--font-sans);
+  color: var(--cyan);
+  user-select: none;
+  pointer-events: none;
+}
+
+.quoteFigure {
+  position: relative;
+}
+
+.quoteText {
+  max-width: 24ch;
+  margin: 0;
+  padding-top: var(--space-16);
+  font: 800 40px/50px var(--font-sans);
+}
+
+.quoteAuthor {
+  margin-top: var(--space-6);
+  font: 700 15px/22px var(--font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+@media (max-width: 1099px) {
+  .introGrid {
+    gap: var(--space-8);
+  }
+
+  .portrait {
+    margin-top: -120px;
+    max-width: 280px;
+  }
+
+  .introText {
+    padding-top: var(--space-12);
+  }
+
+  .lead {
+    font-size: 24px;
+    line-height: 34px;
+  }
+
+  .historyGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  .bigYear {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .heading {
+    margin-bottom: var(--space-8);
+    font-size: 26px;
+    line-height: 32px;
+  }
+
+  .introGrid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "portrait"
+      "text";
+    gap: var(--space-12);
+  }
+
+  .portrait {
+    margin-top: var(--space-12);
+    max-width: calc(100% - 48px);
+  }
+
+  .introText {
+    padding-top: 0;
+  }
+
+  .lead {
+    font-size: 21px;
+    line-height: 30px;
+  }
+
+  .history,
+  .formation,
+  .activities,
+  .quote {
+    padding-block: var(--space-16);
+  }
+
+  .quoteMark {
+    top: -48px;
+    font-size: 200px;
+  }
+
+  .quoteText {
+    padding-top: var(--space-12);
+    font-size: 28px;
+    line-height: 36px;
+  }
+}

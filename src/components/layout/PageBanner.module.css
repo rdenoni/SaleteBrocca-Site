@@ -1,0 +1,101 @@
+.banner {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 480px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--blue-strong);
+  color: var(--white);
+}
+
+.banner[data-size="compact"] {
+  min-height: 360px;
+}
+
+.photo {
+  object-fit: cover;
+  filter: grayscale(1);
+  mix-blend-mode: soft-light;
+  opacity: 0.8;
+  z-index: -2;
+}
+
+.banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--navy) 50%, transparent) 0%, color-mix(in srgb, var(--navy) 15%, transparent) 50%, transparent 75%);
+}
+
+.inner {
+  width: 100%;
+  max-width: 1776px;
+  margin-inline: auto;
+  padding: 208px calc(var(--page-gutter) + var(--space-16)) var(--space-16);
+}
+
+.banner[data-size="compact"] .inner {
+  padding-bottom: var(--space-12);
+}
+
+/* Branco, não ciano: o DS só aprova ciano como texto sobre navy (8.2:1). Sobre o azul
+   com foto o ciano a 13px ficava entre 2 e 3.8:1. O ciano segue no fio sob o título. */
+.banner .inner .eyebrow {
+  margin-bottom: var(--space-3);
+  color: var(--white);
+}
+
+.title {
+  max-width: 820px;
+  font: 800 44px/52px var(--font-sans);
+  letter-spacing: -0.015em;
+}
+
+.rule {
+  margin: var(--space-6) 0;
+}
+
+.subtitle {
+  max-width: 560px;
+  font: 400 19px/30px var(--font-sans);
+}
+
+.extra {
+  margin-top: var(--space-8);
+}
+
+@media (max-width: 1099px) {
+  .inner {
+    padding: 144px var(--page-gutter) var(--space-12);
+  }
+}
+
+@media (max-width: 767px) {
+  .banner {
+    min-height: 400px;
+  }
+
+  .banner[data-size="compact"] {
+    min-height: 300px;
+  }
+
+  .banner::before {
+    background: linear-gradient(0deg, color-mix(in srgb, var(--navy) 55%, transparent) 0%, color-mix(in srgb, var(--navy) 15%, transparent) 70%);
+  }
+
+  .inner {
+    padding: 128px var(--page-gutter) var(--space-8);
+  }
+
+  .title {
+    font-size: 32px;
+    line-height: 38px;
+  }
+
+  .subtitle {
+    font-size: 17px;
+    line-height: 28px;
+  }
+}

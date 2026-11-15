@@ -1,0 +1,33 @@
+.section {
+  padding-block: var(--space-24);
+  background: var(--light-gray);
+}
+
+.head {
+  margin-bottom: var(--space-12);
+}
+
+.title {
+  margin-top: var(--space-3);
+  font: 800 34px/42px var(--font-sans);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (max-width: 767px) {
+  .section {
+    padding-block: var(--space-16);
+  }
+
+  .head {
+    margin-bottom: var(--space-8);
+  }
+
+  .title {
+    font-size: 28px;
+    line-height: 34px;
+  }
+}

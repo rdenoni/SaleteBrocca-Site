@@ -1,0 +1,32 @@
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: 800 19px/24px var(--font-sans);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--blue-strong);
+  text-decoration: none;
+}
+
+/* Área de toque de 48px sem mudar o espaçamento do layout (o texto tem 24px de altura). */
+.link::before {
+  content: "";
+  position: absolute;
+  inset: -12px -4px;
+}
+
+.link svg {
+  width: 20px;
+  height: 20px;
+  transition: transform var(--duration) var(--ease);
+}
+
+.link:hover svg {
+  transform: translateX(4px);
+}
+
+.inverse {
+  color: var(--white);
+}

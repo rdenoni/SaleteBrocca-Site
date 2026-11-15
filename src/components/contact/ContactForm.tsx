@@ -1,0 +1,137 @@
+"use client";
+
+import Link from "next/link";
+import { useState, type FormEvent } from "react";
+import { flushSync } from "react-dom";
+import { CircleAlert, CircleCheck } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Field, SelectField, TextAreaField } from "@/components/ui/Field";
+import { CONTACT_SUBJECTS } from "@/lib/content/contact";
+import {
+  compactErrors,
+  validateConsent,
+  validateMessage,
+  validateName,
+  validateOptionalEmail,
+  validatePhone,
+} from "@/lib/validation";
+import styles from "./ContactForm.module.css";
+
+interface ContactErrors {
+  nome?: string;
+  telefone?: string;
+  email?: string;
+  mensagem?: string;
+  privacidade?: string;
+}
+
+function readErrors(data: FormData): ContactErrors {
+  return compactErrors({
+    nome: validateName(String(data.get("nome") ?? "")),
+    telefone: validatePhone(String(data.get("telefone") ?? "")),
+    email: validateOptionalEmail(String(data.get("email") ?? "")),
+    mensagem: validateMessage(String(data.get("mensagem") ?? "")),
+    privacidade: validateConsent(data.get("privacidade") === "on"),
+  });
+}
+
+/* Sem backend nesta etapa: valida e avisa que o envio ainda não está ativo.
+   Integração prevista: rota de servidor + e-mail/CRM (docs/06-TECHNICAL-ARCHITECTURE.md). */
+export function ContactForm() {
+  const [errors, setErrors] = useState<ContactErrors>({});
+  const [submitted, setSubmitted] = useState(false);
+  const errorCount = Object.keys(errors).length;
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const nextErrors = readErrors(new FormData(form));
+    const [firstInvalid] = Object.keys(nextErrors);
+    /* flushSync: o foco só vai ao campo depois de o React aplicar aria-invalid/aria-describedby,
+       senão o leitor de tela anuncia o campo sem o erro. */
+    flushSync(() => {
+      setErrors(nextErrors);
+      setSubmitted(firstInvalid === undefined);
+    });
+    /* Os erros seguem a ordem dos campos: leva o foco ao primeiro a corrigir. */
+    if (firstInvalid) {
+      const field = form.elements.namedItem(firstInvalid);
+      if (field instanceof HTMLElement) field.focus();
+    }
+  }
+
+  return (
+    <form className={styles.form} onSubmit={handleSubmit} noValidate aria-labelledby="formulario-titulo">
+      <h2 id="formulario-titulo" className={styles.title}>
+        Envie uma mensagem
+      </h2>
+
+      <div className={styles.row}>
+        <Field id="contato-nome" name="nome" label="Nome completo" autoComplete="name" error={errors.nome} />
+        <Field
+          id="contato-telefone"
+          name="telefone"
+          type="tel"
+          inputMode="tel"
+          label="Telefone"
+          autoComplete="tel"
+          hint="Com DDD."
+          error={errors.telefone}
+        />
+      </div>
+      <Field
+        id="contato-email"
+        name="email"
+        type="email"
+        label="E-mail (opcional)"
+        autoComplete="email"
+        inputMode="email"
+        autoCapitalize="none"
+        spellCheck={false}
+        error={errors.email}
+      />
+      <SelectField id="contato-assunto" name="assunto" label="Assunto" options={CONTACT_SUBJECTS} />
+      <TextAreaField id="contato-mensagem" name="mensagem" label="Mensagem" error={errors.mensagem} />
+
+      <div className={styles.consentWrap}>
+        <label className={styles.consent}>
+          <input
+            type="checkbox"
+            name="privacidade"
+            aria-invalid={errors.privacidade ? true : undefined}
+            aria-describedby={errors.privacidade ? "contato-privacidade-erro" : undefined}
+          />
+          <span>
+            Li e aceito a <Link href="/privacidade">política de privacidade</Link>.
+          </span>
+        </label>
+        {errors.privacidade && (
+          <p id="contato-privacidade-erro" className={styles.error}>
+            <CircleAlert aria-hidden="true" />
+            {errors.privacidade}
+          </p>
+        )}
+      </div>
+
+      <div className={styles.actions}>
+        <Button type="submit" variant="primary">
+          Enviar mensagem
+        </Button>
+        <p className={errorCount > 0 ? styles.error : styles.status} role="status">
+          {errorCount > 0 && (
+            <>
+              <CircleAlert aria-hidden="true" />
+              {errorCount === 1 ? "Corrija o campo destacado." : `Corrija os ${errorCount} campos destacados.`}
+            </>
+          )}
+          {submitted && (
+            <>
+              <CircleCheck aria-hidden="true" />
+              Dados conferidos. O envio online será ativado em breve.
+            </>
+          )}
+        </p>
+      </div>
+    </form>
+  );
+}

@@ -1,0 +1,68 @@
+/* Salete Brocca — design tokens.
+   Fonte única: design system "Salete Brocca Fonoaudiologia" (tokens.json).
+   Não altere valores aqui sem alterar o design system. */
+
+:root {
+  /* Cores oficiais (Manual da Marca TCC) */
+  --navy: #0f2438;
+  --blue: #337eb5;
+  --cyan: #18cfd5;
+  --light-blue: #d9e1e2;
+  --light-gray: #e8e7ea;
+  --charcoal: #24282b;
+  --white: #ffffff;
+
+  /* Derivadas para acessibilidade */
+  --blue-strong: #2a6a9a;
+  --text-muted: #5b6470;
+  --on-navy-muted: #a9b8c6;
+  --navy-raised: #18324c;
+  --photo-tint: rgba(51, 126, 181, 0.86);
+  --error: #b42318;
+  --success: #1f6f4a;
+
+  /* Tipografia (next/font injeta --font-noto-sans e --font-martel) */
+  --font-sans: var(--font-noto-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: var(--font-martel), Georgia, "Times New Roman", serif;
+
+  /* Espaçamento */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  /* Raios */
+  --radius-sm: 8px;
+  --radius-md: 24px;
+  --radius-lg: 32px;
+  --radius-xl: 48px;
+  --radius-pill: 999px;
+
+  /* Layout */
+  --container: 1200px;
+  --header-height: 128px;
+  --header-height-compact: 72px;
+  --page-gutter: var(--space-12);
+
+  /* Sombras */
+  --shadow-header: 0 12px 32px rgba(15, 36, 56, 0.14);
+  --shadow-card: 0 8px 24px rgba(15, 36, 56, 0.1);
+  --shadow-card-hover: 0 18px 40px rgba(15, 36, 56, 0.18);
+
+  /* Movimento */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --duration: 180ms;
+}
+
+@media (max-width: 1099px) {
+  :root { --page-gutter: var(--space-6); }
+}
+
+@media (max-width: 767px) {
+  :root { --page-gutter: var(--space-4); }
+}

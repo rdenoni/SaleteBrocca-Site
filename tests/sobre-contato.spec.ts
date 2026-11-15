@@ -1,0 +1,115 @@
+import { expect, test, type Page } from "@playwright/test";
+
+async function loadAllImages(page: Page): Promise<void> {
+  for (const image of await page.locator("main img").all()) {
+    if (await image.isVisible()) await image.scrollIntoViewIfNeeded();
+  }
+  await page.waitForFunction(
+    () => Array.from(document.images).every((img) => img.offsetParent === null || img.complete),
+    undefined,
+    { timeout: 15_000 },
+  );
+  await page.evaluate(() => window.scrollTo(0, 0));
+}
+
+async function expectNoHorizontalScroll(page: Page): Promise<void> {
+  /* Compara com o viewport configurado: no mobile, window.innerWidth cresce junto com o conteúdo que vaza. */
+  const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+  expect(scrollWidth).toBeLessThanOrEqual(page.viewportSize()?.width ?? 0);
+}
+
+async function fullPageShot(page: Page, name: string): Promise<void> {
+  const width = page.viewportSize()?.width ?? 0;
+  await page.screenshot({ path: `tests/screenshots/current/${name}-${width}.png`, fullPage: true });
+}
+
+test.describe("Sobre", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/sobre");
+  });
+
+  test("uma h1, seções do rodapé e textos reais", async ({ page }) => {
+    await expect(page.locator("h1")).toHaveCount(1);
+    await expect(page.getByRole("heading", { level: 1, name: "Maria Salete Brocca Denoni" })).toBeVisible();
+    for (const id of ["historia", "formacao", "atuacao"]) {
+      await expect(page.locator(`section#${id}`)).toHaveCount(1);
+    }
+    await expect(page.getByText("em 1960, numa escola multisseriada")).toBeVisible();
+    await expect(page.getByText("APAE de Cocal do Sul")).toBeVisible();
+    await expect(page.getByText("Toda criança, independente da dificuldade")).toBeVisible();
+  });
+
+  test("dados não confirmados aparecem como pendentes", async ({ page }) => {
+    await expect(page.getByText("CRFa a confirmar")).toBeVisible();
+    await expect(page.getByText("Ano a confirmar")).toBeVisible();
+    await expect(page.getByText("Cidade a confirmar")).toBeVisible();
+  });
+
+  test("índice leva à seção", async ({ page }) => {
+    await page.getByRole("navigation", { name: "Nesta página" }).getByRole("link", { name: "Atuação" }).click();
+    await expect(page).toHaveURL(/#atuacao$/);
+    await expect(page.getByRole("heading", { level: 2, name: "Onde atua hoje" })).toBeInViewport();
+  });
+
+  test("sem rolagem horizontal e imagens carregadas", async ({ page }) => {
+    await expectNoHorizontalScroll(page);
+    await loadAllImages(page);
+    await fullPageShot(page, "sobre");
+  });
+});
+
+test.describe("Contato", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/contato");
+  });
+
+  test("três canais com as âncoras do rodapé", async ({ page }) => {
+    await expect(page.getByRole("heading", { level: 1, name: "Contato" })).toBeVisible();
+    for (const id of ["whatsapp", "agendamento", "formulario"]) {
+      await expect(page.locator(`#${id}`)).toHaveCount(1);
+    }
+  });
+
+  test("número e e-mail não confirmados não viram link", async ({ page }) => {
+    await expect(page.getByText("Número a confirmar")).toBeVisible();
+    await expect(page.locator('a[href^="https://wa.me"], a[href^="mailto:"]')).toHaveCount(0);
+  });
+
+  test("WhatsApp vem primeiro no mobile", async ({ page }) => {
+    const width = page.viewportSize()?.width ?? 0;
+    test.skip(width >= 768, "ordem empilhada só no mobile");
+    const whatsappTop = await page.locator("#whatsapp").evaluate((el) => el.getBoundingClientRect().top);
+    const formTop = await page.locator("#formulario").evaluate((el) => el.getBoundingClientRect().top);
+    expect(whatsappTop).toBeLessThan(formTop);
+  });
+
+  test("formulário valida e não envia", async ({ page }) => {
+    const form = page.locator("#formulario");
+    await form.getByRole("button", { name: "Enviar mensagem" }).click();
+    await expect(form.getByText("Informe seu nome completo.")).toBeVisible();
+    await expect(form.getByText("É preciso aceitar a política de privacidade.")).toBeVisible();
+    await expect(form.getByLabel("Nome completo")).toBeFocused();
+
+    await form.getByLabel("Nome completo").fill("Maria Teste");
+    await form.getByLabel("Telefone").fill("(48) 99999-0000");
+    await form.getByLabel("Assunto").selectOption("Cursos");
+    await form.getByLabel("Mensagem", { exact: true }).fill("Gostaria de saber mais sobre o curso.");
+    await form.getByRole("checkbox").check();
+    await form.getByRole("button", { name: "Enviar mensagem" }).click();
+    await expect(form.getByRole("status")).toContainText("O envio online será ativado em breve.");
+    await expect(form.locator("[aria-invalid='true']")).toHaveCount(0);
+  });
+
+  test("menu marca Contato como página atual", async ({ page }) => {
+    const width = page.viewportSize()?.width ?? 0;
+    test.skip(width < 1100, "menu desktop só a partir de 1100px");
+    await expect(page.getByRole("navigation", { name: "Principal", exact: true }).getByRole("link", { name: "Contato" }))
+      .toHaveAttribute("aria-current", "page");
+  });
+
+  test("sem rolagem horizontal", async ({ page }) => {
+    await expectNoHorizontalScroll(page);
+    await loadAllImages(page);
+    await fullPageShot(page, "contato");
+  });
+});

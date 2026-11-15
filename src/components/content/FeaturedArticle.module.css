@@ -1,0 +1,111 @@
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  overflow: hidden;
+  margin-bottom: var(--space-16);
+  border-radius: var(--radius-md);
+  background: var(--navy);
+  color: var(--white);
+}
+
+.photo {
+  position: relative;
+  min-height: 380px;
+  overflow: hidden;
+}
+
+.photo img {
+  object-fit: cover;
+  transition: transform 300ms var(--ease);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-12);
+}
+
+.title {
+  font: 400 32px/40px var(--font-sans);
+  text-wrap: pretty;
+}
+
+.title strong {
+  font-weight: 800;
+  color: var(--cyan);
+}
+
+.link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* O bloco inteiro é clicável; o foco aparece no card. */
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+/* Anel por dentro do card: ciano sobre navy (por fora ficaria ciano sobre branco, 1.9:1). */
+.card:has(.link:focus-visible) {
+  outline: 3px solid var(--cyan);
+  outline-offset: -8px;
+}
+
+.author {
+  font: 400 15px/22px var(--font-sans);
+  color: var(--on-navy-muted);
+}
+
+.more {
+  margin-top: var(--space-2);
+}
+
+.card:hover .photo img {
+  transform: scale(1.03);
+}
+
+.card:hover .title strong {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+}
+
+@media (max-width: 1099px) {
+  .card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .photo {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 767px) {
+  .card {
+    margin-bottom: var(--space-12);
+  }
+
+  .photo {
+    min-height: 220px;
+  }
+
+  .body {
+    padding: var(--space-6);
+  }
+
+  .title {
+    font-size: 24px;
+    line-height: 31px;
+  }
+}

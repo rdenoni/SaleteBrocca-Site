@@ -1,0 +1,99 @@
+.section {
+  padding-block: var(--space-24);
+  background: var(--white);
+  overflow: hidden;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: var(--space-16);
+  align-items: center;
+}
+
+/* Retrato com dois blocos deslocados: as peças do símbolo se encaixando. */
+.photo {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  justify-self: center;
+}
+
+.photo::before,
+.photo::after {
+  content: "";
+  position: absolute;
+  border-radius: var(--radius-lg);
+}
+
+.photo::before {
+  left: -24px;
+  bottom: -24px;
+  width: 70%;
+  height: 60%;
+  background: var(--cyan);
+}
+
+.photo::after {
+  right: -24px;
+  top: -24px;
+  width: 45%;
+  height: 40%;
+  background: var(--blue);
+}
+
+.photo img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+}
+
+.title {
+  margin-top: var(--space-3);
+  font: 800 34px/42px var(--font-sans);
+}
+
+.rule {
+  margin: var(--space-6) 0;
+}
+
+.body {
+  max-width: 62ch;
+  margin-bottom: var(--space-4);
+  font: 400 18px/32px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.body:last-of-type {
+  margin-bottom: var(--space-8);
+}
+
+@media (max-width: 1099px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-16);
+  }
+
+  .photo {
+    max-width: 340px;
+  }
+}
+
+@media (max-width: 767px) {
+  .section {
+    padding-block: var(--space-16);
+  }
+
+  .photo {
+    max-width: calc(100% - 48px);
+  }
+
+  .title {
+    font-size: 28px;
+    line-height: 34px;
+  }
+}

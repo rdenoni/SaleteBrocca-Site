@@ -1,0 +1,168 @@
+/* Header flutuante sobre o hero (PSD: x 72, y 75, 1771×176, raio 30 @1920 → ×0,75). */
+.wrap {
+  position: absolute;
+  inset: 40px 0 auto;
+  z-index: 20;
+  padding-inline: var(--page-gutter);
+  pointer-events: none;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  max-width: 1776px;
+  height: var(--header-height);
+  margin-inline: auto;
+  padding: 0 var(--space-12) 0 var(--space-16);
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-header);
+  pointer-events: auto;
+}
+
+.logo {
+  flex: none;
+  display: block;
+  border-radius: var(--radius-sm);
+}
+
+.logoImage {
+  width: auto;
+  height: 56px;
+}
+
+.nav {
+  align-self: flex-start;
+  height: calc(100% - 16px);
+  margin-left: auto;
+}
+
+.navList {
+  display: flex;
+  height: 100%;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navList li {
+  display: flex;
+}
+
+.navLink {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  padding: 44px 18px 0;
+  font: 700 14px/20px var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--navy);
+  text-decoration: none;
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 70px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--cyan);
+  transform: scaleX(0);
+  transition: transform var(--duration) var(--ease);
+}
+
+.navLink:hover::after {
+  transform: scaleX(1);
+}
+
+/* Gota ciano: topo reto colado à borda superior do header, base arredondada. */
+.navLink[data-highlighted] {
+  padding: 42px 24px 0;
+  font-size: 17px;
+  background: var(--cyan);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+}
+
+.navLink[data-highlighted]::after {
+  display: none;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: var(--space-6);
+}
+
+.actions .studentButton {
+  min-height: 52px;
+  padding-inline: 28px;
+}
+
+@media (max-width: 1240px) {
+  .header {
+    padding-inline: var(--space-8);
+  }
+
+  .navLink {
+    padding-inline: 12px;
+  }
+
+  .navLink[data-highlighted] {
+    padding-inline: 18px;
+  }
+
+  .actions {
+    margin-left: var(--space-3);
+  }
+}
+
+@media (max-width: 1099px) {
+  .wrap {
+    inset: var(--space-4) 0 auto;
+  }
+
+  .header {
+    height: var(--header-height-compact);
+    padding: 0 var(--space-3) 0 var(--space-4);
+    border-radius: var(--radius-md);
+  }
+
+  .logoImage {
+    height: 40px;
+  }
+
+  /* Logo do mesmo tamanho; o link ganha folga para a área de toque de 48px. */
+  .logo {
+    padding-block: var(--space-1);
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .actions {
+    margin-left: auto;
+  }
+
+  .actions .studentButton {
+    width: 48px;
+    min-height: 48px;
+    padding: 0;
+  }
+
+  .studentLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}

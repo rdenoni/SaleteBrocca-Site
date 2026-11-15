@@ -1,0 +1,197 @@
+.bannerMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-6) var(--space-8);
+}
+
+.meta {
+  display: flex;
+  gap: var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 700 17px/24px var(--font-sans);
+}
+
+.meta li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.meta svg {
+  width: 20px;
+  height: 20px;
+  color: var(--cyan);
+}
+
+/* Duas colunas: conteúdo + bloco comercial fixo (sticky) à direita. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-areas: "main aside";
+  gap: var(--space-16);
+  align-items: start;
+  padding-block: var(--space-24);
+}
+
+.main {
+  grid-area: main;
+  display: grid;
+  gap: var(--space-16);
+}
+
+.aside {
+  grid-area: aside;
+  position: sticky;
+  top: var(--space-8);
+  margin-top: -160px;
+}
+
+.heading {
+  margin: var(--space-3) 0 var(--space-6);
+  font: 800 34px/42px var(--font-sans);
+}
+
+.lead {
+  max-width: 640px;
+  font: 400 19px/30px var(--font-sans);
+  color: var(--charcoal);
+}
+
+.reading {
+  max-width: 640px;
+  margin-bottom: var(--space-4);
+  font: 400 18px/32px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.notice {
+  display: flex;
+  gap: var(--space-4);
+  max-width: 62ch;
+  margin-top: var(--space-8);
+  padding: var(--space-6);
+  border-radius: var(--radius-md);
+  background: var(--light-blue);
+  color: var(--navy);
+  font: 400 16px/26px var(--font-sans);
+}
+
+.notice svg {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  color: var(--blue-strong);
+}
+
+.outcomes {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.outcomes li {
+  display: flex;
+  gap: var(--space-3);
+  font: 400 17px/28px var(--font-sans);
+  color: var(--charcoal);
+}
+
+.outcomes svg {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  padding: 5px;
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+  color: var(--navy);
+  stroke-width: 3;
+}
+
+.moduleSummary {
+  margin: calc(-1 * var(--space-3)) 0 var(--space-6);
+  font: 700 15px/22px var(--font-sans);
+  color: var(--text-muted);
+}
+
+.teacher {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-8);
+  border-radius: var(--radius-md);
+  background: var(--light-gray);
+}
+
+/* Bloco ciano deslocado atrás da foto (mesmo recurso do retrato em Sobre). */
+.teacherFigure {
+  position: relative;
+  flex: none;
+  width: 120px;
+  height: 120px;
+}
+
+.teacherFigure::before {
+  content: "";
+  position: absolute;
+  right: -12px;
+  bottom: -12px;
+  width: 80%;
+  height: 80%;
+  border-radius: var(--radius-lg);
+  background: var(--cyan);
+}
+
+.teacherPhoto {
+  position: relative;
+  z-index: 1;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+}
+
+.teacherName {
+  margin: var(--space-2) 0;
+  font: 800 24px/30px var(--font-sans);
+}
+
+.teacherText {
+  margin-bottom: var(--space-4);
+  font: 400 16px/26px var(--font-serif);
+  color: var(--charcoal);
+}
+
+@media (max-width: 1099px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "aside"
+      "main";
+    gap: var(--space-12);
+    padding-block: var(--space-12) var(--space-24);
+  }
+
+  .aside {
+    position: static;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .heading {
+    font-size: 26px;
+    line-height: 32px;
+  }
+
+  .teacher {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-6);
+    padding: var(--space-6);
+  }
+}

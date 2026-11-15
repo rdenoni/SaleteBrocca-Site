@@ -1,0 +1,43 @@
+.body {
+  display: grid;
+  gap: var(--space-6);
+  font: 400 18px/32px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.body h2 {
+  margin-top: var(--space-6);
+  font: 800 26px/34px var(--font-sans);
+  color: var(--navy);
+}
+
+.body blockquote {
+  margin: 0;
+  padding-left: var(--space-6);
+  border-left: 4px solid var(--cyan);
+  font: 300 22px/34px var(--font-serif);
+  color: var(--navy);
+}
+
+.body ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: var(--space-6);
+}
+
+.body li::marker {
+  color: var(--blue-strong);
+}
+
+@media (max-width: 767px) {
+  .body {
+    font-size: 17px;
+    line-height: 30px;
+  }
+
+  .body h2 {
+    font-size: 22px;
+    line-height: 30px;
+  }
+}

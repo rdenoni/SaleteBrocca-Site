@@ -1,0 +1,22 @@
+.track {
+  overflow: hidden;
+  width: 100%;
+  height: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--light-gray);
+}
+
+.track[data-on-tint] {
+  background: var(--white);
+}
+
+.track[data-tone="dark"] {
+  background: var(--navy-raised);
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cyan);
+}
