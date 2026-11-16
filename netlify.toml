@@ -1,0 +1,15 @@
+# Build do site na Netlify. O adaptador oficial de Next.js da Netlify é ativado
+# automaticamente quando o publish aponta para .next (rotas dinâmicas viram funções,
+# next/image passa pelo Image CDN da Netlify).
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# Declarado explicitamente: no deploy por upload (sem Git) a Netlify não instala o
+# adaptador sozinha e publica o .next cru (tudo 404). Sem versão fixa, como a Netlify recomenda.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  # Next 16 exige Node 20.9+; fixa a versão para o build não variar.
+  NODE_VERSION = "22"

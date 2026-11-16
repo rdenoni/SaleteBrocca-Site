@@ -12,3 +12,6 @@ tests/screenshots/current/
 # Ferramentas locais (reinstaláveis pelo skills-lock.json)
 .agents/
 graft/
+
+# Netlify (estado local do link do projeto)
+.netlify/
