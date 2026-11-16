@@ -16,9 +16,8 @@ export function FinalCta() {
         sizes="(max-width: 767px) 120vw, 60vw"
       />
       <div className={`container ${styles.inner}`}>
-        <p className="eyebrow">Contato</p>
         <h2 id="cta-titulo" className={styles.title}>
-          Agende uma avaliação
+          Marque uma avaliação
         </h2>
         <p className={styles.text}>Converse com a Salete sobre as dificuldades de aprendizagem.</p>
         <div className={styles.actions}>

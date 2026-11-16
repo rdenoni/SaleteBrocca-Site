@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 async function loadAllImages(page: Page): Promise<void> {
-  for (const image of await page.locator("main img").all()) {
+  for (const image of await page.locator("img").all()) {
     if (await image.isVisible()) await image.scrollIntoViewIfNeeded();
   }
   await page.waitForFunction(
@@ -39,10 +39,9 @@ test.describe("Sobre", () => {
     await expect(page.getByText("Toda criança, independente da dificuldade")).toBeVisible();
   });
 
-  test("dados não confirmados aparecem como pendentes", async ({ page }) => {
-    await expect(page.getByText("CRFa a confirmar")).toBeVisible();
-    await expect(page.getByText("Ano a confirmar")).toBeVisible();
-    await expect(page.getByText("Cidade a confirmar")).toBeVisible();
+  test("dados ausentes ficam ocultos (nunca inventados nem marcados na página)", async ({ page }) => {
+    await expect(page.getByText(/a confirmar/i)).toHaveCount(0);
+    await expect(page.getByText(/CRFa/)).toHaveCount(0);
   });
 
   test("índice leva à seção", async ({ page }) => {
@@ -71,7 +70,8 @@ test.describe("Contato", () => {
   });
 
   test("número e e-mail não confirmados não viram link", async ({ page }) => {
-    await expect(page.getByText("Número a confirmar")).toBeVisible();
+    await expect(page.getByText("Número em confirmação")).toBeVisible();
+    await expect(page.getByText("E-mail em confirmação")).toBeVisible();
     await expect(page.locator('a[href^="https://wa.me"], a[href^="mailto:"]')).toHaveCount(0);
   });
 

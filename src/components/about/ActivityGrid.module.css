@@ -1,104 +1,58 @@
-.grid {
+.list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-6);
+  column-gap: var(--space-24);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.card {
+/* Filete fino entre os itens; a peça ciano curta no topo é o único acento. */
+.item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-4);
-  padding: var(--space-12);
-  border-radius: var(--radius-lg);
-  color: var(--navy);
+  gap: var(--space-3);
+  padding-block: var(--space-8) var(--space-12);
+  border-top: 1px solid var(--light-blue);
 }
 
-/* Assimetria da referência: a segunda coluna desce meio passo. */
-.card:nth-child(even) {
-  transform: translateY(var(--space-12));
-}
-
-.card[data-tone="light"] {
-  background: var(--light-blue);
-}
-
-.card[data-tone="cyan"] {
-  background: var(--cyan);
-}
-
-.card[data-tone="blue"] {
-  background: var(--blue-strong);
-  color: var(--white);
-}
-
-.card[data-tone="navy"] {
-  background: var(--navy);
-  color: var(--white);
-}
-
-.icon {
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
+.item::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 0;
+  width: 48px;
+  height: 5px;
   border-radius: var(--radius-pill);
-  background: var(--white);
-  color: var(--blue-strong);
-}
-
-.card[data-tone="navy"] .icon {
   background: var(--cyan);
-  color: var(--navy);
-}
-
-.icon svg {
-  width: 28px;
-  height: 28px;
 }
 
 .title {
   font: 800 26px/32px var(--font-sans);
+  color: var(--navy);
 }
 
 .text {
   max-width: 42ch;
   font: 400 17px/28px var(--font-serif);
-}
-
-.card[data-tone="light"] .pending,
-.card[data-tone="cyan"] .pending {
-  border-color: var(--navy);
-  color: var(--navy);
-}
-
-.card[data-tone="blue"] .pending,
-.card[data-tone="navy"] .pending {
-  border-color: currentColor;
-  color: inherit;
+  color: var(--charcoal);
 }
 
 @media (max-width: 1099px) {
-  .card {
-    padding: var(--space-8);
+  .list {
+    column-gap: var(--space-12);
   }
 }
 
 @media (max-width: 767px) {
-  .grid {
+  .list {
     grid-template-columns: 1fr;
-    gap: var(--space-4);
   }
 
-  .card:nth-child(even) {
-    transform: none;
-  }
-
-  .card {
-    padding: var(--space-6);
+  .item {
+    padding-block: var(--space-6) var(--space-8);
   }
 
   .title {

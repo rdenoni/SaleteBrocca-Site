@@ -16,7 +16,6 @@ export default function CoursesPage() {
   return (
     <>
       <PageBanner
-        eyebrow="Formação"
         title="Cursos"
         subtitle="Para pais, professores e profissionais que acompanham crianças em idade escolar."
         image="/images/hero/crianca-escrevendo.jpg"

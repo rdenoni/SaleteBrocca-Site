@@ -15,7 +15,8 @@ interface Row {
   icon: ReactNode;
 }
 
-/* Valores comerciais ainda não confirmados aparecem como "A confirmar" — nunca inventados. */
+/* Só aparece o que está confirmado: valor ausente (null) esconde a linha. A pendência fica registrada
+   em courses.ts (commercial.* = null) e a linha volta sozinha quando a cliente confirmar o dado. */
 export function CommercialInfo({ course }: CommercialInfoProps) {
   const rows: Row[] = [
     { label: "Módulos", value: String(course.modules.length), icon: <Layers aria-hidden="true" /> },
@@ -24,6 +25,7 @@ export function CommercialInfo({ course }: CommercialInfoProps) {
     { label: "Certificado", value: course.commercial.certificate, icon: <Award aria-hidden="true" /> },
     { label: "Acesso", value: course.commercial.access, icon: <KeyRound aria-hidden="true" /> },
   ];
+  const visibleRows = rows.filter((row) => row.value);
 
   return (
     <aside className={styles.card} aria-labelledby="info-comercial">
@@ -31,23 +33,21 @@ export function CommercialInfo({ course }: CommercialInfoProps) {
         Informações do curso
       </h2>
       <span className="rule" aria-hidden="true" />
-      <div className={styles.price}>
-        <CircleDollarSign aria-hidden="true" />
-        <span className={styles.priceLabel}>Investimento</span>
-        {course.commercial.price ? (
+      {course.commercial.price && (
+        <div className={styles.price}>
+          <CircleDollarSign aria-hidden="true" />
+          <span className={styles.priceLabel}>Investimento</span>
           <strong className={styles.priceValue}>{course.commercial.price}</strong>
-        ) : (
-          <span className="pending">A confirmar</span>
-        )}
-      </div>
+        </div>
+      )}
       <dl className={styles.rows}>
-        {rows.map((row) => (
+        {visibleRows.map((row) => (
           <div key={row.label} className={styles.row}>
             <dt>
               {row.icon}
               {row.label}
             </dt>
-            <dd>{row.value ?? <span className="pending">A confirmar</span>}</dd>
+            <dd>{row.value}</dd>
           </div>
         ))}
       </dl>

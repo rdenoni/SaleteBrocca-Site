@@ -31,7 +31,7 @@ test.describe("Home", () => {
       "Conteúdos em destaque",
       "Maria Salete Brocca Denoni",
       "Cursos em destaque",
-      "Agende uma avaliação",
+      "Marque uma avaliação",
     ];
     expect(headings.map((text) => text.replace(/\s+/g, ""))).toEqual(order.map((text) => text.replace(/\s+/g, "")));
 
@@ -77,14 +77,14 @@ test.describe("Home", () => {
 
   test("formulário de avaliação valida nome e telefone", async ({ page }) => {
     const form = page.locator("#avaliacao form");
-    await form.getByRole("button", { name: "Enviar" }).click();
+    await form.getByRole("button", { name: "Pedir avaliação" }).click();
     await expect(form.getByText("Informe seu nome completo.")).toBeVisible();
     await expect(form.getByText("Informe um telefone com DDD.")).toBeVisible();
     await expect(form.getByLabel("Nome completo")).toHaveAttribute("aria-invalid", "true");
 
     await form.getByLabel("Nome completo").fill("Maria da Silva");
     await form.getByLabel("Telefone").fill("(48) 99999-0000");
-    await form.getByRole("button", { name: "Enviar" }).click();
+    await form.getByRole("button", { name: "Pedir avaliação" }).click();
     await expect(form.getByRole("status")).toContainText("Dados conferidos");
     await expect(form.getByText("Informe seu nome completo.")).toHaveCount(0);
   });

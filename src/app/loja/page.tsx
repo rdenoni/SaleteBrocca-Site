@@ -55,7 +55,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   return (
     <>
       <PageBanner
-        eyebrow="Produtos digitais"
         title="Loja"
         subtitle="Cursos e produtos digitais de Maria Salete Brocca Denoni."
         size="compact"

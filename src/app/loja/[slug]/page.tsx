@@ -93,7 +93,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         <div className={styles.details}>
           <section aria-labelledby="descricao">
-            <p className="eyebrow">Descrição</p>
             <h2 id="descricao" className={styles.heading}>
               Sobre o produto
             </h2>

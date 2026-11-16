@@ -31,7 +31,7 @@ const SECTIONS = [
 export default function AboutPage() {
   return (
     <>
-      <PageBanner eyebrow="Sobre" title={PROFILE_NAME} subtitle={`${PROFILE_ROLE}.`} />
+      <PageBanner title={PROFILE_NAME} subtitle={`${PROFILE_ROLE}.`} />
 
       <section className={styles.intro} aria-label="Apresentação">
         <div className={`container ${styles.introGrid}`}>
@@ -64,13 +64,9 @@ export default function AboutPage() {
       <section id="historia" className={`${styles.anchor} ${styles.history}`} aria-labelledby="historia-titulo">
         <div className={`container ${styles.historyGrid}`}>
           <header>
-            <p className="eyebrow">História</p>
             <h2 id="historia-titulo" className={`${styles.heading} ${styles.historyHeading}`}>
               Da sala de aula à fonoaudiologia
             </h2>
-            <span className={styles.bigYear} aria-hidden="true">
-              1960
-            </span>
           </header>
           <div className={styles.historyText}>
             {PROFILE_HISTORY.map((paragraph) => (
@@ -82,7 +78,6 @@ export default function AboutPage() {
 
       <section id="formacao" className={`${styles.anchor} ${styles.formation}`} aria-labelledby="formacao-titulo">
         <div className="container">
-          <p className="eyebrow">Formação</p>
           <h2 id="formacao-titulo" className={styles.heading}>
             Formação acadêmica
           </h2>
@@ -92,7 +87,6 @@ export default function AboutPage() {
 
       <section id="atuacao" className={`${styles.anchor} ${styles.activities}`} aria-labelledby="atuacao-titulo">
         <div className="container">
-          <p className="eyebrow">Atuação</p>
           <h2 id="atuacao-titulo" className={styles.heading}>
             Onde atua hoje
           </h2>

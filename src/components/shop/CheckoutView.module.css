@@ -15,9 +15,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-3);
-  font: 700 14px/20px var(--font-sans);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font: 700 15px/22px var(--font-sans);
   color: var(--text-muted);
 }
 
@@ -132,9 +130,7 @@
 }
 
 .summaryHeading {
-  font: 700 13px/16px var(--font-sans);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font: 700 16px/22px var(--font-sans);
   color: var(--cyan);
 }
 

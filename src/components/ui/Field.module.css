@@ -4,9 +4,7 @@
 }
 
 .label {
-  font: 700 13px/16px var(--font-sans);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font: 700 14px/20px var(--font-sans);
   color: var(--navy);
 }
 

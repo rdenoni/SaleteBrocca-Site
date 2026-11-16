@@ -17,10 +17,12 @@ export function ProductCard({ product }: ProductCardProps) {
       <div className={styles.body}>
         <h3 className={styles.title}>{product.title}</h3>
         <p className={styles.summary}>{product.summary}</p>
-        <p className={styles.price}>
-          <span>Preço</span>
-          {product.price ? <strong>{product.price}</strong> : <span className="pending">A confirmar</span>}
-        </p>
+        {product.price && (
+          <p className={styles.price}>
+            <span>Preço</span>
+            <strong>{product.price}</strong>
+          </p>
+        )}
         <Button href={`/loja/${product.slug}`} variant="primary" className={styles.cta}>
           Ver produto
         </Button>

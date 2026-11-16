@@ -16,9 +16,7 @@
 }
 
 .summaryTitle {
-  font: 700 13px/16px var(--font-sans);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font: 700 16px/22px var(--font-sans);
   /* Sobre azul-claro o texto pequeno é navy (blue-strong fica abaixo de 4.5:1). */
   color: var(--navy);
 }

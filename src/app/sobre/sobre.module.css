@@ -1,5 +1,5 @@
 .heading {
-  margin: var(--space-3) 0 var(--space-12);
+  margin: 0 0 var(--space-12);
   font: 800 34px/42px var(--font-sans);
 }
 
@@ -80,9 +80,7 @@
 
 .tocLabel {
   margin-bottom: var(--space-3);
-  font: 700 13px/16px var(--font-sans);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font: 700 15px/22px var(--font-sans);
   color: var(--text-muted);
 }
 
@@ -131,15 +129,10 @@
 }
 
 .historyHeading {
-  margin-bottom: var(--space-6);
-}
-
-.bigYear {
-  display: block;
-  font: 800 128px/1 var(--font-sans);
-  letter-spacing: -0.04em;
-  color: var(--light-blue);
-  user-select: none;
+  max-width: 18ch;
+  padding-top: var(--space-8);
+  margin-bottom: 0;
+  text-wrap: balance;
 }
 
 .historyText {
@@ -162,15 +155,10 @@
   background: var(--light-blue);
 }
 
-/* blue-strong a 13px sobre light-blue dá 4.36:1; navy passa. */
-.formation :global(.eyebrow) {
-  color: var(--navy);
-}
-
 /* ---------- Atuação ---------- */
 
 .activities {
-  padding-block: var(--space-24) calc(var(--space-24) + var(--space-12));
+  padding-block: var(--space-24);
 }
 
 /* ---------- Frase-conceito ---------- */
@@ -214,8 +202,6 @@
 .quoteAuthor {
   margin-top: var(--space-6);
   font: 700 15px/22px var(--font-sans);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: var(--cyan);
 }
 
@@ -243,8 +229,8 @@
     gap: var(--space-8);
   }
 
-  .bigYear {
-    display: none;
+  .historyHeading {
+    padding-top: 0;
   }
 }
 

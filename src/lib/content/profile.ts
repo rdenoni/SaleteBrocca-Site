@@ -1,7 +1,7 @@
 import type { Activity, FormationItem } from "@/types/content";
 
 /* Fontes: Manual da Marca TCC (p. 3, "História, valores e voz") e FAZER.txt / Paleta.txt da cliente.
-   Nada aqui foi inventado; dados ausentes ficam null e aparecem como "A confirmar". */
+   Nada aqui foi inventado; dados ausentes ficam null (ou em `pending`) e ficam ocultos na página até a cliente confirmar. */
 
 export const PROFILE_NAME = "Maria Salete Brocca Denoni";
 export const PROFILE_ROLE = "Professora e fonoaudióloga clínica";

@@ -55,9 +55,7 @@
 }
 
 .nextLabel {
-  font: 700 13px/18px var(--font-sans);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font: 700 15px/22px var(--font-sans);
   color: var(--blue-strong);
 }
 

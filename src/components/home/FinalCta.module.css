@@ -11,7 +11,8 @@
   right: 0;
   top: 50%;
   width: auto;
-  height: 100%;
+  /* Menores que a seção inteira: as peças acompanham o título sem competir com o "?" da avaliação. */
+  height: 72%;
   transform: translateY(-50%);
   pointer-events: none;
 }
@@ -22,7 +23,6 @@
 
 .title {
   max-width: 560px;
-  margin-top: var(--space-3);
   font: 800 44px/52px var(--font-sans);
   letter-spacing: -0.015em;
 }
@@ -41,7 +41,7 @@
 
 @media (max-width: 1099px) {
   .pieces {
-    height: 90%;
+    height: 64%;
     opacity: 0.35;
   }
 }

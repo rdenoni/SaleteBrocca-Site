@@ -9,7 +9,7 @@ interface CourseCardProps {
   course: Course;
 }
 
-/* Só metadados confirmados (módulos e aulas). Preço, carga horária e certificado: a confirmar. */
+/* Só metadados confirmados (módulos e aulas). Preço, carga horária e certificado ficam ocultos até a cliente confirmar. */
 export function CourseCard({ course }: CourseCardProps) {
   const lessons = countLessons(course);
   return (

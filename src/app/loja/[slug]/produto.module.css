@@ -83,9 +83,7 @@
 }
 
 .panelTitle {
-  font: 700 13px/16px var(--font-sans);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font: 700 16px/22px var(--font-sans);
   color: var(--blue-strong);
 }
 
@@ -157,7 +155,7 @@
 }
 
 .heading {
-  margin: var(--space-2) 0 var(--space-6);
+  margin: 0 0 var(--space-6);
   font: 800 34px/42px var(--font-sans);
   color: var(--navy);
 }

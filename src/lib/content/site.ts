@@ -44,7 +44,7 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
   {
     title: "Contato",
     links: [
-      { label: "Agendamento", href: "/contato#agendamento" },
+      { label: "Marcar avaliação", href: "/contato#agendamento" },
       { label: "WhatsApp", href: "/contato#whatsapp" },
       { label: "Formulário", href: "/contato#formulario" },
     ],

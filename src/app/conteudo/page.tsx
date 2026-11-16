@@ -17,7 +17,6 @@ export default function ContentLibraryPage() {
   return (
     <>
       <PageBanner
-        eyebrow="Blog"
         title="Conteúdo"
         subtitle="Artigos e orientações de Maria Salete Brocca Denoni."
         size="compact"

@@ -9,7 +9,7 @@ async function expectNoHorizontalScroll(page: Page): Promise<void> {
 }
 
 async function fullPageShot(page: Page, name: string): Promise<void> {
-  for (const image of await page.locator("main img").all()) {
+  for (const image of await page.locator("img").all()) {
     if (await image.isVisible()) await image.scrollIntoViewIfNeeded();
   }
   await page.waitForFunction(
@@ -91,7 +91,7 @@ test.describe("Conteúdo — artigo", () => {
     await expect(trail.getByRole("link", { name: "Conteúdo" })).toBeVisible();
     await expect(trail.getByRole("link", { name: "Deglutição" })).toBeVisible();
     await expect(page.getByText("Maria Salete Brocca Denoni").first()).toBeVisible();
-    await expect(page.getByText("Data a confirmar")).toBeVisible();
+    await expect(page.getByText("Data a confirmar")).toHaveCount(0);
     await expect(page.getByText("Artigo de exemplo")).toBeVisible();
     await expect(page.getByText("Texto em preparação")).toBeVisible();
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);

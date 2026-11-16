@@ -23,7 +23,6 @@ export default function LoginPage() {
       />
       <div className={`container ${styles.inner}`}>
         <div className={styles.card}>
-          <p className="eyebrow">Acesso aos cursos</p>
           <h1 id="page-title" className={styles.title}>
             Área do Aluno
           </h1>

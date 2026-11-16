@@ -63,7 +63,6 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
         <div className={styles.main}>
           <section aria-labelledby="para-quem">
-            <p className="eyebrow">Público</p>
             <h2 id="para-quem" className={styles.heading}>
               Para quem é
             </h2>
@@ -71,7 +70,6 @@ export default async function CoursePage({ params }: CoursePageProps) {
           </section>
 
           <section aria-labelledby="sobre-curso">
-            <p className="eyebrow">Proposta</p>
             <h2 id="sobre-curso" className={styles.heading}>
               Sobre o curso
             </h2>
@@ -102,7 +100,6 @@ export default async function CoursePage({ params }: CoursePageProps) {
           </section>
 
           <section aria-labelledby="conteudo-curso">
-            <p className="eyebrow">Conteúdo</p>
             <h2 id="conteudo-curso" className={styles.heading}>
               Módulos e aulas
             </h2>

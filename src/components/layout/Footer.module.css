@@ -47,12 +47,30 @@
   text-underline-offset: 4px;
 }
 
+/* Bloco da marca na metade direita: logo empilhado e a atuação; os perfis sociais entram abaixo quando existirem. */
+.brand {
+  display: grid;
+  justify-items: center;
+  justify-self: end;
+  gap: var(--space-4);
+  text-align: center;
+}
+
+.logo {
+  width: 180px;
+  height: auto;
+}
+
+.role {
+  max-width: 24ch;
+  font: 400 15px/22px var(--font-sans);
+  color: var(--on-navy-muted);
+}
+
 .social {
   display: flex;
   gap: var(--space-6);
-  justify-self: end;
-  align-self: end;
-  margin: 0;
+  margin: var(--space-2) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -121,14 +139,20 @@
     column-gap: var(--space-8);
   }
 
-  .social {
+  .brand {
     grid-column: 1 / -1;
-    justify-self: start;
+    grid-row: 1;
+    justify-self: center;
+    padding-bottom: var(--space-4);
   }
 }
 
 @media (max-width: 767px) {
   .main {
-    padding-block: 56px 40px;
+    padding-block: 48px 40px;
+  }
+
+  .logo {
+    width: 150px;
   }
 }

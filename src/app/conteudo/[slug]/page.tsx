@@ -72,11 +72,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <span className={styles.author}>
               Por <strong>{ARTICLE_AUTHOR}</strong>
             </span>
-            <span aria-hidden="true">·</span>
-            {article.publishedAt ? (
-              <time dateTime={article.publishedAt}>{DATE_FORMAT.format(new Date(article.publishedAt))}</time>
-            ) : (
-              <span className="pending">Data a confirmar</span>
+            {article.publishedAt && (
+              <>
+                <span aria-hidden="true">·</span>
+                <time dateTime={article.publishedAt}>{DATE_FORMAT.format(new Date(article.publishedAt))}</time>
+              </>
             )}
             {ARTICLES_ARE_EXAMPLES && <span className="pending">Artigo de exemplo</span>}
           </p>

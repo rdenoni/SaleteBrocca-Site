@@ -104,7 +104,7 @@ export function EvaluationForm() {
 
       <div className={styles.actions}>
         <Button type="submit" variant="outline">
-          Enviar
+          Pedir avaliação
         </Button>
       </div>
 

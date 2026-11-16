@@ -3,10 +3,11 @@ import { expect, test } from "@playwright/test";
 /* Regras que valem para o site inteiro (revisão geral): contraste e áreas de toque. */
 
 const WHITE = "rgb(255, 255, 255)";
-const NAVY = "rgb(15, 36, 56)";
+const BLUE_STRONG = "rgb(42, 106, 154)";
 
+/* Eyebrows só sobrevivem onde informam algo (rodada frontend-design): estes banners ainda têm um. */
 test("eyebrow do banner é branco (ciano só sobre navy)", async ({ page }) => {
-  for (const route of ["/cursos", "/sobre", "/loja", "/privacidade"]) {
+  for (const route of ["/privacidade", "/cursos/dificuldades-na-aprendizagem", "/loja/checkout"]) {
     await page.goto(route);
     // Banners fotográficos usam data-surface="photo" (anel de foco branco sobre a foto).
     const eyebrow = page.locator("section[data-surface='photo'] .eyebrow").first();
@@ -14,9 +15,16 @@ test("eyebrow do banner é branco (ciano só sobre navy)", async ({ page }) => {
   }
 });
 
-test("eyebrow sobre azul-claro usa navy", async ({ page }) => {
-  await page.goto("/sobre");
-  await expect(page.locator("#formacao .eyebrow")).toHaveCSS("color", NAVY);
+test("eyebrow em fundo claro usa blue-strong (nunca --blue em texto pequeno)", async ({ page }) => {
+  await page.goto("/cursos/dificuldades-na-aprendizagem");
+  await expect(page.locator("section[aria-labelledby='aprender'] .eyebrow")).toHaveCSS("color", BLUE_STRONG);
+});
+
+test("seções sem eyebrow redundante", async ({ page }) => {
+  for (const route of ["/", "/sobre", "/cursos", "/loja", "/contato"]) {
+    await page.goto(route);
+    await expect(page.locator("main .eyebrow").filter({ visible: true })).toHaveCount(0);
+  }
 });
 
 test("LinkArrow aceita toque 12px acima e abaixo do texto", async ({ page }) => {

@@ -10,7 +10,7 @@ export interface DataCollectionPoint {
 }
 
 export const DATA_COLLECTION: readonly DataCollectionPoint[] = [
-  { form: "Agendar avaliação (página inicial)", href: "/#avaliacao", fields: ["Nome", "Telefone"] },
+  { form: "Pedir avaliação (página inicial)", href: "/#avaliacao", fields: ["Nome", "Telefone"] },
   {
     form: "Formulário de contato",
     href: "/contato#formulario",

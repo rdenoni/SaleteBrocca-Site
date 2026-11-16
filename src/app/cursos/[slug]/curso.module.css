@@ -50,8 +50,13 @@
 }
 
 .heading {
-  margin: var(--space-3) 0 var(--space-6);
+  margin: 0 0 var(--space-6);
   font: 800 34px/42px var(--font-sans);
+}
+
+/* Onde um rótulo ainda precede o título ("Ao final do curso"), o respiro entre os dois continua. */
+:global(.eyebrow) + .heading {
+  margin-top: var(--space-3);
 }
 
 .lead {

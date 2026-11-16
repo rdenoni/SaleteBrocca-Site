@@ -3,7 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 const SLUG = "dificuldades-na-aprendizagem";
 
 async function loadAllImages(page: Page): Promise<void> {
-  for (const image of await page.locator("main img").all()) {
+  for (const image of await page.locator("img").all()) {
     if (await image.isVisible()) await image.scrollIntoViewIfNeeded();
   }
   await page.waitForFunction(
@@ -46,12 +46,15 @@ test.describe("Cursos — página do curso", () => {
     await page.goto(`/cursos/${SLUG}`);
   });
 
-  test("mostra só fatos confirmados e marca o resto como pendente", async ({ page }) => {
+  test("mostra só fatos confirmados e oculta o que falta", async ({ page }) => {
     await expect(page.getByRole("heading", { level: 1, name: "Dificuldades na Aprendizagem" })).toBeVisible();
     const info = page.getByRole("complementary", { name: "Informações do curso" });
     await expect(info).toContainText("6");
     await expect(info).toContainText("21");
-    await expect(info.getByText("A confirmar")).toHaveCount(4);
+    await expect(info.getByText("A confirmar")).toHaveCount(0);
+    for (const label of ["Carga horária", "Certificado", "Acesso", "Investimento"]) {
+      await expect(info.getByText(label, { exact: true })).toHaveCount(0);
+    }
     await expect(page.getByText(/R\$/)).toHaveCount(0);
   });
 

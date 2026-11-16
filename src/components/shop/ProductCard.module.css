@@ -64,12 +64,16 @@
   color: var(--charcoal);
 }
 
+/* Empurra preço (quando existe) e botão para o pé do card. */
+.summary {
+  margin-bottom: auto;
+}
+
 .price {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  margin-top: auto;
   padding-top: var(--space-4);
   border-top: 1px solid var(--light-gray);
   font: 700 15px/22px var(--font-sans);

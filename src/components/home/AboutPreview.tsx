@@ -17,7 +17,6 @@ export function AboutPreview() {
           />
         </div>
         <div className={styles.text}>
-          <p className="eyebrow">Sobre</p>
           <h2 id="sobre-titulo" className={styles.title}>
             Maria Salete Brocca Denoni
           </h2>

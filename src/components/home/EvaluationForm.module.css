@@ -48,7 +48,6 @@
   color: var(--navy);
   /* 16px: abaixo disso o iOS dá zoom ao focar. */
   font: 400 16px/22px var(--font-sans);
-  letter-spacing: 0.04em;
   transition:
     border-color var(--duration) var(--ease),
     background-color var(--duration) var(--ease);
@@ -56,7 +55,6 @@
 
 .input::placeholder {
   color: var(--text-muted);
-  text-transform: uppercase;
 }
 
 .input:hover {

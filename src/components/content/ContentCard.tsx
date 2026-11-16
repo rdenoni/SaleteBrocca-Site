@@ -39,7 +39,7 @@ export function ContentCard({ article, tone = "light", letter }: ContentCardProp
         </h3>
       </div>
       <LinkArrow href={href} tone={tone === "blue" ? "inverse" : "default"} className={styles.more} decorative>
-        Acesse
+        Ler artigo
       </LinkArrow>
     </article>
   );

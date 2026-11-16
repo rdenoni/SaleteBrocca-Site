@@ -11,7 +11,6 @@ export function FeaturedCourses({ courses }: FeaturedCoursesProps) {
     <section className={styles.section} aria-labelledby="cursos-titulo">
       <div className="container">
         <header className={styles.head}>
-          <p className="eyebrow">Cursos</p>
           <h2 id="cursos-titulo" className={styles.title}>
             Cursos em destaque
           </h2>

@@ -4,7 +4,7 @@ import styles from "./FormationTimeline.module.css";
 
 interface FormationTimelineProps {
   items: readonly FormationItem[];
-  /** Registro profissional; null mostra "A confirmar". */
+  /** Registro profissional; null oculta o registro até a cliente confirmar. */
   crfa: string | null;
 }
 
@@ -15,18 +15,23 @@ export function FormationTimeline({ items, crfa }: FormationTimelineProps) {
       <ol className={styles.timeline}>
         {items.map((item) => (
           <li key={item.title} className={styles.item}>
-            <span className={styles.year}>{item.year ?? <span className="pending">Ano a confirmar</span>}</span>
+            {/* Sem ano confirmado o espaço fica reservado, só para os pontos seguirem alinhados. */}
+            <span className={styles.year} aria-hidden={item.year ? undefined : true}>
+              {item.year}
+            </span>
             <span className={styles.dot} aria-hidden="true" />
             <p className={styles.title}>{item.title}</p>
           </li>
         ))}
       </ol>
 
-      <p className={styles.register}>
-        <BadgeCheck aria-hidden="true" />
-        <span>Registro profissional</span>
-        {crfa ? <strong>{crfa}</strong> : <span className="pending">CRFa a confirmar</span>}
-      </p>
+      {crfa && (
+        <p className={styles.register}>
+          <BadgeCheck aria-hidden="true" />
+          <span>Registro profissional</span>
+          <strong>{crfa}</strong>
+        </p>
+      )}
     </div>
   );
 }

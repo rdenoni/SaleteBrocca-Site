@@ -10,7 +10,7 @@ async function expectNoHorizontalScroll(page: Page): Promise<void> {
 }
 
 async function fullPageShot(page: Page, name: string): Promise<void> {
-  for (const image of await page.locator("main img").all()) {
+  for (const image of await page.locator("img").all()) {
     if (await image.isVisible()) await image.scrollIntoViewIfNeeded();
   }
   await page.waitForFunction(

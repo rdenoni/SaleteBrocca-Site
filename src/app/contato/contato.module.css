@@ -1,5 +1,5 @@
-/* Desktop: canais à esquerda, formulário largo à direita subindo sobre o banner.
-   Mobile: WhatsApp primeiro, depois agendamento, formulário e outros canais. */
+/* Desktop: coluna de canais à esquerda (painel navy + blocos sem caixa), formulário largo
+   à direita subindo sobre o banner. Mobile: WhatsApp, avaliação, formulário, outros canais. */
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
@@ -8,12 +8,13 @@
     "schedule form"
     "channels form";
   grid-template-rows: auto auto 1fr;
-  gap: var(--space-6) var(--space-12);
+  gap: 0 var(--space-12);
   align-items: start;
   padding-block: var(--space-12) var(--space-24);
 }
 
-.card {
+/* Painéis: o WhatsApp (navy) e o formulário (branco com sombra) são as únicas caixas. */
+.panel {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -29,12 +30,6 @@
   color: var(--white);
 }
 
-.schedule {
-  grid-area: schedule;
-  background: var(--light-blue);
-  color: var(--navy);
-}
-
 .formCard {
   grid-area: form;
   /* Posicionado para pintar acima do banner (que também é posicionado). */
@@ -48,9 +43,26 @@
   box-shadow: var(--shadow-card);
 }
 
+/* Blocos sem caixa: separados por filete e espaço. */
+.block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding-block: var(--space-8);
+  scroll-margin-top: var(--space-6);
+}
+
+.schedule {
+  grid-area: schedule;
+  margin-top: var(--space-8);
+  border-top: 1px solid var(--light-blue);
+  color: var(--navy);
+}
+
 .channels {
   grid-area: channels;
-  border: 2px solid var(--light-gray);
+  border-top: 1px solid var(--light-blue);
 }
 
 .icon {
@@ -63,17 +75,12 @@
   color: var(--navy);
 }
 
-.schedule .icon {
-  background: var(--white);
-  color: var(--blue-strong);
-}
-
 .icon svg {
   width: 26px;
   height: 26px;
 }
 
-.cardTitle {
+.sectionTitle {
   font: 800 26px/32px var(--font-sans);
 }
 
@@ -83,17 +90,13 @@
   white-space: nowrap;
 }
 
-.whatsapp :global(.pending) {
-  border-color: var(--on-navy-muted);
-  color: var(--on-navy-muted);
-}
-
 .note {
   font: 400 15px/24px var(--font-sans);
   color: var(--on-navy-muted);
 }
 
 .text {
+  max-width: 42ch;
   font: 400 17px/28px var(--font-serif);
   color: var(--charcoal);
 }
@@ -111,7 +114,7 @@
   justify-content: space-between;
   gap: var(--space-4);
   padding-bottom: var(--space-3);
-  border-bottom: 1px solid color-mix(in srgb, var(--navy) 15%, transparent);
+  border-bottom: 1px solid var(--light-blue);
   font: 400 15px/22px var(--font-sans);
 }
 
@@ -132,16 +135,9 @@
   font-weight: 700;
 }
 
-.details :global(.pending) {
-  border-color: var(--navy);
-  color: var(--navy);
-}
-
 .channelsTitle {
-  font: 700 13px/16px var(--font-sans);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--blue-strong);
+  font: 700 15px/22px var(--font-sans);
+  color: var(--text-muted);
 }
 
 .channelList {
@@ -174,14 +170,17 @@
   overflow-wrap: anywhere;
 }
 
+.channelNote {
+  font: 400 14px/20px var(--font-sans);
+  color: var(--text-muted);
+}
+
 .channelList a {
   color: var(--blue-strong);
   font-weight: 700;
 }
 
 .privacy {
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--light-gray);
   font: 400 15px/22px var(--font-sans);
   color: var(--text-muted);
 }
@@ -199,7 +198,13 @@
       "form form"
       "channels channels";
     grid-template-rows: none;
-    gap: var(--space-6);
+    gap: var(--space-8) var(--space-12);
+  }
+
+  .schedule {
+    margin-top: 0;
+    padding-block: 0;
+    border-top: 0;
   }
 
   .formCard {
@@ -215,11 +220,11 @@
       "schedule"
       "form"
       "channels";
-    gap: var(--space-4);
+    gap: var(--space-8);
     padding-block: var(--space-8) var(--space-16);
   }
 
-  .card {
+  .panel {
     padding: var(--space-6);
   }
 
@@ -227,7 +232,19 @@
     padding: var(--space-6);
   }
 
-  .cardTitle {
+  .block {
+    padding-block: 0;
+  }
+
+  .schedule {
+    border-top: 0;
+  }
+
+  .channels {
+    padding-top: var(--space-8);
+  }
+
+  .sectionTitle {
     font-size: 22px;
     line-height: 28px;
   }
