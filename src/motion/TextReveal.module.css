@@ -1,0 +1,19 @@
+.words {
+  display: inline;
+}
+
+/* A máscara corta a palavra enquanto ela sobe. O padding acomoda descendentes (g, p, ç)
+   e a margem negativa devolve o espaçamento original da linha. */
+.mask {
+  display: inline-block;
+  overflow: hidden;
+  padding-block: 0.08em 0.14em;
+  margin-block: -0.08em -0.14em;
+  vertical-align: top;
+}
+
+/* Sem will-change: a palavra sobe uma vez e o Motion já promove a camada durante a animação.
+   Fixo, cada palavra de cada título ficaria na memória da GPU depois de pronta. */
+.word {
+  display: inline-block;
+}

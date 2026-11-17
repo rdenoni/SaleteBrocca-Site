@@ -3,10 +3,6 @@
   font: 800 34px/42px var(--font-sans);
 }
 
-.anchor {
-  scroll-margin-top: var(--space-6);
-}
-
 /* ---------- Apresentação: retrato sobe sobre o banner ---------- */
 
 .intro {

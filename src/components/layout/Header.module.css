@@ -1,9 +1,26 @@
-/* Header flutuante sobre o hero (PSD: x 72, y 75, 1771×176, raio 30 @1920 → ×0,75). */
+/* Header flutuante no topo de cada página (PSD: x 72, y 75, 1771×176, raio 30 @1920 → ×0,75). Em repouso é
+   absoluto e idêntico ao do site (40px do topo, 128px de altura; ≤1099px: 16px e 72px), então os banners e as páginas
+   internas que já abrem espaço para ele não mudam. Acrescenta:
+   - posição "fixa" para o cabeçalho inteligente (data-pin);
+   - gota e sublinhado do menu como camadas animadas, no lugar do sublinhado CSS por link. */
+
 .wrap {
   position: absolute;
   inset: 40px 0 auto;
   z-index: 20;
   padding-inline: var(--page-gutter);
+  pointer-events: none;
+}
+
+/* Reapareceu ao rolar para cima: o mesmo cabeçalho, fixo. */
+.wrap[data-pin="shown"],
+.wrap[data-pin="hidden"] {
+  position: fixed;
+  inset: 16px 0 auto;
+}
+
+/* Recolhido: não captura cliques sobre o conteúdo. O foco de teclado o traz de volta. */
+.wrap[data-pin="hidden"] .header {
   pointer-events: none;
 }
 
@@ -33,10 +50,69 @@
   height: 56px;
 }
 
+/* Pilha do logo: a imagem original (no fluxo) e, só durante a entrada, as cópias por cima, com o mesmo tamanho:
+   o nome recortado e as duas peças do símbolo. Ver HeaderLogo em Header.tsx. */
+.logoStack {
+  position: relative;
+  display: block;
+}
+
+.logoBase {
+  display: block;
+}
+
+.logoBase .logoImage {
+  display: block;
+}
+
+.logoCopies,
+.logoPart {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+
+.logoCopyImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* Caixa quadrada do símbolo sobre o PNG (left/top/width/height vêm de SYMBOL_BOX em Header.tsx). Cada peça é uma
+   camada própria empilhada nela. Só existem durante a entrada, então will-change não fica ligado depois. */
+.logoSymbol {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.logoPiece {
+  position: absolute;
+  inset: 0;
+  display: block;
+  will-change: transform, opacity;
+}
+
+.logoPieceSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
 .nav {
   align-self: flex-start;
   height: calc(100% - 16px);
   margin-left: auto;
+}
+
+/* Referência das camadas da gota e do sublinhado; os offsetLeft dos links são medidos a partir dela. */
+.track {
+  position: relative;
+  height: 100%;
 }
 
 .navList {
@@ -54,6 +130,7 @@
 
 .navLink {
   position: relative;
+  z-index: 1;
   display: flex;
   align-items: flex-start;
   padding: 44px 18px 0;
@@ -64,33 +141,45 @@
   text-decoration: none;
 }
 
-.navLink::after {
+/* Camadas que se movem: cobrem a lista inteira e são recortadas (clip-path) até o item de destino. */
+.markLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* A camada da gota passa 6px da lista de cada lado (= GOTA_BLEED em HeaderNav): a gota é mais larga que o link. */
+.gotaLayer {
+  inset: 0 -6px;
+}
+
+/* Gota ciano: topo reto colado à borda superior do header, base arredondada (raio no clip-path). */
+.gota {
+  position: absolute;
+  inset: 0;
+  background: var(--cyan);
+}
+
+.lineLayer {
+  inset: 70px 0 auto;
+  height: 3px;
+}
+
+.underline {
+  position: absolute;
+  inset: 0;
+  background: var(--cyan);
+}
+
+/* Antes de a gota ser medida (servidor, sem JavaScript) Cursos já aparece destacado, sem mudar o layout. */
+.navLink[data-fallback-gota]::before {
   content: "";
   position: absolute;
-  left: 18px;
-  right: 18px;
-  top: 70px;
-  height: 3px;
-  border-radius: 3px;
-  background: var(--cyan);
-  transform: scaleX(0);
-  transition: transform var(--duration) var(--ease);
-}
-
-.navLink:hover::after {
-  transform: scaleX(1);
-}
-
-/* Gota ciano: topo reto colado à borda superior do header, base arredondada. */
-.navLink[data-highlighted] {
-  padding: 42px 24px 0;
-  font-size: 17px;
+  inset: 0 -6px;
+  z-index: -1;
   background: var(--cyan);
   border-radius: 0 0 var(--radius-xl) var(--radius-xl);
-}
-
-.navLink[data-highlighted]::after {
-  display: none;
 }
 
 .actions {
@@ -114,10 +203,6 @@
     padding-inline: 12px;
   }
 
-  .navLink[data-highlighted] {
-    padding-inline: 18px;
-  }
-
   .actions {
     margin-left: var(--space-3);
   }
@@ -126,6 +211,11 @@
 @media (max-width: 1099px) {
   .wrap {
     inset: var(--space-4) 0 auto;
+  }
+
+  .wrap[data-pin="shown"],
+  .wrap[data-pin="hidden"] {
+    inset: var(--space-2) 0 auto;
   }
 
   .header {
@@ -138,9 +228,10 @@
     height: 40px;
   }
 
-  /* Logo do mesmo tamanho; o link ganha folga para a área de toque de 48px. */
+  /* Logo do mesmo tamanho; o link ganha folga para a área de toque de 48px (+0,5px: a pílula nasce com transform
+     na entrada e o retângulo medido sofre erro de ponto flutuante, que daria 47,99996). */
   .logo {
-    padding-block: var(--space-1);
+    padding-block: calc(var(--space-1) + 0.25px);
   }
 
   .nav {
@@ -157,7 +248,8 @@
     padding: 0;
   }
 
-  .studentLabel {
+  /* Só o ícone: o rótulo (2º filho do MotionButton) continua para leitores de tela e sai do fluxo (sem o gap). */
+  .actions .studentButton > span:nth-child(2) {
     position: absolute;
     width: 1px;
     height: 1px;

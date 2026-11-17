@@ -7,8 +7,10 @@ import { ModuleList } from "@/components/courses/ModuleList";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { Button } from "@/components/ui/Button";
 import { LinkArrow } from "@/components/ui/LinkArrow";
+import { FaqList } from "@/components/ui/FaqList";
 import { StickyActionBar } from "@/components/ui/StickyActionBar";
 import { countLessons, getCourse, getCourses } from "@/lib/content/courses";
+import { FAQ_SECTION_ID, FAQ_TITLE, getCourseFaq } from "@/lib/content/faq";
 import styles from "./curso.module.css";
 
 interface CoursePageProps {
@@ -130,6 +132,14 @@ export default async function CoursePage({ params }: CoursePageProps) {
               </p>
               <LinkArrow href="/sobre">Conheça a trajetória</LinkArrow>
             </div>
+          </section>
+
+          {/* Wireframe §3.2: dúvidas frequentes no fim da página do curso, antes da barra de inscrição. */}
+          <section id={FAQ_SECTION_ID} aria-labelledby="duvidas-titulo">
+            <h2 id="duvidas-titulo" className={styles.heading}>
+              {FAQ_TITLE}
+            </h2>
+            <FaqList items={getCourseFaq(course, { onCoursePage: true })} />
           </section>
         </div>
       </div>

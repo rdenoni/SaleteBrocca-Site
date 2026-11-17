@@ -1,61 +1,68 @@
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
-import { SocialIcon } from "@/components/ui/SocialIcon";
-import { PROFILE_ROLE } from "@/lib/content/profile";
-import { COPYRIGHT, FOOTER_COLUMNS, SOCIAL_LINKS } from "@/lib/content/site";
+import { Reveal } from "@/motion/Reveal";
+import { Stagger, StaggerItem } from "@/motion/Stagger";
+import { TransitionLink } from "@/motion/transitions/TransitionLink";
+import { useMotionTokens } from "@/motion/useMotionTokens";
+import { copyrightLine, FOOTER_COLUMNS, PRIVACY_LINK } from "@/lib/content/site";
+import { BackToTop } from "./BackToTop";
+import { SocialProfiles } from "./SocialProfiles";
 import styles from "./Footer.module.css";
 
-/* Só renderiza ícones de perfis com endereço confirmado: nunca apontar rede social para outra página. */
-const CONFIRMED_SOCIAL_LINKS = SOCIAL_LINKS.flatMap((social) =>
-  social.href ? [{ ...social, href: social.href }] : [],
-);
+interface FooterProps {
+  /** Ano do copyright, calculado no servidor (layout raiz): evita divergência na hidratação. */
+  year: number;
+}
 
-export function Footer() {
+/* Rodapé navy. Entrada ao aparecer: as colunas sobem em sequência e o logo surge por último (sem régua ciano
+   acima da marca e sem a linha de atuação). Links: o texto clareia e recua 3px no hover e no foco, sem sublinhado.
+   Os perfis sociais só aparecem quando existe endereço confirmado (ver SocialProfiles). */
+export function Footer({ year }: FooterProps) {
+  const t = useMotionTokens();
+
   return (
     <footer className={styles.footer} data-surface="dark">
-      <div className={styles.main}>
+      <Stagger className={styles.main}>
         {FOOTER_COLUMNS.map((column) => (
-          <nav key={column.title} className={styles.column} aria-label={column.title}>
-            <h2 className={styles.title}>{column.title}</h2>
-            <ul className={styles.links}>
-              {column.links.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href}>{link.label}</Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <StaggerItem key={column.title}>
+            <nav className={styles.column} aria-label={column.title}>
+              <h2 className={styles.title}>{column.title}</h2>
+              <ul className={styles.links}>
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <TransitionLink href={link.href}>
+                      <span className={styles.linkLabel}>{link.label}</span>
+                    </TransitionLink>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </StaggerItem>
         ))}
 
-        <div className={styles.brand}>
-          <Image
-            src="/brand/logo/logo-empilhado-branco.png"
-            alt="Salete Brocca"
-            width={500}
-            height={324}
-            sizes="180px"
-            className={styles.logo}
-          />
-          <p className={styles.role}>{PROFILE_ROLE}</p>
-          {CONFIRMED_SOCIAL_LINKS.length > 0 && (
-            <ul className={styles.social} aria-label="Redes sociais">
-              {CONFIRMED_SOCIAL_LINKS.map((social) => (
-                <li key={social.network}>
-                  <Link href={social.href} aria-label={social.label} target="_blank" rel="noopener noreferrer">
-                    <SocialIcon network={social.network} />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
+        <StaggerItem className={styles.brand}>
+          <Reveal variant="fade" delay={t.duration.gentle}>
+            <Image
+              src="/brand/logo/logo-empilhado-branco.png"
+              alt="Salete Brocca"
+              width={500}
+              height={324}
+              sizes="128px"
+              className={styles.logo}
+            />
+          </Reveal>
+          <SocialProfiles />
+        </StaggerItem>
+      </Stagger>
+
       <div className={styles.bar}>
         <div className={styles.barInner}>
-          <p>{COPYRIGHT}</p>
-          <Link href="/privacidade" className={styles.legal}>
-            Política de privacidade
-          </Link>
+          <p>{copyrightLine(year)}</p>
+          <TransitionLink href={PRIVACY_LINK.href} className={styles.legal}>
+            {PRIVACY_LINK.label}
+          </TransitionLink>
+          <BackToTop />
         </div>
       </div>
     </footer>

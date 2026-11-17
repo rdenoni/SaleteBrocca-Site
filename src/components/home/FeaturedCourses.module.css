@@ -1,6 +1,9 @@
 .section {
-  padding-block: var(--space-24);
   background: var(--light-gray);
+}
+
+.top {
+  padding-block: var(--space-24);
 }
 
 .head {
@@ -16,8 +19,28 @@
   gap: var(--space-8);
 }
 
+/* Banda navy da trilha do curso (texto branco, ciano para destaque). */
+.trailBand {
+  /* Respiro em duas rodadas de +20% pedidas pelo cliente (≈320 → ≈385 → ≈455px), somando com o painel e a trilha
+     (CourseTrail.module.css): 64px em cima e em baixo. Continua bem menor que a tela inteira fixada de antes. */
+  padding-block: var(--space-16);
+  background: var(--navy);
+  color: var(--white);
+}
+
+.trailHead {
+  display: grid;
+  gap: var(--space-2);
+}
+
+/* Título de apoio, menor que o h2 da seção (34/42): a trilha é complemento do card do curso. */
+.trailTitle {
+  font: 800 24px/32px var(--font-sans);
+  color: var(--white);
+}
+
 @media (max-width: 767px) {
-  .section {
+  .top {
     padding-block: var(--space-16);
   }
 
@@ -28,5 +51,14 @@
   .title {
     font-size: 28px;
     line-height: 34px;
+  }
+
+  .trailTitle {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .trailBand {
+    padding-block: var(--space-12);
   }
 }

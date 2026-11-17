@@ -5,12 +5,19 @@
   min-height: 500px;
 }
 
+/* O fundo branco fica parado; só o conteúdo sobe. */
 .form {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--space-16) var(--page-gutter);
   background: var(--white);
+}
+
+.formInner {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .testimonial {
@@ -24,7 +31,8 @@
 
 @media (max-width: 1099px) {
   .section {
-    grid-template-columns: 1fr;
+    /* minmax(0, 1fr): a coluna nunca passa da tela (em 320px o conteúdo do formulário a empurrava para 352px). */
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .testimonial {

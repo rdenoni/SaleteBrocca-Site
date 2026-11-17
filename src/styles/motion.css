@@ -1,0 +1,46 @@
+/* Motion tokens em CSS — espelho de src/motion/tokens.ts para transições CSS puras
+   (hover de cor, foco, sublinhado). Mantenha os dois arquivos com os mesmos valores. */
+
+:root {
+  --motion-instant: 120ms;
+  --motion-quick: 200ms;
+  --motion-base: 320ms;
+  --motion-gentle: 560ms;
+  --motion-slow: 900ms;
+  --motion-story: 1400ms;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-stroke: cubic-bezier(0.7, 0, 0.2, 1);
+
+  --motion-distance-micro: 4px;
+  --motion-distance-small: 8px;
+  --motion-distance-base: 24px;
+  --motion-distance-section: 40px;
+}
+
+/* Movimento reduzido também vale para as transições CSS: só cor e opacidade, sem deslocamento. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-distance-micro: 0px;
+    --motion-distance-small: 0px;
+    --motion-distance-base: 0px;
+    --motion-distance-section: 0px;
+  }
+}
+
+/* Rede de segurança do movimento reduzido: nenhum bloco de entrada fica deslocado ou recortado,
+   mesmo antes da hidratação (o servidor renderiza o estado inicial do movimento completo).
+   Só a opacidade continua animando. */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    transform: none !important;
+    clip-path: none !important;
+  }
+}
+
+/* Foco levado ao conteúdo pela transição de página (tabindex -1): sem contorno no bloco inteiro. */
+#conteudo[tabindex="-1"]:focus {
+  outline: none;
+}

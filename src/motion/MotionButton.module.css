@@ -1,0 +1,180 @@
+/* Botão da marca com preenchimento que varre da esquerda no hover.
+   Cada variante só define variáveis; as inversões de superfície escura apenas trocam as variáveis. */
+.button {
+  --btn-bg: transparent;
+  --btn-text: var(--navy);
+  --btn-border: transparent;
+  --btn-fill: var(--navy);
+  --btn-fill-text: var(--white);
+  --btn-fill-border: var(--btn-fill);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 32px;
+  overflow: hidden;
+  border: 2px solid var(--btn-border);
+  border-radius: var(--radius-pill);
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  font: 700 15px/20px var(--font-sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--motion-base) var(--ease-out),
+    border-color var(--motion-base) var(--ease-out);
+}
+
+/* Camada de preenchimento: só transform (scaleX) com origem à esquerda. */
+.fill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--btn-fill);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--motion-base) var(--ease-out);
+  pointer-events: none;
+}
+
+.label {
+  position: relative;
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  transition: transform var(--motion-quick) var(--ease-out);
+}
+
+.icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ---------- Variantes ---------- */
+
+.primary {
+  --btn-bg: var(--blue-strong);
+  --btn-text: var(--white);
+  --btn-border: var(--blue-strong);
+  --btn-fill: var(--navy);
+  --btn-fill-text: var(--white);
+}
+
+.accent {
+  --btn-bg: var(--cyan);
+  --btn-text: var(--navy);
+  --btn-border: var(--cyan);
+  --btn-fill: var(--navy);
+  --btn-fill-text: var(--white);
+}
+
+/* Sobre navy/foto o hover navy engoliria o botão: o preenchimento vira branco. */
+:global([data-surface="dark"]) .accent,
+:global([data-surface="dark"]) .primary,
+:global([data-surface="photo"]) .accent,
+:global([data-surface="photo"]) .primary {
+  --btn-fill: var(--white);
+  --btn-fill-text: var(--navy);
+}
+
+.outline {
+  --btn-bg: transparent;
+  --btn-text: var(--navy);
+  --btn-border: var(--navy);
+  --btn-fill: var(--navy);
+  --btn-fill-text: var(--white);
+}
+
+.ghost {
+  --btn-bg: transparent;
+  --btn-text: var(--white);
+  --btn-border: var(--white);
+  --btn-fill: var(--white);
+  --btn-fill-text: var(--navy);
+}
+
+.sm {
+  min-height: 44px;
+  padding: 10px 20px;
+  font-size: 13px;
+}
+
+/* ---------- Estados ---------- */
+
+@media (hover: hover) {
+  .button:hover {
+    color: var(--btn-fill-text);
+    border-color: var(--btn-fill-border);
+  }
+
+  .button:hover .fill {
+    transform: scaleX(1);
+  }
+
+  .button:hover .icon {
+    transform: translateX(var(--motion-distance-micro));
+  }
+}
+
+/* Teclado ganha o mesmo preenchimento; o anel de foco global continua intacto. */
+.button:focus-visible {
+  color: var(--btn-fill-text);
+  border-color: var(--btn-fill-border);
+}
+
+.button:focus-visible .fill {
+  transform: scaleX(1);
+}
+
+.button:focus-visible .icon {
+  transform: translateX(var(--motion-distance-micro));
+}
+
+.button:disabled,
+.button[aria-disabled="true"] {
+  --btn-bg: var(--light-gray);
+  --btn-text: var(--text-muted);
+  --btn-border: var(--light-gray);
+  cursor: not-allowed;
+}
+
+.button:disabled .fill,
+.button[aria-disabled="true"] .fill {
+  display: none;
+}
+
+.button:disabled:hover,
+.button[aria-disabled="true"]:hover {
+  color: var(--btn-text);
+  border-color: var(--btn-border);
+}
+
+/* ---------- Movimento reduzido: só a cor muda, a camada apenas aparece ---------- */
+
+.button[data-reduced] .fill {
+  transform: none;
+  opacity: 0;
+  transition: opacity var(--motion-quick) var(--ease-out);
+}
+
+.button[data-reduced]:hover .fill,
+.button[data-reduced]:focus-visible .fill {
+  transform: none;
+  opacity: 1;
+}
+
+.button[data-reduced] .icon,
+.button[data-reduced]:hover .icon,
+.button[data-reduced]:focus-visible .icon {
+  transform: none;
+}

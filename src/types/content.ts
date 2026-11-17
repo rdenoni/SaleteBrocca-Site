@@ -176,7 +176,24 @@ export interface ContactChannel {
   href: string | null;
 }
 
-export type SocialNetwork = "instagram" | "linkedin" | "whatsapp";
+export interface FaqLink {
+  href: string;
+  label: string;
+}
+
+/** Pergunta frequente. A resposta é montada a partir de dados confirmados (curso, perfil); nada é inventado. */
+export interface FaqItem {
+  /** Âncora estável (#duvida-<id>) e chave de lista. */
+  id: string;
+  question: string;
+  /** Parágrafos da resposta. */
+  answer: readonly string[];
+  /** Lista opcional depois dos parágrafos (ex.: o que se aprende, módulos). */
+  list?: readonly string[];
+  link?: FaqLink;
+}
+
+export type SocialNetwork = "instagram" | "facebook" | "linkedin" | "whatsapp";
 
 export interface SocialLink {
   network: SocialNetwork;

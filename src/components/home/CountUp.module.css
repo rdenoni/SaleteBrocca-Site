@@ -1,0 +1,6 @@
+/* Largura fixa do número final: o texto ao lado não anda enquanto conta. */
+.digits {
+  display: inline-block;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

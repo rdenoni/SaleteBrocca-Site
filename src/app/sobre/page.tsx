@@ -61,7 +61,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section id="historia" className={`${styles.anchor} ${styles.history}`} aria-labelledby="historia-titulo">
+      <section id="historia" className={`${styles.history}`} aria-labelledby="historia-titulo">
         <div className={`container ${styles.historyGrid}`}>
           <header>
             <h2 id="historia-titulo" className={`${styles.heading} ${styles.historyHeading}`}>
@@ -76,7 +76,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section id="formacao" className={`${styles.anchor} ${styles.formation}`} aria-labelledby="formacao-titulo">
+      <section id="formacao" className={`${styles.formation}`} aria-labelledby="formacao-titulo">
         <div className="container">
           <h2 id="formacao-titulo" className={styles.heading}>
             Formação acadêmica
@@ -85,7 +85,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section id="atuacao" className={`${styles.anchor} ${styles.activities}`} aria-labelledby="atuacao-titulo">
+      <section id="atuacao" className={`${styles.activities}`} aria-labelledby="atuacao-titulo">
         <div className="container">
           <h2 id="atuacao-titulo" className={styles.heading}>
             Onde atua hoje

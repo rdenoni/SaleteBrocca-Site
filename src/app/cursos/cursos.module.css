@@ -25,8 +25,35 @@
   gap: var(--space-8);
 }
 
+/* Dúvidas frequentes: fundo branco depois do catálogo cinza-claro. Título estreito à esquerda, perguntas à direita. */
+.faq {
+  padding-block: var(--space-24);
+  background: var(--white);
+}
+
+.faqLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: var(--space-12);
+  align-items: start;
+}
+
+.faqHead {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+}
+
+@media (max-width: 1099px) {
+  .faqLayout {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+}
+
 @media (max-width: 767px) {
-  .section {
+  .section,
+  .faq {
     padding-block: var(--space-16);
   }
 

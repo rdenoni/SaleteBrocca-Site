@@ -12,6 +12,7 @@ const TESTIMONIALS: readonly Testimonial[] = [
   },
 ];
 
-export function getFeaturedTestimonial(): Testimonial {
-  return TESTIMONIALS[0];
+/* Todos os depoimentos reais, o destaque sempre primeiro. Hoje há só um; a Home trata 1 ou mais. */
+export function getTestimonials(): readonly Testimonial[] {
+  return TESTIMONIALS;
 }

@@ -2,9 +2,13 @@ import type { Metadata, Viewport } from "next";
 import { Martel, Noto_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 import "@/styles/globals.css";
+import "@/styles/motion.css";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/content/site";
+import { MotionProvider } from "@/motion/MotionProvider";
+import { NOSCRIPT_REVEAL_CSS } from "@/motion/noscript";
+import { PageTransitionProvider } from "@/motion/transitions/PageTransitionProvider";
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
@@ -47,16 +51,26 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+  /* Ano no servidor, passado como prop: o rodapé (componente de cliente) não calcula a data e a hidratação bate. */
+  const year = new Date().getFullYear();
   return (
     /* data-scroll-behavior: rolagem suave só nas âncoras, não ao trocar de página. */
     <html lang="pt-BR" className={`${notoSans.variable} ${martel.variable}`} data-scroll-behavior="smooth">
       <body>
-        <a className="skip-link" href="#conteudo">
-          Pular para o conteúdo
-        </a>
-        <Header />
-        <main id="conteudo">{children}</main>
-        <Footer />
+        {/* Sem JavaScript, nada fica escondido no estado inicial das animações. */}
+        <noscript>
+          <style>{NOSCRIPT_REVEAL_CSS}</style>
+        </noscript>
+        <MotionProvider>
+          <PageTransitionProvider>
+            <a className="skip-link" href="#conteudo">
+              Pular para o conteúdo
+            </a>
+            <Header />
+            <main id="conteudo">{children}</main>
+            <Footer year={year} />
+          </PageTransitionProvider>
+        </MotionProvider>
       </body>
     </html>
   );

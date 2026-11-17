@@ -14,6 +14,16 @@ html {
   accent-color: var(--blue-strong);
   /* Barra de rolagem: polegar navy sobre trilho cinza claro (tokens da marca). */
   scrollbar-color: var(--navy) var(--light-gray);
+  /* Âncoras, scrollIntoView e foco por rolagem nunca ficam sob o cabeçalho fixo (Header.module.css: pílula a 16px do
+     topo, 128px de altura) mais um respiro. Fica só aqui: scroll-margin nas seções somaria e dobraria o recuo. */
+  scroll-padding-top: calc(16px + var(--header-height) + var(--space-6));
+}
+
+@media (max-width: 1099px) {
+  html {
+    /* Pílula compacta: 8px do topo e 72px de altura. */
+    scroll-padding-top: calc(var(--space-2) + var(--header-height-compact) + var(--space-6));
+  }
 }
 
 /* Seleção de texto com a marca: fundo ciano, texto navy (regra de contraste sobre ciano). */
@@ -101,6 +111,13 @@ select {
 /* Sobre foto azul (Hero, PageBanner) o ciano chega a ~3:1 nos realces: anel branco. */
 [data-surface="photo"] :focus-visible {
   outline-color: var(--white);
+}
+
+/* Seção que recebeu foco por script ao chegar de outra página numa âncora (PageTransitionProvider): sem contorno
+   no bloco inteiro. Vale só para o próprio elemento; os controles dentro dela mantêm o anel de foco normal. */
+[data-anchor-target]:focus,
+[data-anchor-target]:focus-visible {
+  outline: none;
 }
 
 /* ---------- Utilitários ---------- */

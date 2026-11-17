@@ -112,6 +112,21 @@
   padding: var(--space-6);
   border-radius: var(--radius-md);
   background: var(--light-blue);
+  transition:
+    top var(--motion-base) var(--ease-out),
+    max-height var(--motion-base) var(--ease-out);
+}
+
+/* Cabeçalho fixo visível (16px do topo + altura): a lateral desce junto e a altura máxima encolhe na mesma medida. */
+:global(html[data-header-pin="shown"]) .sidebar {
+  top: calc(16px + var(--header-height) + var(--space-6));
+  max-height: calc(100vh - 16px - var(--header-height) - var(--space-12));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar {
+    transition: none;
+  }
 }
 
 .sidebarTitle {

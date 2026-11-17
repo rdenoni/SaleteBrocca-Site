@@ -1,0 +1,256 @@
+/* Card editorial do site (foto arredondada + painel de título + "Ler artigo"), com micro-movimento no hover.
+   A entrada é feita por quem usa (StaggerItem variant="mask") ou pela prop `entrance` (modos "time" e "scroll"). */
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56% 1fr;
+  grid-template-rows: 1fr auto;
+  height: 100%;
+  min-height: 520px;
+  padding: 44px 24px 32px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--light-blue);
+  color: var(--navy);
+}
+
+.card[data-tone="blue"] {
+  background: var(--blue);
+}
+
+/* Modo "scroll": o fundo do card passa a ser este bloco, que varre da esquerda por scaleX (sem clip-path).
+   A raiz fica transparente; sem JavaScript o noscript zera o transform e o bloco cobre o card. */
+.card[data-entrance="scroll"] {
+  background: transparent;
+}
+
+.block {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: var(--light-blue);
+  transform-origin: left center;
+}
+
+.card[data-tone="blue"] .block {
+  background: var(--blue);
+}
+
+.letter {
+  position: absolute;
+  top: -72px;
+  left: 28px;
+  z-index: -1;
+  font: 800 420px/1 var(--font-sans);
+  color: var(--cyan);
+  opacity: 0.26;
+  user-select: none;
+  pointer-events: none;
+}
+
+.photo {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 360px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+
+/* Camada da foto (recebe a escala de entrada quando o card usa `entrance`). */
+.photoImage {
+  position: absolute;
+  inset: 0;
+}
+
+.letterInner {
+  display: block;
+}
+
+/* Zoom 1 → 1,04 dentro da moldura arredondada. */
+.photo img {
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform var(--motion-gentle) var(--ease-out);
+}
+
+/* Wrapper da entrada (x + opacidade no modo "scroll"): leva a posição na grade e as margens; o .panel dentro
+   leva o visual e o hover, para os dois transforms não disputarem o mesmo elemento. */
+.panelEnter {
+  grid-column: 1 / 3;
+  grid-row: 1;
+  align-self: end;
+  margin: 0 -24px 36px 26%;
+}
+
+.panel {
+  padding: 20px 24px 20px 22px;
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  background: color-mix(in srgb, var(--white) 82%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition: transform var(--motion-base) var(--ease-out);
+}
+
+.card[data-tone="blue"] .panel {
+  background: color-mix(in srgb, var(--light-gray) 90%, transparent);
+}
+
+.title {
+  font: 400 24px/30px var(--font-sans);
+  color: var(--navy);
+  text-wrap: pretty;
+}
+
+.title strong {
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 4px;
+  text-underline-offset: 6px;
+  transition: text-decoration-color var(--motion-quick) var(--ease-out);
+}
+
+.link {
+  text-decoration: none;
+}
+
+/* O card inteiro é clicável (link esticado). */
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.card:has(.link:focus-visible) {
+  outline: 3px solid var(--blue-strong);
+  outline-offset: -8px;
+}
+
+.card[data-tone="blue"]:has(.link:focus-visible) {
+  outline-color: var(--white);
+}
+
+/* "Ler artigo" é só aparência: o link do título já cobre o destino (sem parada dupla no teclado). */
+.more {
+  grid-column: 1 / 3;
+  grid-row: 2;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: var(--space-4);
+  font: 800 19px/24px var(--font-sans);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--blue-strong);
+}
+
+.card[data-tone="blue"] .more {
+  color: var(--white);
+}
+
+.arrow {
+  display: inline-flex;
+  transition: transform var(--motion-quick) var(--ease-out);
+}
+
+.arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (hover: hover) {
+  .card:hover .photo img {
+    transform: scale(1.04);
+  }
+
+  .card:hover .panel {
+    transform: translateY(calc(-1 * var(--motion-distance-small)));
+  }
+
+  .card:hover .arrow {
+    transform: translateX(var(--motion-distance-micro));
+  }
+
+  .card:hover .title strong {
+    text-decoration-color: var(--cyan);
+  }
+}
+
+.card:has(.link:focus-visible) .photo img {
+  transform: scale(1.04);
+}
+
+.card:has(.link:focus-visible) .panel {
+  transform: translateY(calc(-1 * var(--motion-distance-small)));
+}
+
+.card:has(.link:focus-visible) .arrow {
+  transform: translateX(var(--motion-distance-micro));
+}
+
+.card:has(.link:focus-visible) .title strong {
+  text-decoration-color: var(--cyan);
+}
+
+/* Movimento reduzido: nada se move nem aproxima; fica o sublinhado ciano como retorno. */
+.card[data-reduced] .photo img,
+.card[data-reduced] .panel,
+.card[data-reduced] .arrow {
+  transform: none !important;
+}
+
+@media (max-width: 1099px) {
+  .card {
+    grid-template-columns: 48% 1fr;
+    min-height: 460px;
+    padding: 40px var(--page-gutter) 28px;
+  }
+
+  .photo {
+    min-height: 340px;
+  }
+
+  .panelEnter {
+    margin-left: 30%;
+    margin-right: calc(-1 * var(--page-gutter));
+  }
+
+  .panel {
+    padding-right: var(--page-gutter);
+  }
+}
+
+@media (max-width: 767px) {
+  .card {
+    grid-template-columns: 58% 1fr;
+    min-height: 440px;
+  }
+
+  .letter {
+    font-size: 340px;
+  }
+
+  .photo {
+    min-height: 320px;
+  }
+
+  .panelEnter {
+    margin: 0 calc(-1 * var(--page-gutter)) 28px 26%;
+  }
+
+  .panel {
+    padding: 16px var(--page-gutter) 16px 20px;
+  }
+
+  .title {
+    font-size: 21px;
+    line-height: 27px;
+  }
+}

@@ -59,10 +59,12 @@ test.describe("Cursos — página do curso", () => {
   });
 
   test("seis módulos com 21 aulas no acordeão", async ({ page }) => {
-    const modules = page.locator("details");
+    /* Só o acordeão dos módulos: as dúvidas frequentes, mais abaixo, também usam <details>. */
+    const moduleSection = page.locator("section[aria-labelledby='conteudo-curso']");
+    const modules = moduleSection.locator("details");
     await expect(modules).toHaveCount(6);
     await expect(modules.first()).toHaveAttribute("open", "");
-    const lessons = await page.locator("details ol li").count();
+    const lessons = await moduleSection.locator("details ol li").count();
     expect(lessons).toBe(21);
 
     const second = modules.nth(1);

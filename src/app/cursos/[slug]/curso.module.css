@@ -47,6 +47,18 @@
   position: sticky;
   top: var(--space-8);
   margin-top: -160px;
+  transition: top var(--motion-base) var(--ease-out);
+}
+
+/* Cabeçalho fixo visível (16px do topo + altura): o bloco desce junto, mantendo o mesmo respiro. */
+:global(html[data-header-pin="shown"]) .aside {
+  top: calc(16px + var(--header-height) + var(--space-8));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aside {
+    transition: none;
+  }
 }
 
 .heading {

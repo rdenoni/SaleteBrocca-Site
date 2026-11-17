@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { CourseCard } from "@/components/courses/CourseCard";
 import { PageBanner } from "@/components/layout/PageBanner";
+import { FaqList } from "@/components/ui/FaqList";
 import { getCourses } from "@/lib/content/courses";
+import { FAQ_SECTION_ID, FAQ_TITLE, getCourseFaq } from "@/lib/content/faq";
 import styles from "./cursos.module.css";
 
 export const metadata: Metadata = {
@@ -13,6 +15,7 @@ export const metadata: Metadata = {
 /* Catálogo: só cursos reais. Filtros entram quando houver mais de um curso. */
 export default function CoursesPage() {
   const courses = getCourses();
+  const faqCourse = courses.length === 1 ? courses[0] : undefined;
   return (
     <>
       <PageBanner
@@ -38,6 +41,20 @@ export default function CoursesPage() {
           </div>
         </div>
       </section>
+      {/* Um curso só, por enquanto: as dúvidas completas dele ficam aqui (a Home mostra um recorte e aponta para cá). */}
+      {faqCourse && (
+        <section id={FAQ_SECTION_ID} className={styles.faq} aria-labelledby="duvidas-titulo">
+          <div className={`container ${styles.faqLayout}`}>
+            <header className={styles.faqHead}>
+              <h2 id="duvidas-titulo" className={styles.title}>
+                {FAQ_TITLE}
+              </h2>
+              <span className="rule" aria-hidden="true" />
+            </header>
+            <FaqList items={getCourseFaq(faqCourse)} />
+          </div>
+        </section>
+      )}
     </>
   );
 }

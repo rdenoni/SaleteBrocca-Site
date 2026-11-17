@@ -51,11 +51,19 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
   },
 ];
 
-/* Perfis oficiais ainda não confirmados pela cliente (href null): o rodapé só mostra a rede quando houver href. */
+/* Perfis oficiais ainda não confirmados pela cliente (href null): o rodapé só mostra a rede quando houver href.
+   Nunca inventar endereço: preencher só com o que a cliente confirmar. */
 export const SOCIAL_LINKS: readonly SocialLink[] = [
   { network: "instagram", label: "Instagram", href: null },
+  { network: "facebook", label: "Facebook", href: null },
   { network: "linkedin", label: "LinkedIn", href: null },
   { network: "whatsapp", label: "WhatsApp", href: null },
 ];
 
-export const COPYRIGHT = `© ${new Date().getFullYear()} SaleteBrocca – Fonoaudiologia e curso online`;
+export const PRIVACY_LINK: NavItem = { label: "Política de privacidade", href: "/privacidade" };
+
+/* O ano vem do servidor (layout) como prop: um `new Date()` no módulo do cliente congelaria o ano do build
+   e poderia divergir entre servidor e navegador na hidratação. */
+export function copyrightLine(year: number): string {
+  return `© ${year} SaleteBrocca – Fonoaudiologia e curso online`;
+}

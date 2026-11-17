@@ -1,0 +1,178 @@
+/* CourseCard do site. A sombra de hover fica numa camada (::after) que só muda de opacidade;
+   o card sobe com transform (Motion). */
+.shell {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+
+.shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: var(--shadow-card-hover);
+  opacity: 0;
+  transition: opacity var(--motion-quick) var(--ease-out);
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .shell:hover::after {
+    opacity: 1;
+  }
+}
+
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--white);
+}
+
+/* Cobre o card inteiro para o clique do mouse; o conteúdo fica por cima dele. */
+.cardLink {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* Foto fundida ao azul da marca (multiply). A mistura fica na camada que assenta (como no Hero):
+   .media isola o contexto e a camada mistura contra o azul dela. */
+.media {
+  position: relative;
+  min-height: 360px;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* Unidade que aproxima: o azul (fundo) e a foto multiplicada escalam juntos; .media recorta. */
+.zoom {
+  position: absolute;
+  inset: 0;
+  background: var(--blue);
+  transform: scale(1);
+  transition: transform var(--motion-gentle) var(--ease-out);
+}
+
+.imageLayer {
+  position: absolute;
+  inset: 0;
+  filter: grayscale(1) contrast(1.05);
+  mix-blend-mode: multiply;
+}
+
+.image {
+  object-fit: cover;
+}
+
+@media (hover: hover) {
+  .shell:hover .zoom {
+    transform: scale(1.04);
+  }
+}
+
+.shell:has(a:focus-visible) .zoom {
+  transform: scale(1.04);
+}
+
+.shell[data-reduced] .zoom {
+  transform: none !important;
+}
+
+.badge {
+  position: absolute;
+  left: var(--space-6);
+  top: var(--space-6);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+  color: var(--navy);
+  font: 700 12px/16px var(--font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* O corpo fica acima do link do card; só o botão captura o clique. */
+.body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-12);
+  pointer-events: none;
+}
+
+.body a,
+.body button {
+  pointer-events: auto;
+}
+
+.title {
+  font: 800 30px/36px var(--font-sans);
+  color: var(--navy);
+}
+
+.text {
+  color: var(--charcoal);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 700 15px/20px var(--font-sans);
+}
+
+.meta li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.icon {
+  display: inline-flex;
+}
+
+.icon svg {
+  width: 18px;
+  height: 18px;
+  color: var(--blue-strong);
+}
+
+.action {
+  align-self: flex-start;
+  margin-top: var(--space-4);
+}
+
+.shell:has(.action a:focus-visible) {
+  outline: 3px solid var(--blue-strong);
+  outline-offset: 4px;
+}
+
+@media (max-width: 767px) {
+  .card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .media {
+    min-height: 220px;
+  }
+
+  .body {
+    padding: var(--space-6);
+  }
+
+  .title {
+    font-size: 24px;
+    line-height: 30px;
+  }
+}

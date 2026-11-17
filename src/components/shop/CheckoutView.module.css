@@ -127,6 +127,18 @@
   border-radius: var(--radius-md);
   background: var(--navy);
   color: var(--white);
+  transition: top var(--motion-base) var(--ease-out);
+}
+
+/* Cabeçalho fixo visível (16px do topo + altura): o resumo desce junto, mantendo o mesmo respiro. */
+:global(html[data-header-pin="shown"]) .summary {
+  top: calc(16px + var(--header-height) + var(--space-8));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .summary {
+    transition: none;
+  }
 }
 
 .summaryHeading {

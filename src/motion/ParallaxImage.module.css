@@ -1,0 +1,24 @@
+.frame {
+  position: relative;
+  overflow: hidden;
+  /* Safari: sem isso a camada em transform vaza do raio. */
+  isolation: isolate;
+  background: var(--light-gray);
+}
+
+.rounded {
+  border-radius: var(--radius-lg);
+}
+
+/* Camada móvel: mais alta que a moldura (top/bottom negativos definidos em linha pela força),
+   então nunca aparece borda vazia. O will-change entra só enquanto a moldura atravessa a tela
+   (useScrollWillChange em ParallaxImage.tsx). */
+.layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.image {
+  object-fit: cover;
+}

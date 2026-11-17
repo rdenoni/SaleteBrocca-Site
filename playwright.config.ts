@@ -8,6 +8,9 @@ const PORT = 3100;
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
+  /* Fixo em 6: com o padrão (metade dos núcleos = 12 aqui) o Edge deixa de pintar quadros sob carga e os testes de
+     animação e navegação travam (cliques sem efeito, timeouts de 30s). Com 6 a suíte é estável. */
+  workers: 6,
   reporter: [["list"]],
   use: {
     baseURL: `http://localhost:${PORT}`,

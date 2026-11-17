@@ -1,0 +1,282 @@
+/* Depoimento da Home do site (Testimonial.module.css) sobre navy: aspas azuis translúcidas, texto em serifa e autora.
+   O recorte da máscara fica só no texto: as aspas ficam fora da caixa dele e não podem ser cortadas. */
+.root {
+  width: 100%;
+  max-width: 540px;
+}
+
+/* Palco em grade de uma célula: o depoimento visível e as cópias invisíveis (.ghost) dividem a mesma célula,
+   então a altura é sempre a do maior depoimento e nada pula na troca. */
+.stage {
+  display: grid;
+  width: 100%;
+}
+
+.slide,
+.ghost {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.slide {
+  width: 100%;
+}
+
+/* Arrastável na horizontal: a rolagem vertical da página continua livre (touch-action: pan-y vem do drag="x"). */
+.slide[data-swipe] {
+  cursor: grab;
+}
+
+.slide[data-swipe]:active {
+  cursor: grabbing;
+}
+
+.ghost {
+  visibility: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* A região do carrossel recebe foco para as setas ← → do teclado. */
+.root:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 12px;
+  border-radius: var(--radius-sm);
+}
+
+.figure {
+  width: 100%;
+}
+
+.quoteWrap {
+  position: relative;
+}
+
+.quoteMask {
+  position: relative;
+  z-index: 1;
+}
+
+.quote {
+  text-align: center;
+  font: 300 24px/40px var(--font-serif);
+}
+
+.markOpen,
+.markClose {
+  position: absolute;
+  z-index: 0;
+  font: 800 150px/1 var(--font-sans);
+  color: var(--blue);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Aspas grandes da referência, em azul translúcido: a opacidade fica no glifo, não no elemento animado. */
+.glyph {
+  display: block;
+  opacity: 0.55;
+}
+
+.markOpen {
+  left: -36px;
+  top: -40px;
+}
+
+.markClose {
+  right: -28px;
+  bottom: -104px;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  margin-top: var(--space-12);
+  text-align: left;
+}
+
+/* O anel ciano fica fora do recorte circular da foto (o recorte cortaria a sombra). */
+.ring {
+  flex: none;
+  display: block;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 0 3px var(--cyan);
+}
+
+.photoClip {
+  display: block;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-pill);
+}
+
+.photo {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-pill);
+  object-fit: cover;
+}
+
+.who {
+  display: block;
+}
+
+.name {
+  display: block;
+  font: 700 15px/20px var(--font-sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.role {
+  display: block;
+  margin-top: 2px;
+  font: 400 14px/20px var(--font-sans);
+  color: var(--on-navy-muted);
+}
+
+/* ---------- Controles (só com mais de um depoimento) ---------- */
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+/* Contrapeso do botão de pausa (48px + gap) à direita: as bolinhas ficam no centro exato da coluna.
+   Só a partir de 480px: em telas estreitas os 4 alvos de 48px + pausa já ocupam quase toda a largura. */
+@media (min-width: 480px) {
+  .controls {
+    padding-left: calc(48px + var(--space-4));
+  }
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+}
+
+/* A área de toque tem 48px; o ponto visível é menor. */
+.dot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dot::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--on-navy-muted);
+  transition: background-color var(--motion-quick) var(--ease-out);
+}
+
+.dot:hover::before {
+  background: var(--white);
+}
+
+.dotActive {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+}
+
+/* Preenchimento do tempo no ponto ativo: barra fina sob o ponto, só scaleX. Pausa junto com o relógio.
+   Em movimento reduzido fica invisível, mas segue rodando: é ela que dispara a troca. */
+.progress {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  width: 24px;
+  height: 3px;
+  margin-left: -12px;
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+  transform-origin: left center;
+  animation: progress-fill linear forwards;
+}
+
+.progress[data-paused] {
+  animation-play-state: paused;
+}
+
+.progress[data-reduced] {
+  opacity: 0;
+}
+
+@keyframes progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Pausa discreta: ícone pequeno, área de toque de 48px. */
+.pause {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--on-navy-muted);
+  cursor: pointer;
+}
+
+.pause svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pause:hover,
+.pause:focus-visible {
+  color: var(--white);
+}
+
+.pause:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: -4px;
+  border-radius: var(--radius-pill);
+}
+
+@media (max-width: 767px) {
+  .quote {
+    font-size: 20px;
+    line-height: 34px;
+  }
+
+  .markOpen,
+  .markClose {
+    font-size: 110px;
+  }
+
+  .markOpen {
+    left: -8px;
+    top: -56px;
+  }
+
+  .markClose {
+    right: -4px;
+    bottom: -84px;
+  }
+}

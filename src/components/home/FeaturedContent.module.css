@@ -23,7 +23,12 @@
   grid-template-columns: repeat(3, 1fr);
 }
 
-/* Some quando ARTICLES_ARE_EXAMPLES virar false. */
+/* Cada item estica até a altura da linha para o card preencher o bloco. */
+.item {
+  height: 100%;
+}
+
+/* Some quando os artigos deixarem de ser exemplos. */
 .note {
   display: flex;
   align-items: center;

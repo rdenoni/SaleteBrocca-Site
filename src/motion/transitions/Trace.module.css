@@ -1,0 +1,22 @@
+/* "Traço": a régua ciano da marca corre pelo topo da tela enquanto o conteúdo troca. Nunca cobre a tela.
+   Só transform e opacity são animados (pelo Motion, em Trace.tsx). Ocioso = invisível. */
+
+.line {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90; /* acima do cabeçalho (50) abaixo do link de pular (100) */
+  width: 100%;
+  height: 3px;
+  background: var(--cyan);
+  transform: scaleX(0);
+  transform-origin: left center;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.line[data-state="drawing"],
+.line[data-state="finishing"] {
+  visibility: visible;
+  will-change: transform, opacity;
+}

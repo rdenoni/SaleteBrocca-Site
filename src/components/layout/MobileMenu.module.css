@@ -1,3 +1,6 @@
+/* Menu móvel: mesmo visual do site (MobileMenu.module.css). O painel navy é a camada .sheet, que o Motion
+   revela com clip-path; o <dialog> em si é só o contêiner transparente em tela cheia. */
+
 .trigger {
   display: none;
   width: 48px;
@@ -9,11 +12,6 @@
   background: var(--white);
   color: var(--navy);
   cursor: pointer;
-}
-
-.trigger svg {
-  width: 22px;
-  height: 22px;
 }
 
 @media (max-width: 1099px) {
@@ -28,18 +26,15 @@
   height: 100%;
   max-height: none;
   margin: 0;
-  padding: var(--space-4) var(--page-gutter) var(--space-12);
+  padding: 0;
   border: 0;
-  background: var(--navy);
+  background: transparent;
   color: var(--white);
-  flex-direction: column;
-  gap: var(--space-12);
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  overflow: hidden;
 }
 
 .panel[open] {
-  display: flex;
+  display: block;
 }
 
 /* Trava a rolagem da página enquanto o menu está aberto. */
@@ -47,8 +42,20 @@
   overflow: hidden;
 }
 
+/* O painel cobre tudo: sem película extra por baixo. */
 .panel::backdrop {
-  background: color-mix(in srgb, var(--navy) 60%, transparent);
+  background: transparent;
+}
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  height: 100%;
+  padding: var(--space-4) var(--page-gutter) var(--space-12);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--navy);
 }
 
 .top {
@@ -77,11 +84,6 @@
   cursor: pointer;
 }
 
-.close svg {
-  width: 24px;
-  height: 24px;
-}
-
 .list {
   display: grid;
   gap: var(--space-2);
@@ -97,20 +99,25 @@
   font: 700 26px/34px var(--font-sans);
   color: var(--white);
   text-decoration: none;
+  transition: color var(--motion-quick) var(--ease-out);
 }
 
 .link:hover {
   color: var(--cyan);
 }
 
+/* Página atual: pílula ciano com texto navy (contraste do sistema). */
 .link[aria-current="page"] {
   background: var(--cyan);
   color: var(--navy);
 }
 
+.studentWrap {
+  display: flex;
+}
+
 .student {
   display: inline-flex;
-  align-self: flex-start;
   align-items: center;
   gap: 10px;
   min-height: 52px;

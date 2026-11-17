@@ -1,0 +1,12 @@
+/* Barra fina de leitura. Decorativa (aria-hidden), fixa no topo, acima do cabeçalho. */
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  height: 4px;
+  background: var(--cyan);
+  transform-origin: left center;
+  pointer-events: none;
+}
