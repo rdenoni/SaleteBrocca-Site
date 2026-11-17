@@ -41,7 +41,8 @@ test.describe("Área do Aluno — login", () => {
     await page.getByLabel("Mostrar senha").check();
     await expect(page.getByLabel("Senha", { exact: true })).toHaveAttribute("type", "text");
     await page.getByRole("button", { name: "Entrar" }).click();
-    await expect(page.getByRole("status")).toContainText("O login ainda não está ativo.");
+    /* No conteúdo: o rodapé também tem uma região de status (aviso dos perfis sociais em confirmação). */
+    await expect(page.getByRole("main").getByRole("status")).toContainText("O login ainda não está ativo.");
   });
 
   test("sem rolagem horizontal", async ({ page }) => {

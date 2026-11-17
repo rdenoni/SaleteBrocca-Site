@@ -80,7 +80,12 @@ export interface Testimonial {
   quote: string;
   author: string;
   role: string;
-  photo: string;
+  /** Foto real da pessoa. Sem foto, o avatar usa `initials`. */
+  photo?: string;
+  initials?: string;
+  avatarTone?: "cyan" | "light";
+  /** Depoimento de exemplo (não é real): ganha a etiqueta "Depoimento simulado" na interface. */
+  simulated?: boolean;
 }
 
 export interface FormationItem {

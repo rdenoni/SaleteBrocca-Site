@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 import { getFeaturedArticles } from "../src/lib/content/articles";
 import { getCourses } from "../src/lib/content/courses";
 import { PROFILE_QUOTE } from "../src/lib/content/profile";
@@ -189,26 +189,135 @@ test.describe("Home", () => {
     await expect(page.getByRole("region", { name: "Os 6 módulos do curso" }).getByRole("listitem")).toHaveCount(6);
   });
 
-  test("um único depoimento real: citação sem carrossel nem controles", async ({ page }) => {
+  test("os dados têm 4 depoimentos: o real primeiro e sem marca, os 3 seguintes simulados", () => {
+    const [real, ...others] = getTestimonials();
+    expect(getTestimonials()).toHaveLength(4);
+    expect(real.author).toBe("Daniele Schlichting Fusinato");
+    expect(real.simulated).toBeFalsy();
+    expect(real.photo).toBeTruthy();
+    expect(others).toHaveLength(3);
+    for (const item of others) {
+      expect(item.simulated).toBe(true);
+      expect(item.author).toMatch(/\(simulad[oa]\)/);
+      expect(item.photo).toBeUndefined();
+      expect(item.initials).toBeTruthy();
+    }
+  });
+
+  /* O carrossel troca sozinho a cada 10 s: o ponteiro sobre ele pausa a troca (sem ser a pausa do usuário, então
+     aria-live segue "off"). Com `reset`, volta ao 1º depoimento se a troca já tiver acontecido. */
+  async function openCarousel(page: Page, { reset = true }: { reset?: boolean } = {}) {
+    const carousel = page.getByRole("region", { name: "Depoimentos", exact: true });
+    await carousel.scrollIntoViewIfNeeded();
+    await expect(carousel).toHaveAttribute("aria-roledescription", "carrossel");
+    await carousel.hover();
+    if (reset && (await carousel.getByRole("group", { name: "1 de 4" }).count()) === 0) {
+      await carousel.getByRole("button", { name: "Ir para o depoimento 1 de 4" }).click();
+    }
+    return carousel;
+  }
+  const dot = (carousel: Locator, position: number) =>
+    carousel.getByRole("button", { name: `Ir para o depoimento ${position} de 4` });
+
+  test("carrossel de 4 depoimentos: o real vem primeiro, sem etiqueta, e há 4 pontos", async ({ page }) => {
     const [real] = getTestimonials();
-    expect(getTestimonials()).toHaveLength(1);
+    const carousel = await openCarousel(page);
+    const slide = carousel.getByRole("group", { name: "1 de 4" });
+    await expect(slide).toHaveAttribute("aria-roledescription", "slide");
+    await expect(slide.locator("blockquote")).toContainText(real.quote);
+    await expect(slide).toContainText(real.author);
+    await expect(slide).toContainText(real.role);
+    await expect(slide.getByText("Depoimento simulado")).toHaveCount(0);
+    await expect(slide.getByText(/simulad/i)).toHaveCount(0);
+    await expect(carousel.getByRole("button", { name: /Ir para o depoimento \d de 4/ })).toHaveCount(4);
+    await expect(carousel.getByText("Depoimentos 2 a 4 são simulados para demonstrar a troca.")).toBeVisible();
+  });
 
-    const column = page.locator('#avaliacao [data-surface="dark"]');
-    await expect(column.locator("figure")).toHaveCount(1);
-    await expect(column.locator("blockquote")).toContainText(real.quote);
-    await expect(column).toContainText(real.author);
-    await expect(column).toContainText(real.role);
+  test("os depoimentos 2 a 4 mostram a etiqueta 'Depoimento simulado' e o nome marcado", async ({ page }) => {
+    const [, ...simulated] = getTestimonials();
+    const carousel = await openCarousel(page);
+    for (const [offset, item] of simulated.entries()) {
+      const position = offset + 2;
+      await dot(carousel, position).click();
+      const slide = carousel.getByRole("group", { name: `${position} de 4` });
+      await expect(slide).toBeVisible();
+      await expect(slide.locator("blockquote")).toContainText(item.quote);
+      await expect(slide.getByText("Depoimento simulado", { exact: true })).toBeVisible();
+      await expect(slide.getByText(/\(simulad[oa]\)/)).toBeVisible();
+      /* Avatar de iniciais, sem foto. */
+      await expect(slide.locator("img")).toHaveCount(0);
+      await expect(slide).toContainText(item.initials ?? "");
+    }
+  });
 
-    /* Nada de carrossel: sem pontos nem pausa, sem região viva, sem foco no contêiner, sem gesto de arrastar. */
-    await expect(column.getByRole("button")).toHaveCount(0);
-    await expect(column.locator("[aria-roledescription]")).toHaveCount(0);
-    await expect(column.locator("[aria-live], [role='status']")).toHaveCount(0);
-    await expect(column.locator('[tabindex="0"]')).toHaveCount(0);
-    await expect(column.locator("[data-swipe]")).toHaveCount(0);
+  test("bolinhas e as setas do teclado trocam o depoimento (N de 4)", async ({ page }) => {
+    const carousel = await openCarousel(page);
+    await expect(carousel.getByRole("group", { name: "1 de 4" })).toBeVisible();
 
-    /* Os depoimentos simulados do laboratório nunca vão ao ar. */
-    await expect(page.getByText(/simulad/i)).toHaveCount(0);
-    await expect(page.getByText("Depoimento 1 de")).toHaveCount(0);
+    await dot(carousel, 2).click();
+    await expect(carousel.getByRole("group", { name: "2 de 4" })).toBeVisible();
+    await expect(carousel.getByRole("group", { name: "1 de 4" })).toHaveCount(0);
+
+    await dot(carousel, 1).click();
+    await expect(carousel.getByRole("group", { name: "1 de 4" })).toBeVisible();
+
+    /* Teclado: com o foco na região, → avança e ← volta (e dá a volta no fim). */
+    await carousel.focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(carousel.getByRole("group", { name: "2 de 4" })).toBeVisible();
+    await page.keyboard.press("ArrowLeft");
+    await page.keyboard.press("ArrowLeft");
+    await expect(carousel.getByRole("group", { name: "4 de 4" })).toBeVisible();
+    await expect(dot(carousel, 4)).toHaveAttribute("aria-current", "true");
+  });
+
+  test("a troca automática fica muda; só a troca feita pela pessoa é anunciada, com a etiqueta", async ({ page }) => {
+    /* Sem reset: clicar numa bolinha já tornaria o anúncio "polite" antes da verificação. */
+    const carousel = await openCarousel(page, { reset: false });
+    const live = carousel.locator("[aria-live]");
+    await expect(live).toHaveAttribute("aria-live", "off");
+    await dot(carousel, 2).click();
+    await expect(live).toHaveAttribute("aria-live", "polite");
+    await expect(live).toContainText("Depoimento 2 de 4");
+    await expect(live).toContainText("Depoimento simulado");
+  });
+
+  test("o depoimento troca sozinho depois de 10 s", async ({ page }) => {
+    test.setTimeout(30_000);
+    const carousel = await openCarousel(page);
+    /* Clicar na 1ª bolinha zera os 10 s (troca manual reinicia a contagem); depois o ponteiro sai do carrossel
+       (hover pausa a troca). */
+    await dot(carousel, 1).click();
+    await page.mouse.move(1, 1);
+    await expect(carousel.getByRole("group", { name: "1 de 4" })).toBeVisible();
+    await page.waitForTimeout(8_000);
+    await expect(carousel.getByRole("group", { name: "1 de 4" })).toBeVisible();
+    await expect(carousel.getByRole("group", { name: "2 de 4" })).toBeVisible({ timeout: 6_000 });
+  });
+
+  test("o botão de pausa (WCAG 2.2.2) alterna e tem alvo de 48px", async ({ page }) => {
+    const carousel = await openCarousel(page);
+    const pause = carousel.getByRole("button", { name: "Pausar depoimentos" });
+    const box = (await pause.boundingBox())!;
+    expect(box.width).toBeGreaterThanOrEqual(47.5);
+    expect(box.height).toBeGreaterThanOrEqual(47.5);
+    await pause.click();
+    const resume = carousel.getByRole("button", { name: "Retomar depoimentos" });
+    await expect(resume).toHaveAttribute("aria-pressed", "true");
+    await resume.click();
+    await expect(carousel.getByRole("button", { name: "Pausar depoimentos" })).toHaveAttribute("aria-pressed", "false");
+  });
+
+  test("trocar de depoimento não muda a altura do palco (±2px)", async ({ page }) => {
+    const carousel = await openCarousel(page);
+    const stage = carousel.locator("> div").first();
+    await expect(carousel.getByRole("group", { name: "1 de 4" })).toBeVisible();
+    const baseStage = (await stage.boundingBox())!.height;
+    for (let step = 2; step <= 4; step += 1) {
+      await dot(carousel, step).click();
+      await expect(carousel.getByRole("group", { name: `${step} de 4` })).toBeVisible();
+      expect(Math.abs((await stage.boundingBox())!.height - baseStage)).toBeLessThanOrEqual(2);
+    }
   });
 
   test("com movimento completo, tudo termina revelado depois de rolar a página", async ({ page }) => {

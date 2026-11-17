@@ -33,6 +33,13 @@ export const HOME_EVALUATION = {
   success: "Dados conferidos. O envio online será ativado em breve.",
 } as const;
 
+/* Marcação dos depoimentos simulados (src/lib/content/testimonials.ts). A nota só aparece enquanto houver
+   algum depoimento simulado; sai junto com eles. */
+export const HOME_TESTIMONIALS = {
+  simulatedTag: "Depoimento simulado",
+  simulatedNote: "Depoimentos 2 a 4 são simulados para demonstrar a troca.",
+} as const;
+
 /* Aviso mostrado enquanto ARTICLES_ARE_EXAMPLES for true. */
 export const HOME_ARTICLES_NOTE = {
   strong: "Conteúdo de exemplo.",

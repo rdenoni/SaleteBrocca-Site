@@ -3,7 +3,7 @@
 import { motion, type Variants } from "motion/react";
 import { useState } from "react";
 import { useMotionTokens } from "@/motion/useMotionTokens";
-import { HOME_SECTION_IDS } from "@/lib/content/home";
+import { HOME_SECTION_IDS, HOME_TESTIMONIALS } from "@/lib/content/home";
 import type { Testimonial } from "@/types/content";
 import { EvaluationForm } from "./EvaluationForm";
 import styles from "./EvaluationSection.module.css";
@@ -68,6 +68,8 @@ export function EvaluationSection({ testimonials }: EvaluationSectionProps) {
       <motion.div className={styles.testimonial} data-surface="dark" data-reveal="" variants={wipe}>
         <TestimonialSlider
           items={testimonials}
+          simulatedLabel={HOME_TESTIMONIALS.simulatedTag}
+          note={testimonials.some((item) => item.simulated) ? HOME_TESTIMONIALS.simulatedNote : undefined}
           delay={t.duration.slow * TESTIMONIAL_START}
           play={testimonialPlays}
         />

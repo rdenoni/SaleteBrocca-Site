@@ -121,8 +121,39 @@
   object-fit: cover;
 }
 
+/* Avatar de iniciais (depoimentos simulados): círculo nas cores da marca, texto sempre navy (sobre ciano ou light-blue). */
+.initials {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+  color: var(--navy);
+  font: 800 22px/1 var(--font-sans);
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
+.initials[data-tone="light"] {
+  background: var(--light-blue);
+}
+
 .who {
   display: block;
+}
+
+/* Etiqueta dos depoimentos simulados: pequena, mas legível (ciano sobre navy). Nunca remover. */
+.tag {
+  display: inline-block;
+  margin-top: var(--space-2);
+  padding: 2px 10px;
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius-pill);
+  color: var(--cyan);
+  font: 700 12px/18px var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .name {
@@ -155,6 +186,14 @@
   .controls {
     padding-left: calc(48px + var(--space-4));
   }
+}
+
+/* Nota de uma linha perto dos controles. */
+.note {
+  margin-top: var(--space-2);
+  color: var(--on-navy-muted);
+  font: 400 13px/20px var(--font-sans);
+  text-align: center;
 }
 
 .dots {

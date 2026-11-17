@@ -1,5 +1,5 @@
 /* PSD: bloco navy 400px + faixa 97px @1920 → 300 + 73 @1440. Rodapé compacto: links com recuo no hover
-   (sem sublinhado), logo empilhado, perfis sociais animados (quando houver) e "Voltar ao topo". */
+   (sem sublinhado), logo empilhado, perfis sociais animados (botões enquanto sem endereço) e "Voltar ao topo". */
 .footer {
   background: var(--navy);
   color: var(--white);
@@ -76,7 +76,7 @@
   border-radius: 2px;
 }
 
-/* Bloco da marca na metade direita: logo empilhado e, quando houver, os perfis. */
+/* Bloco da marca na metade direita: logo empilhado e os perfis. */
 .brand {
   display: grid;
   justify-items: center;
@@ -90,12 +90,28 @@
   height: auto;
 }
 
+.socialGroup {
+  display: grid;
+  justify-items: center;
+  gap: 0;
+}
+
 .social {
   display: flex;
   gap: 0; /* o respiro vem das células de 48px */
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.socialCaption {
+  font: 400 11px/16px var(--font-sans);
+  color: var(--on-navy-muted);
+}
+
+/* A lista de perfis é a âncora do aviso: o balão fica centralizado nela e nunca passa da tela. */
+.socialAnchor {
+  position: relative;
 }
 
 /* Célula de 48x48 = alvo de toque; o círculo visual de 36px fica centrado nela. */
@@ -140,6 +156,29 @@
   translate: -50% -50%;
   overflow: visible;
   pointer-events: none;
+}
+
+/* Aviso "Endereço em confirmação": um balão por vez, centralizado sobre a lista de perfis.
+   max-width: em telas muito estreitas o texto quebra em vez de vazar. */
+.socialNotice {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  translate: -50% 0;
+  z-index: 2;
+  width: max-content;
+  max-width: calc(100vw - 2 * var(--page-gutter));
+  pointer-events: none;
+}
+
+.socialBubble {
+  display: block;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  color: var(--navy);
+  font: 600 12px/16px var(--font-sans);
+  text-align: center;
 }
 
 .bar {

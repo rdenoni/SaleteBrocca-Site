@@ -17,7 +17,7 @@ interface FooterProps {
 
 /* Rodapé navy. Entrada ao aparecer: as colunas sobem em sequência e o logo surge por último (sem régua ciano
    acima da marca e sem a linha de atuação). Links: o texto clareia e recua 3px no hover e no foco, sem sublinhado.
-   Os perfis sociais só aparecem quando existe endereço confirmado (ver SocialProfiles). */
+   Os perfis sociais sempre aparecem; os sem endereço confirmado são botões com aviso (ver SocialProfiles). */
 export function Footer({ year }: FooterProps) {
   const t = useMotionTokens();
 

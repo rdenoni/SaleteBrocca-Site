@@ -15,6 +15,10 @@ interface TestimonialSliderProps {
   delay?: number;
   /** Nome do carrossel para leitores de tela (só usado com mais de um depoimento). */
   label?: string;
+  /** Etiqueta exibida nos depoimentos simulados (`simulated`). */
+  simulatedLabel?: string;
+  /** Nota de uma linha perto dos controles (ex.: avisar que alguns itens são simulados). */
+  note?: string;
   /** Libera a entrada de fora (ex.: quando o contêiner, recortado por clip-path, já está na tela).
       Sem isso, o próprio componente observa a viewport. Um IntersectionObserver não enxerga dentro de um recorte fechado. */
   play?: boolean;
@@ -126,7 +130,12 @@ function buildVariants(t: ResolvedMotionTokens, startDelay: number, rise: boolea
 }
 
 function Avatar({ item }: { item: Testimonial }) {
-  return <Image src={item.photo} alt="" width={128} height={128} className={styles.photo} />;
+  if (item.photo) return <Image src={item.photo} alt="" width={128} height={128} className={styles.photo} />;
+  return (
+    <span className={styles.initials} data-tone={item.avatarTone ?? "cyan"}>
+      {item.initials}
+    </span>
+  );
 }
 
 interface SlideProps {
@@ -135,11 +144,12 @@ interface SlideProps {
   active: boolean;
   startDelay: number;
   rise: boolean;
+  simulatedLabel: string;
   group?: { index: number; total: number };
   onSwipe?: (direction: Direction) => void;
 }
 
-function Slide({ item, direction, active, startDelay, rise, group, onSwipe }: SlideProps) {
+function Slide({ item, direction, active, startDelay, rise, simulatedLabel, group, onSwipe }: SlideProps) {
   const t = useMotionTokens();
   const v = buildVariants(t, startDelay, rise);
   const groupProps = group
@@ -199,6 +209,7 @@ function Slide({ item, direction, active, startDelay, rise, group, onSwipe }: Sl
           <motion.span className={styles.who} data-reveal="" variants={v.fade}>
             <span className={styles.name}>{item.author}</span>
             <span className={styles.role}>{item.role}</span>
+            {item.simulated ? <span className={styles.tag}>{simulatedLabel}</span> : null}
           </motion.span>
         </figcaption>
       </figure>
@@ -208,7 +219,7 @@ function Slide({ item, direction, active, startDelay, rise, group, onSwipe }: Sl
 
 /* Cópia estática e invisível de um depoimento: ocupa a mesma célula da grade do palco, então a altura do palco é
    sempre a do MAIOR depoimento e a coluna navy não pula na troca. Sem motion, sem data-reveal, fora do foco e dos leitores. */
-function Ghost({ item }: { item: Testimonial }) {
+function Ghost({ item, simulatedLabel }: { item: Testimonial; simulatedLabel: string }) {
   return (
     <div className={styles.ghost} aria-hidden="true" inert>
       <figure className={styles.figure}>
@@ -222,6 +233,7 @@ function Ghost({ item }: { item: Testimonial }) {
           <span className={styles.who}>
             <span className={styles.name}>{item.author}</span>
             <span className={styles.role}>{item.role}</span>
+            {item.simulated ? <span className={styles.tag}>{simulatedLabel}</span> : null}
           </span>
         </figcaption>
       </figure>
@@ -233,13 +245,25 @@ interface StageProps {
   items: readonly Testimonial[];
   delay: number;
   label: string;
+  simulatedLabel: string;
+  note?: string;
   play?: boolean;
 }
 
 /* Um depoimento só (o caso de hoje): uma citação com a coreografia de entrada (aspas se encaixam, texto sobe,
    avatar em círculo, nome aparece) e mais nada. Sem controles, sem autoplay, sem região viva, sem gestos de troca,
    sem observadores de ponteiro ou de aba: não há o que alternar, então nada disso existe. */
-function SingleTestimonial({ item, delay, play }: { item: Testimonial; delay: number; play?: boolean }) {
+function SingleTestimonial({
+  item,
+  delay,
+  simulatedLabel,
+  play,
+}: {
+  item: Testimonial;
+  delay: number;
+  simulatedLabel: string;
+  play?: boolean;
+}) {
   const t = useMotionTokens();
   const stageRef = useRef<HTMLDivElement>(null);
   const seen = useInView(stageRef, { once: true, margin: t.viewport.margin });
@@ -247,7 +271,7 @@ function SingleTestimonial({ item, delay, play }: { item: Testimonial; delay: nu
   return (
     <div className={styles.root}>
       <div ref={stageRef} className={styles.stage}>
-        <Slide item={item} direction={1} active={play ?? seen} startDelay={delay} rise />
+        <Slide item={item} direction={1} active={play ?? seen} startDelay={delay} rise simulatedLabel={simulatedLabel} />
       </div>
     </div>
   );
@@ -260,7 +284,7 @@ function SingleTestimonial({ item, delay, play }: { item: Testimonial; delay: nu
    com a aba em segundo plano e com o carrossel fora da tela.
    O relógio é a própria animação CSS do preenchimento (scaleX): ao terminar (animationend) avança. Assim barra e
    troca nunca saem de sincronia, e pausar a animação pausa o relógio. */
-function TestimonialCarousel({ items, delay, label, play }: StageProps) {
+function TestimonialCarousel({ items, delay, label, simulatedLabel, note, play }: StageProps) {
   const t = useMotionTokens();
   const rootRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -323,7 +347,7 @@ function TestimonialCarousel({ items, delay, label, play }: StageProps) {
 
   const spring = t.reduced ? { duration: 0 } : t.spring.ui;
   const announcement = state.manual
-    ? `Depoimento ${state.index + 1} de ${total}. ${current.quote} ${current.author}, ${current.role}.`
+    ? `Depoimento ${state.index + 1} de ${total}. ${current.simulated ? `${simulatedLabel}. ` : ""}${current.quote} ${current.author}, ${current.role}.`
     : "";
 
   return (
@@ -343,7 +367,7 @@ function TestimonialCarousel({ items, delay, label, play }: StageProps) {
       <div ref={stageRef} className={styles.stage}>
         {/* Todos os depoimentos como cópias invisíveis na mesma célula: reservam a altura do maior. */}
         {items.map((item, index) => (
-          <Ghost key={item.author + index} item={item} />
+          <Ghost key={item.author + index} item={item} simulatedLabel={simulatedLabel} />
         ))}
         <AnimatePresence mode="wait" initial custom={state.direction}>
           <Slide
@@ -353,6 +377,7 @@ function TestimonialCarousel({ items, delay, label, play }: StageProps) {
             active={inView}
             startDelay={state.touched ? 0 : delay}
             rise={!state.touched}
+            simulatedLabel={simulatedLabel}
             group={{ index: state.index, total }}
             onSwipe={(direction) => goTo(state.index + direction, direction)}
           />
@@ -398,6 +423,7 @@ function TestimonialCarousel({ items, delay, label, play }: StageProps) {
           {userPaused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}
         </button>
       </div>
+      {note ? <p className={styles.note}>{note}</p> : null}
       {/* Anúncio só depois de uma troca feita pela pessoa (nunca na carga da página nem no autoplay). */}
       <div className="visually-hidden" aria-live={state.manual || userPaused ? "polite" : "off"} aria-atomic="true">
         {announcement}
@@ -407,8 +433,19 @@ function TestimonialCarousel({ items, delay, label, play }: StageProps) {
 }
 
 /* Um depoimento: citação com entrada animada. Dois ou mais: carrossel. Nenhum: nada. */
-export function TestimonialSlider({ items, delay = 0, label = "Depoimentos", play }: TestimonialSliderProps) {
+export function TestimonialSlider({
+  items,
+  delay = 0,
+  label = "Depoimentos",
+  simulatedLabel = "Depoimento simulado",
+  note,
+  play,
+}: TestimonialSliderProps) {
   if (items.length === 0) return null;
-  if (items.length === 1) return <SingleTestimonial item={items[0]} delay={delay} play={play} />;
-  return <TestimonialCarousel items={items} delay={delay} label={label} play={play} />;
+  if (items.length === 1) {
+    return <SingleTestimonial item={items[0]} delay={delay} simulatedLabel={simulatedLabel} play={play} />;
+  }
+  return (
+    <TestimonialCarousel items={items} delay={delay} label={label} simulatedLabel={simulatedLabel} note={note} play={play} />
+  );
 }

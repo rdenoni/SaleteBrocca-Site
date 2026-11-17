@@ -1,20 +1,31 @@
 "use client";
 
-import { motion, type Variants } from "motion/react";
+import { AnimatePresence, motion, type Variants } from "motion/react";
+import { useCallback, useState } from "react";
 import { SOCIAL_LINKS } from "@/lib/content/site";
 import { useMotionTokens } from "@/motion/useMotionTokens";
+import type { SocialNetwork } from "@/types/content";
 import { SocialButton } from "./SocialButton";
 import styles from "./Footer.module.css";
 
-/* Só perfis com endereço confirmado (href não nulo). Sem nenhum, não renderiza nada: nem grupo, nem legenda. */
-const CONFIRMED_PROFILES = SOCIAL_LINKS.flatMap((profile) =>
-  profile.href ? [{ ...profile, href: profile.href }] : [],
-);
+const PENDING_NOTICE = "Endereço em confirmação";
+const PENDING_CAPTION = "Perfis em confirmação";
 
-/* Lista de perfis. Cada item entra em sequência herdando hidden/visible do Stagger do rodapé. */
+/* Lista de perfis com UM só aviso, centralizado na própria lista: assim o balão nunca passa da tela
+   (a lista é mais larga que ele, mesmo a 320px) e dois avisos nunca se sobrepõem. Perfis sem endereço confirmado
+   (href null) são botões, não links; o aviso fica numa região viva educada (role="status"), então o leitor de tela
+   o anuncia sem interromper. A legenda só aparece enquanto houver algum perfil pendente. */
 export function SocialProfiles() {
   const t = useMotionTokens();
-  if (CONFIRMED_PROFILES.length === 0) return null;
+  const [noticeFor, setNoticeFor] = useState<SocialNetwork | null>(null);
+  const hasPending = SOCIAL_LINKS.some((profile) => profile.href === null);
+
+  /* O último botão a pedir o aviso vence; um botão só tira o aviso se ele ainda for o dono. */
+  const handleNotice = useCallback((network: SocialNetwork, visible: boolean) => {
+    setNoticeFor((current) => (visible ? network : current === network ? null : current));
+  }, []);
+
+  if (SOCIAL_LINKS.length === 0) return null;
 
   const entranceVariants = (index: number): Variants => {
     if (t.reduced) {
@@ -30,12 +41,39 @@ export function SocialProfiles() {
   };
 
   return (
-    <ul className={styles.social} aria-label="Redes sociais">
-      {CONFIRMED_PROFILES.map((profile, index) => (
-        <motion.li key={profile.network} data-reveal="" variants={entranceVariants(index)}>
-          <SocialButton network={profile.network} label={profile.label} href={profile.href} />
-        </motion.li>
-      ))}
-    </ul>
+    <div className={styles.socialGroup}>
+      <div className={styles.socialAnchor}>
+        <ul className={styles.social} aria-label="Redes sociais">
+          {SOCIAL_LINKS.map((profile, index) => (
+            /* Sem initial/animate próprios: herda hidden/visible do Stagger do rodapé e entra em sequência. */
+            <motion.li key={profile.network} data-reveal="" variants={entranceVariants(index)}>
+              <SocialButton
+                network={profile.network}
+                label={profile.label}
+                href={profile.href}
+                onNoticeChange={handleNotice}
+              />
+            </motion.li>
+          ))}
+        </ul>
+        <span className={styles.socialNotice} role="status" aria-live="polite">
+          <AnimatePresence>
+            {noticeFor ? (
+              <motion.span
+                key="aviso"
+                className={styles.socialBubble}
+                initial={{ opacity: 0, y: t.reduced ? 0 : t.distance.small }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 0 }}
+                transition={{ duration: t.duration.quick, ease: t.ease.out }}
+              >
+                {PENDING_NOTICE}
+              </motion.span>
+            ) : null}
+          </AnimatePresence>
+        </span>
+      </div>
+      {hasPending ? <p className={styles.socialCaption}>{PENDING_CAPTION}</p> : null}
+    </div>
   );
 }

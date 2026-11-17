@@ -1,7 +1,7 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 /* Cabeçalho e rodapé animados (fase 3): estado ativo da gota, cabeçalho inteligente, menu móvel,
-   rodapé sem perfis sociais e ausência de sobreposição nas páginas internas. */
+   rodapé com perfis sociais (botões com aviso enquanto sem endereço) e ausência de sobreposição nas páginas internas. */
 
 const DESKTOP_MIN_WIDTH = 1100;
 const NAV_NAME = "Principal";
@@ -237,19 +237,45 @@ test.describe("menu móvel", () => {
 });
 
 test.describe("rodapé", () => {
-  test("sem perfis sociais enquanto os endereços não forem confirmados", async ({ page }) => {
+  test("perfis sociais visíveis; sem endereço confirmado são botões que avisam", async ({ page }) => {
     await page.goto("/cursos");
     const footer = page.getByRole("contentinfo");
     await footer.scrollIntoViewIfNeeded();
 
-    await expect(footer.getByRole("list", { name: "Redes sociais" })).toHaveCount(0);
+    /* Os 4 perfis aparecem mesmo sem URL: nenhum é link falso (sem href confirmado, nada abre em nova aba). */
+    const networks = ["Instagram", "Facebook", "LinkedIn", "WhatsApp"];
+    const list = footer.getByRole("list", { name: "Redes sociais" });
+    await expect(list).toBeVisible();
+    await expect(list.getByRole("button")).toHaveCount(networks.length);
     await expect(footer.locator("a[target='_blank']")).toHaveCount(0);
-    await expect(footer).not.toContainText("Perfis em confirmação");
-    await expect(footer).not.toContainText("em confirmação");
+    await expect(footer).toContainText("Perfis em confirmação");
     await expect(footer).not.toContainText("Professora e fonoaudióloga clínica");
-    for (const network of ["Instagram", "Facebook", "LinkedIn", "WhatsApp (abre"]) {
-      await expect(footer.getByRole("link", { name: network })).toHaveCount(0);
+
+    for (const network of networks) {
+      const control = list.getByRole("button", { name: new RegExp(network) });
+      await expect(control).toBeVisible();
+      /* Alvo de toque: a célula do botão (o círculo visual tem 36px) precisa ter 48px; espera a entrada terminar. */
+      const target = control.locator("xpath=..");
+      await expect
+        .poll(async () => {
+          const box = await target.boundingBox();
+          return Math.min(box?.width ?? 0, box?.height ?? 0);
+        })
+        .toBeGreaterThanOrEqual(48);
     }
+
+    /* Ativar um perfil sem endereço mostra o aviso (uma região viva educada), dentro da tela. */
+    const notice = footer.getByRole("status");
+    await expect(notice).toHaveAttribute("aria-live", "polite");
+    await list.getByRole("button", { name: /Instagram/ }).click();
+    await expect(notice).toHaveText("Endereço em confirmação");
+    const bubble = await notice.boundingBox();
+    const viewportWidth = page.viewportSize()?.width ?? 0;
+    expect(bubble?.x ?? -1).toBeGreaterThanOrEqual(0);
+    expect((bubble?.x ?? 0) + (bubble?.width ?? 0)).toBeLessThanOrEqual(viewportWidth);
+    /* Some sozinho (o ponteiro sai de cima do botão para não manter o hover). */
+    await page.mouse.move(0, 0);
+    await expect(notice).toHaveText("", { timeout: 6000 });
 
     /* 4 colunas de links, logo empilhado, copyright com o ano do servidor, privacidade e "Voltar ao topo". */
     await expect(footer.getByRole("navigation")).toHaveCount(4);

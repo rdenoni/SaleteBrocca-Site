@@ -51,7 +51,8 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
   },
 ];
 
-/* Perfis oficiais ainda não confirmados pela cliente (href null): o rodapé só mostra a rede quando houver href.
+/* Perfis oficiais ainda não confirmados pela cliente (href null): o rodapé mostra todas as redes; sem href o ícone
+   é um botão que avisa "Endereço em confirmação", com href vira link externo.
    Nunca inventar endereço: preencher só com o que a cliente confirmar. */
 export const SOCIAL_LINKS: readonly SocialLink[] = [
   { network: "instagram", label: "Instagram", href: null },
