@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   title: "Cursos",
   description:
     "Cursos de Maria Salete Brocca Denoni para pais, professores e profissionais que acompanham crianças em idade escolar.",
+  /* O 301 de /loja?categoria=cursos chega aqui com a query (o Next sempre a repassa): o canônico evita a duplicata. */
+  alternates: { canonical: "/cursos" },
 };
 
 /* Catálogo: só cursos reais. Filtros entram quando houver mais de um curso. */

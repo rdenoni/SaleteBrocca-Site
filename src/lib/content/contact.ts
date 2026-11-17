@@ -19,5 +19,5 @@ export const EMAIL: ContactChannel = {
 export const CLINIC_CITY: string | null = null;
 export const CLINIC_HOURS: string | null = null;
 
-export const CONTACT_SUBJECTS = ["Marcar avaliação", "Cursos", "Outro assunto"] as const;
+export const CONTACT_SUBJECTS = ["Cursos", "Outro assunto"] as const;
 export type ContactSubject = (typeof CONTACT_SUBJECTS)[number];

@@ -3,12 +3,15 @@ import { PageBanner } from "@/components/layout/PageBanner";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { UpcomingCategory } from "@/components/shop/UpcomingCategory";
 import { FilterNav, type FilterItem } from "@/components/ui/FilterNav";
+import { LinkArrow } from "@/components/ui/LinkArrow";
 import { getCategory, getProducts, PRODUCT_CATEGORIES } from "@/lib/content/shop";
 import styles from "./loja.module.css";
 
 export const metadata: Metadata = {
   title: "Loja",
-  description: "Cursos e produtos digitais de Maria Salete Brocca Denoni.",
+  description: "Materiais de apoio, jogos e softwares de Maria Salete Brocca Denoni.",
+  /* Os filtros ?categoria= são variações desta página até existir /loja/categoria/[slug]. */
+  alternates: { canonical: "/loja" },
 };
 
 interface ShopPageProps {
@@ -56,11 +59,16 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     <>
       <PageBanner
         title="Loja"
-        subtitle="Cursos e produtos digitais de Maria Salete Brocca Denoni."
+        subtitle="Materiais de apoio, jogos e softwares de Maria Salete Brocca Denoni."
         size="compact"
       />
 
       <div className={`container ${styles.page}`}>
+        <p className={styles.coursesHint}>
+          <span>Procurando os cursos?</span>
+          <LinkArrow href="/cursos">Ver o catálogo de cursos</LinkArrow>
+        </p>
+
         <FilterNav label="Categorias da loja" items={filters} keepScroll />
 
         <section aria-labelledby="catalogo-titulo">

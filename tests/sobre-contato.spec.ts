@@ -44,6 +44,12 @@ test.describe("Sobre", () => {
     await expect(page.getByText(/CRFa/)).toHaveCount(0);
   });
 
+  test("chamada final leva a /avaliacao", async ({ page }) => {
+    await expect(
+      page.getByRole("region", { name: "Marque uma avaliação" }).getByRole("link", { name: "Marcar avaliação" }),
+    ).toHaveAttribute("href", "/avaliacao");
+  });
+
   test("índice leva à seção", async ({ page }) => {
     await page.getByRole("navigation", { name: "Nesta página" }).getByRole("link", { name: "Atuação" }).click();
     await expect(page).toHaveURL(/#atuacao$/);
@@ -62,11 +68,23 @@ test.describe("Contato", () => {
     await page.goto("/contato");
   });
 
-  test("três canais com as âncoras do rodapé", async ({ page }) => {
+  test("três canais: WhatsApp, agendamento e formulário", async ({ page }) => {
     await expect(page.getByRole("heading", { level: 1, name: "Contato" })).toBeVisible();
     for (const id of ["whatsapp", "agendamento", "formulario"]) {
       await expect(page.locator(`#${id}`)).toHaveCount(1);
     }
+  });
+
+  test("#agendamento é um bloco curto que leva a /avaliacao", async ({ page }) => {
+    const block = page.locator("section#agendamento");
+    await expect(block).toHaveCount(1);
+    await expect(block.getByRole("link", { name: "Pedir avaliação" })).toHaveAttribute("href", "/avaliacao");
+    await expect(block.locator("form, input")).toHaveCount(0);
+  });
+
+  test("assuntos do formulário: Cursos e Outro assunto (sem Marcar avaliação)", async ({ page }) => {
+    const options = await page.locator("#formulario").getByLabel("Assunto").locator("option").allTextContents();
+    expect(options).toEqual(["Cursos", "Outro assunto"]);
   });
 
   test("número e e-mail não confirmados não viram link", async ({ page }) => {

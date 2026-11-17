@@ -20,6 +20,30 @@
   width: 100%;
 }
 
+/* Formulário e link discreto para /avaliacao, um sobre o outro (o .formInner centraliza em linha). */
+.formStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.how {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding-inline: var(--space-2);
+  font: 700 15px/22px var(--font-sans);
+  color: var(--blue-strong);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.how:hover {
+  color: var(--navy);
+}
+
 .testimonial {
   display: flex;
   align-items: center;

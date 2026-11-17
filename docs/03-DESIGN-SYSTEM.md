@@ -116,7 +116,7 @@ Sombras só em elementos que flutuam. Blocos de cor não têm sombra nem borda.
 
 | Componente | Classe de referência | Descrição |
 |---|---|---|
-| Header | `.sb-header` | Caixa branca arredondada flutuando sobre o hero; logo lateral à esquerda; menu `Cursos · Sobre · Conteúdo · Loja · Contato` alinhado pelo topo; item ativo vira **gota ciano** (topo reto, base arredondada); à direita, **Área do Aluno** como pílula ciano com ícone de usuário, sempre visível em todas as larguras. |
+| Header | `.sb-header` | Caixa branca arredondada flutuando sobre o hero; logo lateral à esquerda; menu `Cursos · Avaliação · Conteúdo · Sobre · Contato` alinhado pelo topo; item ativo vira **gota ciano** (topo reto, base arredondada); à direita, **Área do Aluno** como pílula ciano com ícone de usuário, sempre visível em todas as larguras. |
 | Botões | `.sb-btn` | `--primary` (ação principal em fundos claros), `--accent` (Área do Aluno e CTAs sobre navy), `--outline` (secundária, "Enviar"), `--ghost` (sobre foto ou navy, "Explorar cursos" no hero). Um único primário por seção. Rótulo em caixa alta, verbo no infinitivo. |
 | Link "Acesse >" | `.sb-link-arrow` | Saída dos cards de conteúdo; 19px negrito. |
 | Hero | `.sb-hero` | Foto grande P&B com soft-light sobre `blue-strong`, título `display` branco, fio ciano, apoio em `body`, CTA fantasma, indicadores do carrossel. |
@@ -126,7 +126,7 @@ Sombras só em elementos que flutuam. Blocos de cor não têm sombra nem borda.
 | Card de curso | `.sb-course-card` | Foto em multiply sobre `blue`, selo ciano, título `h3`, público, metadados confirmados com ícones, "Ver curso". Sem preço até confirmação. |
 | Módulos | `.sb-module` | Acordeão nativo `<details>` com número em quadrado `navy`/`cyan` e contagem de aulas. |
 | Sobre | `.sb-about` | Retrato `radius-lg` com dois blocos deslocados (`cyan` embaixo à esquerda, `blue` em cima à direita) que repetem o encaixe das peças do símbolo. |
-| Footer | `.sb-footer` | `navy`; quatro colunas com títulos `cyan` e links `on-navy-muted`; ícones sociais em círculos `cyan`; faixa `navy-raised` com copyright centralizado. |
+| Footer | `.sb-footer` | `navy`; três colunas de links (Atendimento, Cursos, Conteúdo; ver [04](04-SITEMAP.md) §5) mais a coluna da marca, com títulos `cyan` e links `on-navy-muted`; ícones sociais em círculos `cyan`; faixa `navy-raised` com copyright centralizado. |
 
 ## 9. Estados interativos
 
@@ -149,8 +149,8 @@ Recomponha em cada faixa; não reduza o desktop.
 
 | Faixa | Comportamento |
 |---|---|
-| Desktop (>=1100) | Header completo; avaliação e depoimento lado a lado; três cards de conteúdo em linha; footer em cinco colunas (logo/sociais + quatro colunas de links). |
-| Tablet (768-1099) | Header compacto de 72px (logo, Área do Aluno, menu); avaliação e depoimento empilhados; cards de conteúdo em linha horizontal rolável ou 2+1; footer em duas colunas. |
+| Desktop (>=1100) | Header completo; avaliação e depoimento lado a lado; três cards de conteúdo em linha; footer em quatro colunas (três de links + logo/sociais). |
+| Tablet (768-1099) | Header compacto de 72px (logo, Área do Aluno, menu); avaliação e depoimento empilhados; cards de conteúdo em linha horizontal rolável ou 2+1; footer com a marca no topo e as três colunas de links lado a lado (duas colunas no mobile). |
 | Mobile (<768) | Margens de 16px; hero `display` a 36/40 e altura mínima 560px; Área do Aluno vira botão-ícone circular (rótulo só para leitores de tela); cards de conteúdo empilhados; menu abre em painel de tela cheia `navy` com itens grandes `h3` e gota ciano no atual. |
 
 Alvos de toque com no mínimo 48px.

@@ -12,7 +12,16 @@
   margin-top: var(--space-12);
 }
 
+/* Trilha de navegação (48px) entre o banner e os filtros: o respiro do topo de .page cobre parte dela. */
+.trail {
+  margin-bottom: calc(var(--space-6) * -1);
+}
+
 @media (max-width: 767px) {
+  .trail {
+    margin-bottom: calc(var(--space-4) * -1);
+  }
+
   .page {
     padding-block: var(--space-8) var(--space-16);
   }

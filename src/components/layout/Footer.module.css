@@ -7,7 +7,7 @@
 
 .main {
   display: grid;
-  grid-template-columns: repeat(4, max-content) 1fr;
+  grid-template-columns: repeat(var(--footer-columns, 3), max-content) 1fr;
   column-gap: var(--space-12);
   row-gap: var(--space-6);
   align-items: start;
@@ -247,7 +247,7 @@
 
 @media (max-width: 1099px) {
   .main {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(var(--footer-columns, 3), 1fr);
     column-gap: var(--space-6);
   }
 
@@ -261,6 +261,7 @@
 
 @media (max-width: 767px) {
   .main {
+    grid-template-columns: repeat(2, 1fr);
     padding-block: var(--space-6) var(--space-4);
   }
 

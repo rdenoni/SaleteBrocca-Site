@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ShoppingBag } from "lucide-react";
+import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { CheckoutView } from "@/components/shop/CheckoutView";
 import { Button } from "@/components/ui/Button";
@@ -22,6 +23,15 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
   return (
     <>
       <PageBanner eyebrow="Loja" title="Finalizar compra" size="compact" />
+      <div className="container">
+        <Breadcrumbs
+          className={styles.trail}
+          items={[
+            { label: "Loja", href: "/loja" },
+            { label: "Finalizar compra", href: "/loja/checkout" },
+          ]}
+        />
+      </div>
 
       {product ? (
         <CheckoutView

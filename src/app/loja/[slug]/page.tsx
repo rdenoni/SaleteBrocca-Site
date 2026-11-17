@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Check, ChevronRight, Lock } from "lucide-react";
+import { Check, Lock } from "lucide-react";
+import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { Button } from "@/components/ui/Button";
@@ -15,6 +15,8 @@ interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
+/* Sem produtos avulsos cadastrados, nenhum slug é gerado e toda URL /loja/[slug] responde 404.
+   Os endereços antigos dos cursos são redirecionados em next.config.ts antes de chegar aqui. */
 export const dynamicParams = false;
 
 export function generateStaticParams(): { slug: string }[] {
@@ -45,15 +47,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <PageBanner eyebrow={product.kind} title={product.title} size="compact" />
 
       <div className={`container ${styles.page}`}>
-        <nav className={styles.breadcrumb} aria-label="Trilha de navegação">
-          <ol>
-            <li>
-              <Link href="/loja">Loja</Link>
-              <ChevronRight aria-hidden="true" />
-            </li>
-            <li aria-current="page">{product.title}</li>
-          </ol>
-        </nav>
+        <Breadcrumbs
+          items={[
+            { label: "Loja", href: "/loja" },
+            { label: product.title, href: `/loja/${product.slug}` },
+          ]}
+          className={styles.breadcrumbs}
+        />
 
         <div className={styles.top}>
           <figure className={styles.gallery}>
@@ -87,7 +87,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <Lock aria-hidden="true" />
               Pagamento online em preparação.
             </p>
-            {product.detailsHref && <LinkArrow href={product.detailsHref}>Ver o programa completo</LinkArrow>}
           </section>
         </div>
 

@@ -48,7 +48,7 @@ Detalhes em [02](02-BRAND-GUIDELINES.md) e [03](03-DESIGN-SYSTEM.md).
 
 ## 4. Navegação
 
-Cursos · Sobre · Conteúdo · Loja · Contato · **Área do Aluno** (destaque visual, acesso permanente no header).
+Cursos · Avaliação · Conteúdo · Sobre · Contato · **Área do Aluno** (destaque visual, acesso permanente no header).
 
 ## 5. Estrutura da Home
 

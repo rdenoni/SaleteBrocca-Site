@@ -26,14 +26,16 @@
   color: var(--cyan);
 }
 
-/* Duas colunas: conteúdo + bloco comercial fixo (sticky) à direita. */
+/* Duas colunas: conteúdo + bloco comercial fixo (sticky) à direita.
+   A trilha de navegação (48px) ocupa o topo do respiro de 96px sob o banner: 48px dela + 48px daqui, e o
+   conteúdo e o bloco comercial ficam onde estavam. */
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 360px;
   grid-template-areas: "main aside";
   gap: var(--space-16);
   align-items: start;
-  padding-block: var(--space-24);
+  padding-block: var(--space-12) var(--space-24);
 }
 
 .main {
@@ -190,7 +192,7 @@
       "aside"
       "main";
     gap: var(--space-12);
-    padding-block: var(--space-12) var(--space-24);
+    padding-block: var(--space-6) var(--space-24);
   }
 
   .aside {

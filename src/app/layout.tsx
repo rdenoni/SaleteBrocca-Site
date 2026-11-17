@@ -5,7 +5,9 @@ import "@/styles/globals.css";
 import "@/styles/motion.css";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { getFooterColumns } from "@/lib/content/footer";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/content/site";
+import { SITE_URL } from "@/lib/site-url";
 import { MotionProvider } from "@/motion/MotionProvider";
 import { NOSCRIPT_REVEAL_CSS } from "@/motion/noscript";
 import { PageTransitionProvider } from "@/motion/transitions/PageTransitionProvider";
@@ -26,6 +28,8 @@ const martel = Martel({
 });
 
 export const metadata: Metadata = {
+  /* Base das URLs absolutas geradas pelo Next (Open Graph, alternates). Ver src/lib/site-url.ts. */
+  metadataBase: new URL(SITE_URL),
   title: {
     default: `${SITE_NAME} | Fonoaudiologia e cursos`,
     template: `%s | ${SITE_NAME}`,
@@ -53,6 +57,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   /* Ano no servidor, passado como prop: o rodapé (componente de cliente) não calcula a data e a hidratação bate. */
   const year = new Date().getFullYear();
+  const footerColumns = getFooterColumns();
   return (
     /* data-scroll-behavior: rolagem suave só nas âncoras, não ao trocar de página. */
     <html lang="pt-BR" className={`${notoSans.variable} ${martel.variable}`} data-scroll-behavior="smooth">
@@ -68,7 +73,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             </a>
             <Header />
             <main id="conteudo">{children}</main>
-            <Footer year={year} />
+            <Footer columns={footerColumns} year={year} />
           </PageTransitionProvider>
         </MotionProvider>
       </body>

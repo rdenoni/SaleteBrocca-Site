@@ -21,7 +21,7 @@ export function FinalCta() {
         </h2>
         <p className={styles.text}>Converse com a Salete sobre as dificuldades de aprendizagem.</p>
         <div className={styles.actions}>
-          <Button href="/#avaliacao" variant="primary">
+          <Button href="/avaliacao" variant="primary">
             Marcar avaliação
           </Button>
           <Button href="/cursos" variant="outline">

@@ -64,7 +64,8 @@ test.describe("Conteúdo — categoria", () => {
     await expect(page.getByRole("heading", { level: 3, name: /^Disfagia:/ })).toBeVisible();
     await expect(page.getByRole("heading", { level: 3, name: /^PAC:/ })).toHaveCount(0);
     await expectNoHorizontalScroll(page);
-    await page.getByRole("link", { name: "Todos os conteúdos" }).click();
+    /* O da página (o rodapé também tem "Todos os conteúdos"). */
+    await page.getByRole("main").getByRole("link", { name: "Todos os conteúdos" }).click();
     await expect(page).toHaveURL("/conteudo");
   });
 
@@ -73,7 +74,7 @@ test.describe("Conteúdo — categoria", () => {
     expect(response?.status()).toBe(404);
   });
 
-  test("link Categorias do rodapé chega aos filtros", async ({ page }) => {
+  test("a âncora /conteudo#categorias leva aos filtros", async ({ page }) => {
     await page.goto("/conteudo#categorias");
     await expect(page.getByRole("navigation", { name: "Categorias de conteúdo" })).toBeInViewport();
   });
@@ -88,8 +89,8 @@ test.describe("Conteúdo — artigo", () => {
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1, name: /^Disfagia: Quais os sintomas/ })).toBeVisible();
     const trail = page.getByRole("navigation", { name: "Trilha de navegação" });
-    await expect(trail.getByRole("link", { name: "Conteúdo" })).toBeVisible();
-    await expect(trail.getByRole("link", { name: "Deglutição" })).toBeVisible();
+    await expect(trail.getByRole("link")).toHaveText(["Início", "Conteúdo", "Deglutição"]);
+    await expect(trail.locator("[aria-current='page']")).toHaveText("Disfagia");
     await expect(page.getByText("Maria Salete Brocca Denoni").first()).toBeVisible();
     await expect(page.getByText("Data a confirmar")).toHaveCount(0);
     await expect(page.getByText("Artigo de exemplo")).toBeVisible();

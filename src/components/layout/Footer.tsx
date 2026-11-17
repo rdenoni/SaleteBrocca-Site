@@ -1,16 +1,20 @@
 "use client";
 
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { Reveal } from "@/motion/Reveal";
 import { Stagger, StaggerItem } from "@/motion/Stagger";
 import { TransitionLink } from "@/motion/transitions/TransitionLink";
 import { useMotionTokens } from "@/motion/useMotionTokens";
-import { copyrightLine, FOOTER_COLUMNS, PRIVACY_LINK } from "@/lib/content/site";
+import type { FooterColumn } from "@/types/content";
+import { copyrightLine, LEGAL_LINKS } from "@/lib/content/site";
 import { BackToTop } from "./BackToTop";
 import { SocialProfiles } from "./SocialProfiles";
 import styles from "./Footer.module.css";
 
 interface FooterProps {
+  /** Colunas de links, montadas no servidor (layout raiz) a partir dos dados do site. */
+  columns: FooterColumn[];
   /** Ano do copyright, calculado no servidor (layout raiz): evita divergência na hidratação. */
   year: number;
 }
@@ -18,13 +22,15 @@ interface FooterProps {
 /* Rodapé navy. Entrada ao aparecer: as colunas sobem em sequência e o logo surge por último (sem régua ciano
    acima da marca e sem a linha de atuação). Links: o texto clareia e recua 3px no hover e no foco, sem sublinhado.
    Os perfis sociais sempre aparecem; os sem endereço confirmado são botões com aviso (ver SocialProfiles). */
-export function Footer({ year }: FooterProps) {
+export function Footer({ columns, year }: FooterProps) {
   const t = useMotionTokens();
+  /* Número de colunas de links vira variável CSS: a grade reserva uma faixa por coluna mais a da marca. */
+  const footerStyle = { "--footer-columns": columns.length } as CSSProperties;
 
   return (
-    <footer className={styles.footer} data-surface="dark">
+    <footer className={styles.footer} data-surface="dark" style={footerStyle}>
       <Stagger className={styles.main}>
-        {FOOTER_COLUMNS.map((column) => (
+        {columns.map((column) => (
           <StaggerItem key={column.title}>
             <nav className={styles.column} aria-label={column.title}>
               <h2 className={styles.title}>{column.title}</h2>
@@ -59,9 +65,11 @@ export function Footer({ year }: FooterProps) {
       <div className={styles.bar}>
         <div className={styles.barInner}>
           <p>{copyrightLine(year)}</p>
-          <TransitionLink href={PRIVACY_LINK.href} className={styles.legal}>
-            {PRIVACY_LINK.label}
-          </TransitionLink>
+          {LEGAL_LINKS.map((link) => (
+            <TransitionLink key={link.href} href={link.href} className={styles.legal}>
+              {link.label}
+            </TransitionLink>
+          ))}
           <BackToTop />
         </div>
       </div>

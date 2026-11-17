@@ -2,7 +2,9 @@
 
 import { motion, type Variants } from "motion/react";
 import { useState } from "react";
+import { TransitionLink } from "@/motion/transitions/TransitionLink";
 import { useMotionTokens } from "@/motion/useMotionTokens";
+import { EVALUATION_HOME_LINK } from "@/lib/content/evaluation";
 import { HOME_SECTION_IDS, HOME_TESTIMONIALS } from "@/lib/content/home";
 import type { Testimonial } from "@/types/content";
 import { EvaluationForm } from "./EvaluationForm";
@@ -62,7 +64,12 @@ export function EvaluationSection({ testimonials }: EvaluationSectionProps) {
     >
       <div className={styles.form}>
         <motion.div className={styles.formInner} data-reveal="" variants={rise}>
-          <EvaluationForm />
+          <div className={styles.formStack}>
+            <EvaluationForm />
+            <TransitionLink href={EVALUATION_HOME_LINK.href} className={styles.how}>
+              {EVALUATION_HOME_LINK.label}
+            </TransitionLink>
+          </div>
         </motion.div>
       </div>
       <motion.div className={styles.testimonial} data-surface="dark" data-reveal="" variants={wipe}>

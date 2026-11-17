@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArticleCategoryNav } from "@/components/content/ArticleCategoryNav";
 import { ArticleGrid } from "@/components/content/ArticleGrid";
+import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { getArticleCategories, getArticleCategory, getArticles } from "@/lib/content/articles";
@@ -37,6 +38,16 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   return (
     <>
       <PageBanner eyebrow="Categoria" title={category.label} subtitle={countLabel(articles.length)} size="compact" />
+
+      <div className="container">
+        <Breadcrumbs
+          className={styles.trail}
+          items={[
+            { label: "Conteúdo", href: "/conteudo" },
+            { label: category.label, href: `/conteudo/categoria/${category.slug}` },
+          ]}
+        />
+      </div>
 
       <div className={`container ${styles.page}`}>
         <ArticleCategoryNav current={category.slug} />

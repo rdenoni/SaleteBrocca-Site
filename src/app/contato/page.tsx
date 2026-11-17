@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Clock, Mail, MapPin } from "lucide-react";
+import { Mail } from "lucide-react";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { Button } from "@/components/ui/Button";
 import { SocialIcon } from "@/components/ui/SocialIcon";
-import { CLINIC_CITY, CLINIC_HOURS, EMAIL, WHATSAPP } from "@/lib/content/contact";
+import { EMAIL, WHATSAPP } from "@/lib/content/contact";
 import { SOCIAL_LINKS } from "@/lib/content/site";
 import styles from "./contato.module.css";
 
 export const metadata: Metadata = {
   title: "Contato",
-  description: "Marque uma avaliação, fale pelo WhatsApp ou envie uma mensagem para Maria Salete Brocca Denoni.",
+  description: "Fale pelo WhatsApp ou envie uma mensagem para Maria Salete Brocca Denoni.",
 };
 
 /* Dados ausentes (null) ficam ocultos; dados existentes mas não confirmados ganham uma nota discreta. */
@@ -19,13 +19,12 @@ export default function ContactPage() {
   const profiles = SOCIAL_LINKS.filter((link) => link.network !== "whatsapp" && link.href);
   const hasEmail = Boolean(EMAIL.display);
   const hasChannels = hasEmail || profiles.length > 0;
-  const hasDetails = Boolean(CLINIC_CITY || CLINIC_HOURS);
 
   return (
     <>
       <PageBanner
         title="Contato"
-        subtitle="Marque uma avaliação, tire dúvidas sobre os cursos ou envie uma mensagem."
+        subtitle="Tire dúvidas sobre os cursos ou envie uma mensagem."
         size="compact"
       />
 
@@ -49,33 +48,11 @@ export default function ContactPage() {
 
         <section id="agendamento" className={`${styles.block} ${styles.schedule}`} aria-labelledby="agendamento-titulo">
           <h2 id="agendamento-titulo" className={styles.sectionTitle}>
-            Marque uma avaliação
+            Avaliação
           </h2>
-          <p className={styles.text}>Atendimento em consultório particular a crianças com dificuldade na aprendizagem.</p>
-          {hasDetails && (
-            <dl className={styles.details}>
-              {CLINIC_CITY && (
-                <div>
-                  <dt>
-                    <MapPin aria-hidden="true" />
-                    Local
-                  </dt>
-                  <dd>{CLINIC_CITY}</dd>
-                </div>
-              )}
-              {CLINIC_HOURS && (
-                <div>
-                  <dt>
-                    <Clock aria-hidden="true" />
-                    Horários
-                  </dt>
-                  <dd>{CLINIC_HOURS}</dd>
-                </div>
-              )}
-            </dl>
-          )}
-          <Button href="#formulario" variant="primary">
-            Ir para o formulário
+          <p className={styles.text}>O pedido de avaliação tem página própria, com o formulário.</p>
+          <Button href="/avaliacao" variant="primary">
+            Pedir avaliação
           </Button>
         </section>
 

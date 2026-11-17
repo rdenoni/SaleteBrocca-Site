@@ -4,7 +4,7 @@ import { expect, test, type Page } from "@playwright/test";
    Só no desktop: abaixo de 1100px os blocos deixam de ser sticky. */
 const PAGES = [
   { name: "página do curso", url: "/cursos/dificuldades-na-aprendizagem" },
-  { name: "checkout", url: "/loja/checkout?produto=dificuldades-na-aprendizagem" },
+  { name: "inscrição", url: "/cursos/dificuldades-na-aprendizagem/compra" },
 ] as const;
 
 async function showHeaderByScrollingUp(page: Page) {

@@ -12,7 +12,7 @@ function articlesLabel(count: number): string {
   return count === 1 ? "1 artigo" : `${count} artigos`;
 }
 
-/* id="categorias": destino do link "Categorias" do rodapé. */
+/* id="categorias": âncora dos filtros (/conteudo#categorias). */
 export function ArticleCategoryNav({ current }: ArticleCategoryNavProps) {
   const total = getArticles().length;
   const items: FilterItem[] = [

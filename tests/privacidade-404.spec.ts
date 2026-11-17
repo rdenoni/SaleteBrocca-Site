@@ -23,6 +23,11 @@ test.describe("Privacidade", () => {
     await expect(page.getByRole("note").filter({ hasText: "Versão provisória." })).toBeVisible();
     await expect(page.getByRole("link", { name: "Formulário de contato" })).toBeVisible();
     await expect(page.getByText("é enviado, armazenado ou compartilhado", { exact: false })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Pedir avaliação (página inicial)" })).toHaveAttribute("href", "/#avaliacao");
+    await expect(page.getByRole("link", { name: "Pedir avaliação (página Avaliação)" })).toHaveAttribute(
+      "href",
+      "/avaliacao#formulario",
+    );
     await expect(page.getByRole("link", { name: "Inscrição e compra" })).toHaveAttribute(
       "href",
       "/cursos/dificuldades-na-aprendizagem/compra",

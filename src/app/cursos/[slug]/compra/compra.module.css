@@ -1,0 +1,5 @@
+/* A trilha (48px de altura) fica entre o banner e as etapas. O respiro de 48px do topo do formulário
+   (CheckoutView) já cobre parte dela: 24px a menos evita um vazio de 96px. */
+.trail {
+  margin-bottom: calc(var(--space-6) * -1);
+}

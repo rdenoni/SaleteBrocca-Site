@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronRight, FileText } from "lucide-react";
+import { FileText } from "lucide-react";
 import { ArticleBody } from "@/components/content/ArticleBody";
 import { ArticleGrid } from "@/components/content/ArticleGrid";
+import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -53,21 +53,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
       <div className={`container ${styles.page}`}>
         <div className={styles.column}>
-          <nav className={styles.breadcrumb} aria-label="Trilha de navegação">
-            <ol>
-              <li>
-                <Link href="/conteudo">Conteúdo</Link>
-                <ChevronRight aria-hidden="true" />
-              </li>
-              {category && (
-                <li>
-                  <Link href={`/conteudo/categoria/${category.slug}`}>{category.label}</Link>
-                  <ChevronRight aria-hidden="true" />
-                </li>
-              )}
-              <li aria-current="page">{article.keyword.replace(/:$/, "")}</li>
-            </ol>
-          </nav>
+          <Breadcrumbs
+            items={[
+              { label: "Conteúdo", href: "/conteudo" },
+              ...(category ? [{ label: category.label, href: `/conteudo/categoria/${category.slug}` }] : []),
+              { label: article.keyword.replace(/:$/, ""), href: `/conteudo/${article.slug}` },
+            ]}
+          />
           <p className={styles.meta}>
             <span className={styles.author}>
               Por <strong>{ARTICLE_AUTHOR}</strong>

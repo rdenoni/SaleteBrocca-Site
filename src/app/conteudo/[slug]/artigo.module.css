@@ -10,37 +10,6 @@
   margin-inline: auto;
 }
 
-.breadcrumb ol {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font: 400 15px/22px var(--font-sans);
-  color: var(--text-muted);
-}
-
-.breadcrumb li {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.breadcrumb a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 48px;
-  color: var(--blue-strong);
-  font-weight: 700;
-}
-
-.breadcrumb svg {
-  width: 16px;
-  height: 16px;
-}
-
 .meta {
   display: flex;
   flex-wrap: wrap;

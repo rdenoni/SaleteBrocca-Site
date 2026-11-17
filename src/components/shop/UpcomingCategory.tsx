@@ -1,10 +1,9 @@
-import { BookOpen, GraduationCap, Puzzle, type LucideIcon } from "lucide-react";
+import { BookOpen, Puzzle, type LucideIcon } from "lucide-react";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import type { ProductCategory, ProductCategoryInfo } from "@/types/content";
 import styles from "./UpcomingCategory.module.css";
 
 const ICONS: Record<ProductCategory, LucideIcon> = {
-  cursos: GraduationCap,
   materiais: BookOpen,
   jogos: Puzzle,
 };

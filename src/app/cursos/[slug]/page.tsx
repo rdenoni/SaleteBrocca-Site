@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Check, CirclePlay, Info, Layers } from "lucide-react";
 import { CommercialInfo } from "@/components/courses/CommercialInfo";
 import { ModuleList } from "@/components/courses/ModuleList";
+import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { Button } from "@/components/ui/Button";
 import { LinkArrow } from "@/components/ui/LinkArrow";
@@ -57,6 +58,15 @@ export default async function CoursePage({ params }: CoursePageProps) {
           </Button>
         </div>
       </PageBanner>
+
+      <div className="container">
+        <Breadcrumbs
+          items={[
+            { label: "Cursos", href: "/cursos" },
+            { label: course.title, href: `/cursos/${course.slug}` },
+          ]}
+        />
+      </div>
 
       <div className={`container ${styles.layout}`}>
         <div className={styles.aside}>

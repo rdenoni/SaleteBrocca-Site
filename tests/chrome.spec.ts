@@ -5,6 +5,38 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const DESKTOP_MIN_WIDTH = 1100;
 const NAV_NAME = "Principal";
+/* Menu aprovado, na ordem: a Loja saiu do cabeçalho (a rota segue no ar, pelo rodapé). */
+const MAIN_NAV_LABELS = ["Cursos", "Avaliação", "Conteúdo", "Sobre", "Contato"];
+
+/* Rodapé aprovado (3 colunas). Os links de curso e de categoria vêm dos dados do site: hoje, 1 curso e 3 categorias. */
+const FOOTER_COLUMNS = [
+  {
+    title: "Atendimento",
+    links: [
+      { label: "Marcar avaliação", href: "/avaliacao" },
+      { label: "Sobre a Salete", href: "/sobre" },
+      { label: "Contato", href: "/contato" },
+    ],
+  },
+  {
+    title: "Cursos",
+    links: [
+      { label: "Catálogo", href: "/cursos" },
+      { label: "Dificuldades na Aprendizagem", href: "/cursos/dificuldades-na-aprendizagem" },
+      { label: "Loja", href: "/loja" },
+      { label: "Área do Aluno", href: "/area-do-aluno" },
+    ],
+  },
+  {
+    title: "Conteúdo",
+    links: [
+      { label: "Todos os conteúdos", href: "/conteudo" },
+      { label: "Audição", href: "/conteudo/categoria/audicao" },
+      { label: "Deglutição", href: "/conteudo/categoria/degluticao" },
+      { label: "Comportamento infantil", href: "/conteudo/categoria/comportamento-infantil" },
+    ],
+  },
+] as const;
 
 const isDesktop = (page: Page): boolean => (page.viewportSize()?.width ?? 0) >= DESKTOP_MIN_WIDTH;
 
@@ -69,11 +101,11 @@ test.describe("cabeçalho: gota do item ativo", () => {
 
   const routes: [string, string][] = [
     ["/cursos", "Cursos"],
+    ["/avaliacao", "Avaliação"],
     ["/sobre", "Sobre"],
     ["/contato", "Contato"],
     ["/cursos/dificuldades-na-aprendizagem", "Cursos"],
     ["/conteudo", "Conteúdo"],
-    ["/loja/checkout", "Loja"],
   ];
 
   for (const [route, label] of routes) {
@@ -93,12 +125,23 @@ test.describe("cabeçalho: gota do item ativo", () => {
     await expect.poll(() => readGota(page), { timeout: 15_000 }).toEqual({ under: "Cursos", opacity: 1 });
   });
 
-  test("fora do menu (privacidade) não há gota", async ({ page }) => {
-    await page.goto("/privacidade");
+  test("o menu tem 5 itens na ordem aprovada e a Loja não está nele", async ({ page }) => {
+    await page.goto("/cursos");
     const nav = page.getByRole("navigation", { name: NAV_NAME, exact: true });
-    await expect(nav.locator("[aria-current='page']")).toHaveCount(0);
-    await expect.poll(async () => (await readGota(page)).opacity, { timeout: 15_000 }).toBe(0);
+    await expect(nav.getByRole("link")).toHaveText(MAIN_NAV_LABELS);
+    await expect(nav.getByRole("link", { name: "Avaliação", exact: true })).toHaveAttribute("href", "/avaliacao");
+    await expect(nav.getByRole("link", { name: "Loja", exact: true })).toHaveCount(0);
   });
+
+  /* Páginas que não são itens do menu (privacidade, termos, Loja) não têm gota nem aria-current. */
+  for (const route of ["/privacidade", "/termos-de-uso", "/loja", "/loja/checkout"]) {
+    test(`fora do menu (${route}) não há gota`, async ({ page }) => {
+      await page.goto(route);
+      const nav = page.getByRole("navigation", { name: NAV_NAME, exact: true });
+      await expect(nav.locator("[aria-current='page']")).toHaveCount(0);
+      await expect.poll(async () => (await readGota(page)).opacity, { timeout: 15_000 }).toBe(0);
+    });
+  }
 
   test("a gota acompanha a navegação por cliques", async ({ page }) => {
     await page.goto("/cursos");
@@ -205,11 +248,13 @@ test.describe("menu móvel", () => {
     const dialog = page.getByRole("dialog", { name: "Menu" });
     await expect(dialog).toBeVisible();
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
-    for (const label of ["Cursos", "Sobre", "Conteúdo", "Loja", "Contato"]) {
+    for (const label of MAIN_NAV_LABELS) {
       const link = dialog.getByRole("link", { name: label, exact: true });
       await expect(link).toBeVisible();
       expect((await link.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(48);
     }
+    await expect(dialog.getByRole("link", { name: "Avaliação", exact: true })).toHaveAttribute("href", "/avaliacao");
+    await expect(dialog.getByRole("link", { name: "Loja", exact: true })).toHaveCount(0);
     await expect(dialog.getByRole("link", { name: "Sobre", exact: true })).toHaveAttribute("aria-current", "page");
     await expect(dialog.getByRole("link", { name: "Área do Aluno" })).toHaveAttribute("href", "/area-do-aluno");
 
@@ -277,13 +322,39 @@ test.describe("rodapé", () => {
     await page.mouse.move(0, 0);
     await expect(notice).toHaveText("", { timeout: 6000 });
 
-    /* 4 colunas de links, logo empilhado, copyright com o ano do servidor, privacidade e "Voltar ao topo". */
-    await expect(footer.getByRole("navigation")).toHaveCount(4);
+    /* 3 colunas de links, logo empilhado, copyright com o ano do servidor, os dois links legais e "Voltar ao topo". */
+    await expect(footer.getByRole("navigation")).toHaveCount(FOOTER_COLUMNS.length);
     await expect(footer.getByRole("img", { name: "Salete Brocca" })).toBeVisible();
     await expect(footer).toContainText(`© ${new Date().getFullYear()} SaleteBrocca`);
     await expect(footer.getByRole("link", { name: "Política de privacidade" })).toHaveAttribute("href", "/privacidade");
+    await expect(footer.getByRole("link", { name: "Termos de uso" })).toHaveAttribute("href", "/termos-de-uso");
     await expect(footer.getByRole("button", { name: "Voltar ao topo" })).toBeVisible();
     expect(await noHorizontalScroll(page)).toBe(true);
+  });
+
+  test("3 colunas (Atendimento, Cursos, Conteúdo) com os links aprovados e sem âncoras", async ({ page }) => {
+    await page.goto("/cursos");
+    const footer = page.getByRole("contentinfo");
+    await footer.scrollIntoViewIfNeeded();
+
+    await expect(footer.getByRole("navigation")).toHaveCount(FOOTER_COLUMNS.length);
+    for (const column of FOOTER_COLUMNS) {
+      const nav = footer.getByRole("navigation", { name: column.title, exact: true });
+      await expect(nav.getByRole("heading", { level: 2, name: column.title })).toBeVisible();
+      await expect(nav.getByRole("link")).toHaveText(column.links.map((link) => link.label));
+      for (const link of column.links) {
+        await expect(nav.getByRole("link", { name: link.label, exact: true })).toHaveAttribute("href", link.href);
+      }
+    }
+    expect(await footer.locator("nav a[href*='#']").count()).toBe(0);
+    await expect(footer.getByRole("navigation", { name: "Profissão", exact: true })).toHaveCount(0);
+  });
+
+  test("'Marcar avaliação' do rodapé leva a /avaliacao", async ({ page }) => {
+    await page.goto("/cursos");
+    const footer = page.getByRole("contentinfo");
+    await footer.getByRole("link", { name: "Marcar avaliação", exact: true }).click();
+    await expect(page).toHaveURL(/\/avaliacao$/, { timeout: 15_000 });
   });
 
   test("links não ganham sublinhado no hover: clareiam e recuam 3px", async ({ page }) => {
@@ -305,14 +376,14 @@ test.describe("rodapé", () => {
     const decorations = await footer.locator("nav a").evaluateAll((anchors) =>
       anchors.map((anchor) => getComputedStyle(anchor).textDecorationLine),
     );
-    expect(decorations.length).toBeGreaterThanOrEqual(11);
+    expect(decorations.length).toBe(FOOTER_COLUMNS.reduce((total, column) => total + column.links.length, 0));
     for (const decoration of decorations) expect(decoration).toBe("none");
   });
 
   test("foco por teclado desenha contorno ciano nos links", async ({ page }) => {
     await page.goto("/cursos");
     const footer = page.getByRole("contentinfo");
-    const link = footer.getByRole("link", { name: "Artigos" });
+    const link = footer.getByRole("link", { name: "Todos os conteúdos" });
     await link.scrollIntoViewIfNeeded();
     await page.keyboard.press("Shift");
     await link.focus();
@@ -322,7 +393,7 @@ test.describe("rodapé", () => {
     await expect(link).toHaveCSS("outline-color", await tokenColor(page, "--cyan"));
   });
 
-  test("o link de privacidade leva a /privacidade e Voltar ao topo rola ao início", async ({ page }) => {
+  test("os links legais levam a /privacidade e /termos-de-uso; Voltar ao topo rola ao início", async ({ page }) => {
     await page.goto("/sobre");
     const footer = page.getByRole("contentinfo");
     await footer.getByRole("button", { name: "Voltar ao topo" }).scrollIntoViewIfNeeded();
@@ -332,11 +403,14 @@ test.describe("rodapé", () => {
 
     await footer.getByRole("link", { name: "Política de privacidade" }).click();
     await expect(page).toHaveURL(/\/privacidade$/);
+
+    await footer.getByRole("link", { name: "Termos de uso" }).click();
+    await expect(page).toHaveURL(/\/termos-de-uso$/);
   });
 });
 
 test.describe("cabeçalho não cobre o conteúdo", () => {
-  for (const route of ["/cursos", "/contato", "/area-do-aluno/login", "/privacidade", "/loja/checkout"]) {
+  for (const route of ["/cursos", "/contato", "/area-do-aluno/login", "/privacidade", "/termos-de-uso", "/loja/checkout"]) {
     test(`${route}: a pílula termina antes do primeiro título`, async ({ page }) => {
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.goto(route);

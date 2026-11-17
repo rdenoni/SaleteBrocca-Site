@@ -21,7 +21,7 @@ test("eyebrow em fundo claro usa blue-strong (nunca --blue em texto pequeno)", a
 });
 
 test("seções sem eyebrow redundante", async ({ page }) => {
-  for (const route of ["/", "/sobre", "/cursos", "/loja", "/contato"]) {
+  for (const route of ["/", "/sobre", "/cursos", "/loja", "/contato", "/avaliacao", "/termos-de-uso"]) {
     await page.goto(route);
     await expect(page.locator("main .eyebrow").filter({ visible: true })).toHaveCount(0);
   }

@@ -1,0 +1,37 @@
+/* Trilha de navegação: texto pequeno em --text-muted, links em --blue-strong (nunca --blue em texto pequeno),
+   alvo de 48px de altura. A margem fica com quem usa (prop className). */
+.trail ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 400 15px/22px var(--font-sans);
+  color: var(--text-muted);
+}
+
+.trail li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.trail a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 48px;
+  color: var(--blue-strong);
+  font-weight: 700;
+}
+
+.trail svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}

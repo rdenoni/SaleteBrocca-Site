@@ -107,7 +107,8 @@ export interface Activity {
   pending?: string;
 }
 
-export type ProductCategory = "cursos" | "materiais" | "jogos";
+/* Cursos não são produtos da Loja: vivem em /cursos. */
+export type ProductCategory = "materiais" | "jogos";
 
 export interface ProductCategoryInfo {
   id: ProductCategory;
@@ -125,7 +126,7 @@ export interface ProductFact {
 export interface Product {
   slug: string;
   category: ProductCategory;
-  /** Tipo exibido no selo do card (ex.: "Curso online"). */
+  /** Tipo exibido no selo do card (ex.: "Material de apoio"). */
   kind: string;
   title: string;
   summary: string;
@@ -135,12 +136,10 @@ export interface Product {
   /** null enquanto a cliente não confirmar. */
   price: string | null;
   facts: ProductFact[];
-  /** Dados curtos e confirmados para o resumo do pedido (ex.: "6 módulos"). */
+  /** Dados curtos e confirmados para o resumo do pedido. */
   highlights: string[];
   /** O que o comprador recebe. */
   includes: string[];
-  /** Página com o conteúdo completo, quando existir (ex.: página do curso). */
-  detailsHref?: string;
 }
 
 export type LessonStatus = "completed" | "in-progress" | "not-started";

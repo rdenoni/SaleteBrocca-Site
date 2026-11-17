@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { CheckoutView } from "@/components/shop/CheckoutView";
 import { countLessons, getCourse, getCourses } from "@/lib/content/courses";
+import styles from "./compra.module.css";
 
 interface PurchasePageProps {
   params: Promise<{ slug: string }>;
@@ -30,6 +32,16 @@ export default async function PurchasePage({ params }: PurchasePageProps) {
   return (
     <>
       <PageBanner eyebrow={course.title} title="Inscrição" size="compact" />
+      <div className="container">
+        <Breadcrumbs
+          className={styles.trail}
+          items={[
+            { label: "Cursos", href: "/cursos" },
+            { label: course.title, href: `/cursos/${course.slug}` },
+            { label: "Inscrição", href: `/cursos/${course.slug}/compra` },
+          ]}
+        />
+      </div>
       <CheckoutView
         item={{
           title: course.title,

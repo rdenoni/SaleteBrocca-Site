@@ -113,9 +113,11 @@ test.describe("Home", () => {
     if (isDesktop(width)) {
       await expect(desktopNav).toBeVisible();
       await expect(menuButton).toBeHidden();
-      for (const label of ["Cursos", "Sobre", "Conteúdo", "Loja", "Contato"]) {
-        await expect(desktopNav.getByRole("link", { name: label })).toBeVisible();
+      /* Menu aprovado no mapa do site: a Loja saiu do topo (fica no rodapé) e a Avaliação entrou. */
+      for (const label of ["Cursos", "Avaliação", "Conteúdo", "Sobre", "Contato"]) {
+        await expect(desktopNav.getByRole("link", { name: label, exact: true })).toBeVisible();
       }
+      await expect(desktopNav.getByRole("link", { name: "Loja", exact: true })).toHaveCount(0);
       return;
     }
 
@@ -147,6 +149,13 @@ test.describe("Home", () => {
     await expect(page.locator("#avaliacao form").getByRole("link", { name: "política de privacidade" })).toHaveAttribute(
       "href",
       "/privacidade",
+    );
+  });
+
+  test("avaliação da Home leva a /avaliacao pelo link 'Como funciona a avaliação'", async ({ page }) => {
+    await expect(page.locator("#avaliacao").getByRole("link", { name: "Como funciona a avaliação" })).toHaveAttribute(
+      "href",
+      "/avaliacao#como-funciona",
     );
   });
 
