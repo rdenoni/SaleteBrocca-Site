@@ -34,6 +34,11 @@
   color: var(--charcoal);
 }
 
+.intro {
+  font: 400 18px/32px var(--font-serif);
+  color: var(--charcoal);
+}
+
 .toc ol {
   display: flex;
   flex-wrap: wrap;
@@ -78,15 +83,15 @@
   font-weight: 700;
 }
 
-.forms,
-.pendingList {
+.pendingList,
+.basis {
   display: grid;
   gap: var(--space-3);
   margin: 0;
 }
 
-.forms div,
-.pendingList div {
+.pendingList div,
+.basis div {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
@@ -97,22 +102,91 @@
   font: 400 16px/24px var(--font-sans);
 }
 
-.forms dt,
-.pendingList dt {
+.pendingList dt,
+.basis dt {
   font-weight: 700;
   color: var(--navy);
 }
 
-.forms dd,
-.pendingList dd {
+.pendingList dd,
+.basis dd {
   margin: 0;
   color: var(--charcoal);
 }
 
-.forms dt a {
+.pendingList dd {
+  max-width: 420px;
+}
+
+/* Finalidade e base legal: duas linhas curtas sob o nome do fluxo. */
+.basis dd {
+  display: grid;
+  gap: var(--space-1);
+  max-width: 420px;
+}
+
+.flows {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flow {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-sm);
+  background: var(--light-blue);
+  font: 400 16px/24px var(--font-sans);
+  color: var(--navy);
+}
+
+.flow h3,
+.subtitle {
+  font: 800 19px/26px var(--font-sans);
+  color: var(--navy);
+}
+
+.flow h3 a {
   display: inline-flex;
   align-items: center;
   min-height: 48px;
+  color: var(--navy);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fields {
+  font-weight: 700;
+}
+
+.plainList {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: var(--space-6);
+  font: 400 17px/26px var(--font-serif);
+}
+
+/* Botão com cara de link (abre as preferências de cookies). */
+.linkButton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--blue-strong);
+  font: 700 17px/26px var(--font-sans);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.linkButton:hover {
+  color: var(--navy);
 }
 
 .rights {
@@ -156,9 +230,23 @@
     line-height: 30px;
   }
 
+  .intro {
+    font-size: 17px;
+    line-height: 30px;
+  }
+
+  .flow {
+    padding: var(--space-4);
+  }
+
+  .pendingList dd,
+  .basis dd {
+    max-width: none;
+  }
+
   /* Rótulo em cima, valor embaixo: todas as linhas alinhadas à esquerda. */
-  .forms div,
-  .pendingList div {
+  .pendingList div,
+  .basis div {
     flex-direction: column;
     align-items: flex-start;
   }

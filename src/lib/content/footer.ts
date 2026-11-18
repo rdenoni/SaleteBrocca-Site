@@ -4,7 +4,8 @@ import { getCourses } from "./courses";
 import { STUDENT_AREA } from "./site";
 
 /* Rodapé aprovado: três colunas, sem âncoras (#). Os links de curso e de categoria saem dos dados do site,
-   então um curso ou uma categoria nova aparece aqui sozinho.
+   então um curso ou uma categoria nova aparece aqui sozinho. Curso "em breve" não tem página: fica de fora do
+   rodapé (só links reais) e aparece desabilitado no catálogo (/cursos), na Home e na Loja.
    Módulo separado de site.ts de propósito: site.ts é importado por componentes de cliente (cabeçalho, menu, rodapé)
    e os getters de conteúdo vão virar assíncronos com o CMS. Só o layout (servidor) importa este arquivo e passa as
    colunas prontas ao Footer por props. */

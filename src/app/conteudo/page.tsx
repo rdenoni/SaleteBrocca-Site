@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import { ArticleCategoryNav } from "@/components/content/ArticleCategoryNav";
 import { ArticleGrid } from "@/components/content/ArticleGrid";
 import { FeaturedArticle } from "@/components/content/FeaturedArticle";
+import { PodcastSection } from "@/components/content/PodcastSection";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { getArticles } from "@/lib/content/articles";
 import styles from "./conteudo.module.css";
 
 export const metadata: Metadata = {
   title: "Conteúdo",
-  description: "Artigos e orientações de Maria Salete Brocca Denoni, professora e fonoaudióloga clínica.",
+  description:
+    "Artigos, orientações e podcast de Maria Salete Brocca Denoni, professora e fonoaudióloga clínica.",
 };
 
 export default function ContentLibraryPage() {
@@ -18,7 +20,7 @@ export default function ContentLibraryPage() {
     <>
       <PageBanner
         title="Conteúdo"
-        subtitle="Artigos e orientações de Maria Salete Brocca Denoni."
+        subtitle="Artigos, orientações e podcast de Maria Salete Brocca Denoni."
         size="compact"
       />
 
@@ -33,6 +35,8 @@ export default function ContentLibraryPage() {
           </h2>
           <ArticleGrid articles={rest} />
         </section>
+
+        <PodcastSection />
       </div>
     </>
   );

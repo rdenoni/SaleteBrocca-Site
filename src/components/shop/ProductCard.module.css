@@ -42,6 +42,31 @@
   text-transform: uppercase;
 }
 
+/* "Em breve": selo escuro no canto oposto; foto real (curso) perde a cor, o texto não muda. */
+.statusBadge {
+  position: absolute;
+  right: var(--space-6);
+  top: var(--space-6);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--navy);
+  color: var(--white);
+  font: 700 12px/16px var(--font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.card[data-status="coming-soon"] .media > img {
+  filter: grayscale(1) contrast(1.05) opacity(0.8);
+}
+
+.unavailable {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--light-gray);
+  font: 700 15px/22px var(--font-sans);
+  color: var(--text-muted);
+}
+
 .body {
   display: flex;
   flex: 1;
@@ -98,8 +123,20 @@
   z-index: 2;
 }
 
-.card:hover .cta {
+.card:hover .cta:not(:disabled) {
   background: var(--navy);
+  border-color: var(--navy);
+  color: var(--white);
+}
+
+/* Botão desabilitado (curso em breve): sem área de clique esticada e sem elevação do card. */
+.cta:disabled::after {
+  display: none;
+}
+
+.card:has(.cta:disabled):hover {
+  box-shadow: var(--shadow-card);
+  transform: none;
 }
 
 .card:has(.cta:focus-visible) {

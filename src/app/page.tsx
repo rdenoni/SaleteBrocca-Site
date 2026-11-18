@@ -6,7 +6,7 @@ import { FraseConceito } from "@/components/home/FraseConceito";
 import { HomeFaq } from "@/components/home/HomeFaq";
 import { HomeHero } from "@/components/home/HomeHero";
 import { getFeaturedArticles } from "@/lib/content/articles";
-import { getCourses } from "@/lib/content/courses";
+import { getCatalogCourses, getCourses } from "@/lib/content/courses";
 import { getTestimonials } from "@/lib/content/testimonials";
 import { ScrollProgress } from "@/motion/ScrollProgress";
 
@@ -22,7 +22,7 @@ export default function HomePage() {
       <EvaluationSection testimonials={getTestimonials()} />
       <FeaturedContent articles={getFeaturedArticles()} />
       <AboutPreview />
-      <FeaturedCourses courses={courses} />
+      <FeaturedCourses courses={getCatalogCourses()} />
       <HomeFaq course={courses[0]} />
       <FraseConceito />
     </>

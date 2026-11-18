@@ -21,8 +21,9 @@
 
 .consent {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* o texto pode quebrar em várias linhas: a caixa fica na primeira */
   min-height: 48px;
+  padding-block: 13px;
   gap: var(--space-3);
   font: 400 15px/22px var(--font-sans);
   color: var(--charcoal);

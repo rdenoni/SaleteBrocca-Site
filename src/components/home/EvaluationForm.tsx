@@ -9,15 +9,23 @@ import { MotionButton } from "@/motion/MotionButton";
 import { TextReveal } from "@/motion/TextReveal";
 import { TransitionLink } from "@/motion/transitions/TransitionLink";
 import { useMotionTokens } from "@/motion/useMotionTokens";
-import { HOME_EVALUATION as EVALUATION } from "@/lib/content/home";
-import { compactErrors, validateName, validatePhone } from "@/lib/validation";
+import { HOME_EVALUATION } from "@/lib/content/home";
+import { compactErrors, validateConsent, validateName, validatePhone } from "@/lib/validation";
 import styles from "./EvaluationForm.module.css";
 
-type FieldName = "nome" | "telefone";
+/* Textos do formulário (home.ts) mais os do aviso de privacidade deste ponto de coleta (LGPD). */
+const EVALUATION = {
+  ...HOME_EVALUATION,
+  consentBefore: "Concordo com o uso dos meus dados para retornar este pedido de avaliação, conforme a ",
+  healthNotice: "Informe só os seus dados, como responsável. Não inclua dados de saúde da criança.",
+} as const;
+
+type TextFieldName = "nome" | "telefone";
+type FieldName = TextFieldName | "privacidade";
 type FormErrors = Partial<Record<FieldName, string>>;
 
-const FIELD_ORDER: readonly FieldName[] = ["nome", "telefone"];
-const VALIDATORS: Record<FieldName, (value: string) => string | undefined> = {
+const FIELD_ORDER: readonly FieldName[] = ["nome", "telefone", "privacidade"];
+const VALIDATORS: Record<TextFieldName, (value: string) => string | undefined> = {
   nome: validateName,
   telefone: validatePhone,
 };
@@ -94,6 +102,7 @@ export function EvaluationForm() {
     const nextErrors = compactErrors({
       nome: VALIDATORS.nome(String(data.get("nome") ?? "")),
       telefone: VALIDATORS.telefone(String(data.get("telefone") ?? "")),
+      privacidade: validateConsent(data.get("privacidade") === "on"),
     });
     /* Confirma o DOM antes de focar: o campo já nasce com aria-invalid e aria-describedby. */
     flushSync(() => {
@@ -106,14 +115,23 @@ export function EvaluationForm() {
 
   /* Corrigir o campo limpa o erro dele na hora; o aviso de sucesso some ao voltar a editar. */
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    const name = event.target.name as FieldName;
+    const name = event.target.name as TextFieldName;
     setSubmitted(false);
     if (errors[name] && !VALIDATORS[name](event.target.value)) {
       setErrors((current) => ({ ...current, [name]: undefined }));
     }
   }
 
+  /* Marcar a caixa limpa o erro dela; qualquer mudança esconde o aviso de sucesso. */
+  function handleConsentChange(event: ChangeEvent<HTMLInputElement>) {
+    setSubmitted(false);
+    if (errors.privacidade && event.target.checked) {
+      setErrors((current) => ({ ...current, privacidade: undefined }));
+    }
+  }
+
   const titleId = `${id}-titulo`;
+  const privacidadeErrorId = `${id}-privacidade-erro`;
   const nomeErrorId = `${id}-nome-erro`;
   const telefoneErrorId = `${id}-telefone-erro`;
 
@@ -175,16 +193,30 @@ export function EvaluationForm() {
         <FieldError id={telefoneErrorId} message={errors.telefone} />
       </div>
 
+      <div className={styles.consentWrap}>
+        <label className={styles.consent}>
+          <input
+            type="checkbox"
+            name="privacidade"
+            aria-invalid={errors.privacidade ? true : undefined}
+            aria-describedby={errors.privacidade ? privacidadeErrorId : undefined}
+            onChange={handleConsentChange}
+          />
+          <span>
+            {EVALUATION.consentBefore}
+            <TransitionLink href={EVALUATION.privacyLink.href}>{EVALUATION.privacyLink.label}</TransitionLink>.
+          </span>
+        </label>
+        <FieldError id={privacidadeErrorId} message={errors.privacidade} />
+      </div>
+
       <div className={styles.actions}>
         <MotionButton type="submit" variant="outline">
           {EVALUATION.submit}
         </MotionButton>
       </div>
 
-      <p className={styles.privacy}>
-        {EVALUATION.privacyBefore}
-        <TransitionLink href={EVALUATION.privacyLink.href}>{EVALUATION.privacyLink.label}</TransitionLink>.
-      </p>
+      <p className={styles.privacy}>{EVALUATION.healthNotice}</p>
 
       {/* Região viva sempre montada: o texto de sucesso entra nela e é anunciado. */}
       <div role="status" className={styles.statusSlot}>

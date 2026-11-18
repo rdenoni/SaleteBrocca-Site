@@ -63,6 +63,9 @@ export const HOME_COURSES = {
   sectionTitle: "Cursos em destaque",
   badge: "Curso online",
   cta: "Ver curso",
+  soonBadge: "Em breve",
+  soonCta: "Em breve",
+  soonNote: "Curso em preparação. Ainda não está disponível para inscrição.",
 } as const;
 
 /* Frase-conceito do Manual da Marca (PROFILE_QUOTE), antes do rodapé. */

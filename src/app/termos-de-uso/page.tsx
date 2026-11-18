@@ -27,7 +27,8 @@ export default function TermsOfUsePage() {
           </p>
 
           <p className={styles.contact}>
-            Enquanto isso, você pode falar com a Salete pela <Link href="/contato">página de contato</Link>.
+            Para saber como seus dados pessoais são tratados, leia a <Link href="/privacidade">política de privacidade</Link>.
+            Enquanto os termos não saem, você pode falar com a Salete pela <Link href="/contato">página de contato</Link>.
           </p>
         </div>
       </div>

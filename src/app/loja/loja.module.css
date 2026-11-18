@@ -2,7 +2,12 @@
   padding-block: var(--space-12) var(--space-24);
 }
 
-/* Quem chega procurando curso (a Loja não os vende mais) acha o catálogo logo no topo. */
+/* Uma seção por categoria; o espaço entre elas separa os grupos na visão "Todos". */
+.section + .section {
+  margin-top: var(--space-24);
+}
+
+/* Atalho para o catálogo completo de cursos, com a descrição de cada um. */
 .coursesHint {
   display: flex;
   flex-wrap: wrap;

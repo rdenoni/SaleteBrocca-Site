@@ -38,8 +38,13 @@ export interface KiwifyLink {
   productId: string | null;
 }
 
+/** "available": no ar e à venda. "coming-soon": aparece nos catálogos, mas desabilitado (ainda não existe). */
+export type AvailabilityStatus = "available" | "coming-soon";
+
 export interface Course {
   slug: string;
+  /** Curso "coming-soon" aparece no catálogo e na Loja sem link nem compra; fica fora de rotas, sitemap e Área do Aluno. */
+  status: AvailabilityStatus;
   title: string;
   /** Público-alvo, conforme o roteiro oficial do curso. */
   audience: string;
@@ -116,11 +121,15 @@ export interface Activity {
   pending?: string;
 }
 
-/* Cursos não são produtos da Loja: vivem em /cursos. */
-export type ProductCategory = "materiais" | "jogos";
+/* Produtos avulsos da Loja. Cursos continuam vivendo em /cursos (courses.ts, com compra própria);
+   a Loja só os vitrine na categoria "cursos" (ShopCategoryId), apontando para /cursos/[slug]. */
+export type ProductCategory = "aplicativos" | "jogos" | "kits" | "materiais";
+
+/** Categorias exibidas na Loja: os produtos avulsos mais a vitrine de cursos. */
+export type ShopCategoryId = "cursos" | ProductCategory;
 
 export interface ProductCategoryInfo {
-  id: ProductCategory;
+  id: ShopCategoryId;
   label: string;
   /** Texto do estado vazio enquanto a categoria não tiver produtos confirmados. */
   emptyText: string;
@@ -132,24 +141,58 @@ export interface ProductFact {
   value: string | null;
 }
 
+/** "email": arquivo por e-mail (PDF); "download": download direto no site (aplicativo);
+    "correios": envio pelos Correios (produtos físicos). */
+export type ProductDelivery = "email" | "download" | "correios";
+
 export interface Product {
   slug: string;
   category: ProductCategory;
+  /** "coming-soon": visível na Loja, mas indisponível (sem compra nem checkout). */
+  status: AvailabilityStatus;
   /** Tipo exibido no selo do card (ex.: "Material de apoio"). */
   kind: string;
   title: string;
   summary: string;
   description: string[];
-  image: string;
+  /** Foto real do produto; null enquanto não houver (o card mostra o grafismo da marca, nunca foto inventada). */
+  image: string | null;
   imageAlt: string;
   /** null enquanto a cliente não confirmar. */
   price: string | null;
+  /** Como o produto chega ao comprador. */
+  delivery: ProductDelivery;
   facts: ProductFact[];
   /** Dados curtos e confirmados para o resumo do pedido. */
   highlights: string[];
   /** O que o comprador recebe. */
   includes: string[];
   kiwify: KiwifyLink;
+}
+
+/** Fala do roteiro de um episódio de podcast. */
+export interface PodcastLine {
+  speaker: string;
+  text: string;
+}
+
+/** Episódio de podcast ligado a um tema do curso. `simulated: true` = episódio de exemplo (sem áudio publicado). */
+export interface PodcastEpisode {
+  slug: string;
+  number: number;
+  title: string;
+  summary: string;
+  /** Slug do curso de onde vem o tema. */
+  courseSlug: string;
+  /** Aulas do curso que tratam o tema (códigos do roteiro oficial, ex.: "M02_A04"). */
+  lessonCodes: string[];
+  /** Pontos abordados no episódio. */
+  topics: string[];
+  /** Roteiro do episódio. */
+  script: PodcastLine[];
+  /** URL do áudio; null enquanto o episódio não for gravado. */
+  audioUrl: string | null;
+  simulated: boolean;
 }
 
 export type LessonStatus = "completed" | "in-progress" | "not-started";

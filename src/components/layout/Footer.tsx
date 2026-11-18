@@ -7,6 +7,7 @@ import { Stagger, StaggerItem } from "@/motion/Stagger";
 import { TransitionLink } from "@/motion/transitions/TransitionLink";
 import { useMotionTokens } from "@/motion/useMotionTokens";
 import type { FooterColumn } from "@/types/content";
+import { CookiePreferencesButton } from "@/components/privacy/CookiePreferencesButton";
 import { copyrightLine, LEGAL_LINKS } from "@/lib/content/site";
 import { BackToTop } from "./BackToTop";
 import { SocialProfiles } from "./SocialProfiles";
@@ -70,6 +71,7 @@ export function Footer({ columns, year }: FooterProps) {
               {link.label}
             </TransitionLink>
           ))}
+          <CookiePreferencesButton className={styles.legalButton} />
           <BackToTop />
         </div>
       </div>

@@ -1,15 +1,20 @@
 import type { Metadata } from "next";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { ShopCourseCard } from "@/components/shop/ShopCourseCard";
 import { UpcomingCategory } from "@/components/shop/UpcomingCategory";
 import { FilterNav, type FilterItem } from "@/components/ui/FilterNav";
 import { LinkArrow } from "@/components/ui/LinkArrow";
-import { getCategory, getProducts, PRODUCT_CATEGORIES } from "@/lib/content/shop";
+import { getCategory, getShopEntries, PRODUCT_CATEGORIES, type ShopEntry } from "@/lib/content/shop";
+import type { ProductCategoryInfo } from "@/types/content";
 import styles from "./loja.module.css";
+
+const SUBTITLE =
+  "Cursos, aplicativo, jogos educativos, kits personalizados e materiais em PDF de Maria Salete Brocca Denoni.";
 
 export const metadata: Metadata = {
   title: "Loja",
-  description: "Materiais de apoio, jogos e softwares de Maria Salete Brocca Denoni.",
+  description: SUBTITLE,
   /* Os filtros ?categoria= são variações desta página até existir /loja/categoria/[slug]. */
   alternates: { canonical: "/loja" },
 };
@@ -18,86 +23,91 @@ interface ShopPageProps {
   searchParams: Promise<{ categoria?: string | string[] }>;
 }
 
-function countLabel(count: number): string {
-  if (count === 0) return "Nenhum produto disponível ainda";
-  return count === 1 ? "1 produto disponível" : `${count} produtos disponíveis`;
+function itemsLabel(count: number): string {
+  return count === 1 ? "1 item" : `${count} itens`;
+}
+
+function availabilityLabel(entries: readonly ShopEntry[]): string {
+  const soon = entries.filter((entry) => entry.status === "coming-soon").length;
+  const available = entries.length - soon;
+  const availablePart = available === 1 ? "1 disponível" : `${available} disponíveis`;
+  return soon > 0 ? `${availablePart} · ${soon} em breve` : availablePart;
+}
+
+function EntryCard({ entry }: { entry: ShopEntry }) {
+  return entry.type === "course" ? <ShopCourseCard course={entry.course} /> : <ProductCard product={entry.product} />;
+}
+
+function CategorySection({ category, entries }: { category: ProductCategoryInfo; entries: readonly ShopEntry[] }) {
+  const headingId = `categoria-${category.id}`;
+  return (
+    <section className={styles.section} aria-labelledby={headingId}>
+      <div className={styles.heading}>
+        <h2 id={headingId} className={styles.title}>
+          {category.label}
+        </h2>
+        {entries.length > 0 && <p className={styles.total}>{availabilityLabel(entries)}</p>}
+      </div>
+
+      {entries.length === 0 ? (
+        <div className={styles.empty}>
+          <UpcomingCategory category={category} tone="navy" showTitle={false} />
+        </div>
+      ) : (
+        <ul className={styles.grid}>
+          {entries.map((entry) => (
+            <li key={entry.key}>
+              <EntryCard entry={entry} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const { categoria } = await searchParams;
   /* Categoria desconhecida ou repetida na URL: mostra o catálogo inteiro. */
   const active = getCategory(typeof categoria === "string" ? categoria : undefined);
-  const products = getProducts(active?.id);
-  const upcoming = active
-    ? []
-    : PRODUCT_CATEGORIES.filter((category) => getProducts(category.id).length === 0);
+  const visible = active ? [active] : PRODUCT_CATEGORIES;
+  const totalItems = PRODUCT_CATEGORIES.reduce((sum, category) => sum + getShopEntries(category.id).length, 0);
 
-  const countOrSoon = (count: number) => (count > 0 ? count : "em breve");
-  const productsLabel = (count: number) =>
-    count === 0 ? "em breve" : count === 1 ? "1 produto" : `${count} produtos`;
   const filters: FilterItem[] = [
     {
       label: "Todos",
       href: "/loja",
       current: !active,
-      count: countOrSoon(getProducts().length),
-      countLabel: productsLabel(getProducts().length),
+      count: totalItems,
+      countLabel: itemsLabel(totalItems),
     },
     ...PRODUCT_CATEGORIES.map((category) => {
-      const count = getProducts(category.id).length;
+      const count = getShopEntries(category.id).length;
       return {
         label: category.label,
         href: `/loja?categoria=${category.id}`,
         current: category.id === active?.id,
-        count: countOrSoon(count),
-        countLabel: productsLabel(count),
+        count,
+        countLabel: itemsLabel(count),
       };
     }),
   ];
 
   return (
     <>
-      <PageBanner
-        title="Loja"
-        subtitle="Materiais de apoio, jogos e softwares de Maria Salete Brocca Denoni."
-        size="compact"
-      />
+      <PageBanner title="Loja" subtitle={SUBTITLE} size="compact" />
 
       <div className={`container ${styles.page}`}>
         <p className={styles.coursesHint}>
-          <span>Procurando os cursos?</span>
-          <LinkArrow href="/cursos">Ver o catálogo de cursos</LinkArrow>
+          <span>Quer conhecer os cursos em detalhe?</span>
+          <LinkArrow href="/cursos">Ver todos os cursos</LinkArrow>
         </p>
 
         <FilterNav label="Categorias da loja" items={filters} keepScroll />
 
-        <section aria-labelledby="catalogo-titulo">
-          <div className={styles.heading}>
-            <h2 id="catalogo-titulo" className={styles.title}>
-              {active ? active.label : "Todos os produtos"}
-            </h2>
-            <p className={styles.total}>{countLabel(products.length)}</p>
-          </div>
-
-          {active && products.length === 0 ? (
-            <div className={styles.empty}>
-              <UpcomingCategory category={active} tone="navy" showTitle={false} />
-            </div>
-          ) : (
-            <ul className={styles.grid}>
-              {products.map((product) => (
-                <li key={product.slug}>
-                  <ProductCard product={product} />
-                </li>
-              ))}
-              {upcoming.map((category, index) => (
-                <li key={category.id}>
-                  <UpcomingCategory category={category} tone={index % 2 === 0 ? "light" : "navy"} />
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+        {visible.map((category) => (
+          <CategorySection key={category.id} category={category} entries={getShopEntries(category.id)} />
+        ))}
       </div>
     </>
   );

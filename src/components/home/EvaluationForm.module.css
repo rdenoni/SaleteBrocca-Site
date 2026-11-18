@@ -168,6 +168,36 @@
   color: var(--charcoal);
 }
 
+/* Caixa de consentimento (LGPD): desmarcada por padrão, alvo de 48px, texto livre para quebrar em linhas. */
+.consentWrap {
+  display: grid;
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-height: 48px;
+  padding-block: 13px;
+  font: 400 14px/22px var(--font-sans);
+  color: var(--charcoal);
+  cursor: pointer;
+}
+
+.consent input {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--blue-strong);
+  cursor: pointer;
+}
+
+.consent a {
+  color: var(--blue-strong);
+  font-weight: 700;
+}
+
 .privacy a {
   display: inline-block;
   padding-block: 14px;

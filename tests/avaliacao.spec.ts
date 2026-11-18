@@ -53,11 +53,29 @@ test.describe("Avaliação", () => {
     await expect(form.getByText("Informe um telefone com DDD.")).toBeVisible();
     await expect(form.getByLabel("Nome completo")).toHaveAttribute("aria-invalid", "true");
 
+    await expect(form.getByText("É preciso aceitar a política de privacidade.")).toBeVisible();
+
     await form.getByLabel("Nome completo").fill("Maria da Silva");
     await form.getByLabel("Telefone").fill("(48) 99999-0000");
+    await form.getByRole("checkbox").check();
     await form.getByRole("button", { name: "Pedir avaliação" }).click();
     await expect(form.getByRole("status")).toContainText("Dados conferidos");
     await expect(form.getByText("Informe seu nome completo.")).toHaveCount(0);
+    await expect(form.getByText("É preciso aceitar a política de privacidade.")).toHaveCount(0);
+  });
+
+  test("consentimento: caixa desmarcada, um só link para a política e aviso sobre dados de saúde", async ({ page }) => {
+    const form = page.locator("#formulario form");
+    await expect(form.getByRole("checkbox")).not.toBeChecked();
+    await expect(form.getByRole("link", { name: "política de privacidade" })).toHaveCount(1);
+    await expect(form.getByText("Não inclua dados de saúde da criança.")).toBeVisible();
+
+    await form.getByLabel("Nome completo").fill("Maria da Silva");
+    await form.getByLabel("Telefone").fill("(48) 99999-0000");
+    await form.getByRole("button", { name: "Pedir avaliação" }).click();
+    await expect(form.getByRole("checkbox")).toBeFocused();
+    await expect(form.getByRole("checkbox")).toHaveAttribute("aria-invalid", "true");
+    await expect(form.getByRole("status")).not.toContainText("Dados conferidos");
   });
 
   test("formulário aponta a política de privacidade", async ({ page }) => {

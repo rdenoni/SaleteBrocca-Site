@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import styles from "./AuthCard.module.css";
 
@@ -35,6 +36,9 @@ export function AuthCard({ title, lead, children, note, footer }: AuthCardProps)
           <p className={styles.lead}>{lead}</p>
           {children}
           {note && <p className={styles.note}>{note}</p>}
+          <p className={styles.privacy}>
+            Veja como tratamos seus dados na <Link href="/privacidade">política de privacidade</Link>.
+          </p>
           {footer && <p className={styles.alt}>{footer}</p>}
         </div>
       </div>

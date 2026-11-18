@@ -1,0 +1,214 @@
+/* Aviso de cookies: faixa navy fixa na base da tela, sem cobrir a página inteira (não é diálogo).
+   Em telas pequenas o painel de preferências rola dentro do aviso, que nunca passa de 80% da altura. */
+.banner {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 1000;
+  max-height: 80vh;
+  max-height: 80dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--navy);
+  color: var(--white);
+  box-shadow: 0 -8px 24px rgba(15, 36, 56, 0.24);
+  animation: banner-in var(--motion-base, 240ms) var(--ease-out, ease-out);
+}
+
+.banner:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: -4px;
+}
+
+.inner {
+  display: grid;
+  gap: var(--space-4);
+  max-width: calc(var(--container) + 2 * var(--page-gutter));
+  margin-inline: auto;
+  padding: var(--space-4) var(--page-gutter);
+}
+
+.text {
+  display: grid;
+  gap: var(--space-1);
+  font: 400 15px/22px var(--font-sans);
+}
+
+.title {
+  font: 800 16px/24px var(--font-sans);
+  color: var(--white);
+}
+
+.text a {
+  color: var(--white);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.text a:hover {
+  text-decoration-color: var(--cyan);
+}
+
+.actions,
+.panelActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 var(--space-6);
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  font: 700 14px/20px var(--font-sans);
+  cursor: pointer;
+  transition:
+    background-color var(--motion-quick) var(--ease-out),
+    border-color var(--motion-quick) var(--ease-out),
+    color var(--motion-quick) var(--ease-out);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 3px;
+}
+
+/* Texto navy sobre ciano. */
+.primary {
+  background: var(--cyan);
+  color: var(--navy);
+}
+
+.primary:hover {
+  background: var(--white);
+}
+
+.outline {
+  border-color: var(--white);
+  background: transparent;
+  color: var(--white);
+}
+
+.outline:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.ghost {
+  border-color: var(--on-navy-muted);
+  background: transparent;
+  color: var(--white);
+}
+
+.ghost:hover,
+.ghost[aria-expanded="true"] {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--navy-raised);
+}
+
+.categories {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.category {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.categoryLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 48px;
+  font: 700 15px/22px var(--font-sans);
+  cursor: pointer;
+}
+
+.toggle {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  accent-color: var(--cyan);
+  cursor: pointer;
+}
+
+.toggle:disabled {
+  cursor: not-allowed;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 3px;
+}
+
+.always {
+  font-weight: 400;
+  color: var(--on-navy-muted);
+}
+
+.categoryText {
+  padding-left: calc(24px + var(--space-3));
+  font: 400 14px/20px var(--font-sans);
+  color: var(--on-navy-muted);
+}
+
+.categoryText strong {
+  color: var(--white);
+}
+
+@media (min-width: 1100px) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: var(--space-8);
+  }
+
+  .panel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 767px) {
+  .button {
+    flex: 1 1 auto;
+    padding-inline: var(--space-4);
+  }
+}
+
+@keyframes banner-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner {
+    animation: none;
+  }
+
+  .button {
+    transition: none;
+  }
+}

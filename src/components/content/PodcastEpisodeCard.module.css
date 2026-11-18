@@ -1,0 +1,116 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  min-height: 380px;
+  padding: var(--space-8) var(--space-8) var(--space-6);
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: var(--radius-md);
+  background: var(--light-blue);
+  color: var(--navy);
+}
+
+/* Grafismo tipográfico, como a letra gigante dos cards de artigo. */
+.numeral {
+  position: absolute;
+  top: -48px;
+  right: 8px;
+  z-index: -1;
+  font: 800 320px/1 var(--font-sans);
+  color: var(--cyan);
+  opacity: 0.26;
+  user-select: none;
+  pointer-events: none;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font: 700 13px/16px var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+
+.eyebrow svg {
+  width: 20px;
+  height: 20px;
+  color: var(--blue-strong);
+}
+
+.title {
+  font: 800 26px/32px var(--font-sans);
+  color: var(--navy);
+  text-wrap: pretty;
+}
+
+.link {
+  text-decoration: none;
+}
+
+/* O bloco inteiro é clicável. */
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.card:has(.link:focus-visible) {
+  outline: 3px solid var(--blue-strong);
+  outline-offset: -8px;
+}
+
+.summary {
+  font: 400 16px/26px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
+  width: 100%;
+  margin-top: auto;
+  padding-top: var(--space-2);
+}
+
+/* O marcador padrão (cinza) fica no limite de contraste sobre azul-claro: aqui ele usa o navy. */
+.footer :global(.pending) {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+.card:hover .title {
+  text-decoration: underline;
+  text-decoration-color: var(--cyan);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+}
+
+@media (max-width: 767px) {
+  .card {
+    min-height: 0;
+    padding: var(--space-6) var(--space-6) var(--space-4);
+  }
+
+  .numeral {
+    font-size: 240px;
+    top: -36px;
+  }
+
+  .title {
+    font-size: 23px;
+    line-height: 29px;
+  }
+}

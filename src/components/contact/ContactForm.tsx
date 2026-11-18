@@ -91,7 +91,13 @@ export function ContactForm() {
         error={errors.email}
       />
       <SelectField id="contato-assunto" name="assunto" label="Assunto" options={CONTACT_SUBJECTS} />
-      <TextAreaField id="contato-mensagem" name="mensagem" label="Mensagem" error={errors.mensagem} />
+      <TextAreaField
+        id="contato-mensagem"
+        name="mensagem"
+        label="Mensagem"
+        hint="Não inclua dados de saúde de crianças ou adolescentes."
+        error={errors.mensagem}
+      />
 
       <div className={styles.consentWrap}>
         <label className={styles.consent}>
@@ -102,7 +108,8 @@ export function ContactForm() {
             aria-describedby={errors.privacidade ? "contato-privacidade-erro" : undefined}
           />
           <span>
-            Li e aceito a <Link href="/privacidade">política de privacidade</Link>.
+            Concordo com o uso dos meus dados para responder a este contato, conforme a{" "}
+            <Link href="/privacidade">política de privacidade</Link>.
           </span>
         </label>
         {errors.privacidade && (

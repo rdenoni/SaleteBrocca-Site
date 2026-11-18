@@ -6,6 +6,7 @@ const COURSES: readonly Course[] = [
   {
     slug: "dificuldades-na-aprendizagem",
     title: "Dificuldades na Aprendizagem",
+    status: "available",
     audience:
       "Para pais, professores, pedagogos, psicopedagogos, fonoaudiólogos e outros profissionais que acompanham crianças em idade escolar.",
     description: [
@@ -99,13 +100,45 @@ const COURSES: readonly Course[] = [
       },
     ],
   },
+  {
+    slug: "alfabetizacao",
+    title: "Alfabetização",
+    status: "coming-soon",
+    audience:
+      "Para pais, professores e profissionais que acompanham crianças no início da alfabetização.",
+    description: [
+      "Este curso está em preparação e ainda não está disponível para inscrição.",
+      "A proposta é conversar sobre o processo de alfabetização: consciência fonológica, relação entre letra e som e os primeiros passos da leitura e da escrita.",
+    ],
+    outcomes: [],
+    notice: "Curso em preparação. Ainda não está disponível para inscrição.",
+    image: "/images/hero/crianca-escrevendo.jpg",
+    imageAlt: "Criança escrevendo em um caderno",
+    commercial: { price: null, workload: null, certificate: null, access: null },
+    kiwify: { checkoutUrl: null, productId: null },
+    modules: [],
+  },
 ];
 
+/* Só cursos disponíveis alimentam rotas, compra, Área do Aluno, sitemap e Kiwify. Cursos "em breve" só aparecem no catálogo. */
+export function isCourseAvailable(course: Course): boolean {
+  return course.status === "available";
+}
+
 export function getCourses(): readonly Course[] {
-  return COURSES;
+  return COURSES.filter(isCourseAvailable);
 }
 
 export function getCourse(slug: string): Course | undefined {
+  return getCourses().find((course) => course.slug === slug);
+}
+
+/* Catálogo completo: disponíveis primeiro, depois os "em breve". */
+export function getCatalogCourses(): readonly Course[] {
+  return [...COURSES.filter(isCourseAvailable), ...COURSES.filter((course) => !isCourseAvailable(course))];
+}
+
+export function getCatalogCourse(slug: string): Course | undefined {
   return COURSES.find((course) => course.slug === slug);
 }
 

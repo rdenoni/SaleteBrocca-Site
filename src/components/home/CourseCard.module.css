@@ -158,6 +158,41 @@
   outline-offset: 4px;
 }
 
+/* Curso em preparação: sem link, sem sombra de hover nem zoom, foto mais apagada. O texto mantém o contraste. */
+.soon::after {
+  display: none;
+}
+
+.soon .zoom {
+  transform: none !important;
+}
+
+.soon .imageLayer {
+  opacity: 0.7;
+}
+
+.soonNote {
+  font: 700 15px/22px var(--font-sans);
+  color: var(--navy);
+}
+
+.disabled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 32px;
+  border-radius: var(--radius-pill);
+  border: 0;
+  background: var(--light-gray);
+  color: var(--text-muted);
+  font: 700 15px/20px var(--font-sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: not-allowed;
+  user-select: none;
+}
+
 @media (max-width: 767px) {
   .card {
     grid-template-columns: minmax(0, 1fr);

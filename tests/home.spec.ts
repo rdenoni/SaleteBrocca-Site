@@ -99,6 +99,17 @@ test.describe("Home", () => {
     await expect(card).toContainText("21 aulas");
   });
 
+  test("Alfabetização aparece desabilitada, sem link, e a trilha segue no curso disponível", async ({ page }) => {
+    const soon = page.locator("#curso-alfabetizacao");
+    await expect(soon).toHaveCount(1);
+    await expect(soon.getByRole("heading", { level: 3, name: "Alfabetização" })).toBeAttached();
+    await expect(soon.getByText("Em breve", { exact: true })).toHaveCount(2);
+    await expect(soon.getByText("Curso em preparação. Ainda não está disponível para inscrição.")).toBeAttached();
+    await expect(soon.getByRole("link")).toHaveCount(0);
+    await expect(page.locator('main a[href="/cursos/alfabetizacao"]')).toHaveCount(0);
+    await expect(soon).not.toContainText("módulos");
+  });
+
   test("Área do Aluno sempre acessível no header", async ({ page }) => {
     const student = page.getByRole("banner").getByRole("link", { name: "Área do Aluno" });
     await expect(student).toBeVisible();
@@ -140,6 +151,7 @@ test.describe("Home", () => {
 
     await form.getByLabel("Nome completo").fill("Maria da Silva");
     await form.getByLabel("Telefone").fill("(48) 99999-0000");
+    await form.getByRole("checkbox").check();
     await form.getByRole("button", { name: "Pedir avaliação" }).click();
     await expect(form.getByRole("status")).toContainText("Dados conferidos");
     await expect(form.getByText("Informe seu nome completo.")).toHaveCount(0);

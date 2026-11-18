@@ -82,9 +82,18 @@ test.describe("Contato", () => {
     await expect(block.locator("form, input")).toHaveCount(0);
   });
 
-  test("assuntos do formulário: Cursos e Outro assunto (sem Marcar avaliação)", async ({ page }) => {
+  test("assuntos do formulário: Cursos, Privacidade (LGPD) e Outro assunto (sem Marcar avaliação)", async ({ page }) => {
     const options = await page.locator("#formulario").getByLabel("Assunto").locator("option").allTextContents();
-    expect(options).toEqual(["Cursos", "Outro assunto"]);
+    expect(options).toEqual(["Cursos", "Privacidade e dados pessoais (LGPD)", "Outro assunto"]);
+  });
+
+  test("consentimento diz a finalidade, começa desmarcado e o campo de mensagem alerta sobre dados de saúde", async ({
+    page,
+  }) => {
+    const form = page.locator("#formulario");
+    await expect(form.getByRole("checkbox")).not.toBeChecked();
+    await expect(form.getByText("Concordo com o uso dos meus dados para responder a este contato", { exact: false })).toBeVisible();
+    await expect(form.getByText("Não inclua dados de saúde de crianças ou adolescentes.")).toBeVisible();
   });
 
   test("número e e-mail não confirmados não viram link", async ({ page }) => {
