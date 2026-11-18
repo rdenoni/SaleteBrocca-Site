@@ -71,6 +71,9 @@ test.describe("dúvidas frequentes em /cursos", () => {
       await expect(commercial).toContainText("ainda não foram divulgados");
       await expect(commercial).not.toContainText("R$");
     }
+    /* Valor confirmado aparece; o que falta continua dito como pendente. */
+    if (course.commercial.price) await expect(commercial).toContainText(`Investimento: ${course.commercial.price}`);
+    if (course.commercial.workload === null) await expect(commercial).toContainText("ainda não foram divulgados");
     await expect(commercial.getByRole("link", { name: "Perguntar pelo formulário de contato" })).toHaveAttribute(
       "href",
       "/contato#formulario",

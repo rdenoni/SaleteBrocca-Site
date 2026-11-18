@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { getCourse } from "../src/lib/content/courses";
 
 const SLUG = "dificuldades-na-aprendizagem";
 
@@ -52,10 +53,14 @@ test.describe("Cursos — página do curso", () => {
     await expect(info).toContainText("6");
     await expect(info).toContainText("21");
     await expect(info.getByText("A confirmar")).toHaveCount(0);
-    for (const label of ["Carga horária", "Certificado", "Acesso", "Investimento"]) {
+    /* Valor confirmado (R$ 598,00) aparece; carga horária, certificado e acesso seguem sem confirmação e ocultos. */
+    for (const label of ["Carga horária", "Certificado", "Acesso"]) {
       await expect(info.getByText(label, { exact: true })).toHaveCount(0);
     }
-    await expect(page.getByText(/R\$/)).toHaveCount(0);
+    const price = getCourse(SLUG)?.commercial.price ?? "";
+    expect(price).toBeTruthy();
+    await expect(info.getByText("Investimento", { exact: true })).toBeVisible();
+    await expect(info.getByText(price, { exact: true })).toBeVisible();
   });
 
   test("seis módulos com 21 aulas no acordeão", async ({ page }) => {
@@ -88,15 +93,27 @@ test.describe("Cursos — página do curso", () => {
 });
 
 test.describe("Cursos — compra (visual)", () => {
-  test("etapas, campos rotulados e pagamento desativado", async ({ page }, testInfo) => {
+  test("etapas, explicação do fluxo e botão para o checkout da Kiwify (sem formulário)", async ({ page }, testInfo) => {
     await page.goto(`/cursos/${SLUG}/compra`);
     await expect(page.getByRole("heading", { level: 1, name: "Inscrição" })).toBeVisible();
     await expect(page.getByRole("list", { name: "Etapas da inscrição" }).getByRole("listitem")).toHaveCount(3);
-    for (const label of ["Nome completo", "E-mail", "Telefone"]) {
-      await expect(page.getByLabel(label)).toBeVisible();
-    }
-    await expect(page.getByRole("button", { name: "Continuar para pagamento" })).toBeDisabled();
-    await expect(page.getByRole("complementary", { name: "Resumo do pedido" }).getByText("A confirmar")).toBeVisible();
+    const main = page.getByRole("main");
+    /* O site não coleta dados do comprador: o pagamento é feito na Kiwify. */
+    await expect(main.locator("form")).toHaveCount(0);
+    await expect(main.getByText("O pagamento é feito no ambiente seguro da Kiwify.")).toBeVisible();
+    await expect(main.getByText("link para criar sua senha da Área do Aluno")).toBeVisible();
+    /* Com o produto publicado na Kiwify: botão para o checkout (mesma aba) e o valor confirmado no resumo. */
+    const course = getCourse(SLUG);
+    expect(course?.kiwify.checkoutUrl).toBeTruthy();
+    expect(course?.commercial.price).toBeTruthy();
+    await expect(main.getByRole("link", { name: "Ir para o pagamento" })).toHaveAttribute(
+      "href",
+      course?.kiwify.checkoutUrl ?? "",
+    );
+    await expect(main.getByText("Pagamento online em preparação.")).toHaveCount(0);
+    await expect(
+      page.getByRole("complementary", { name: "Resumo do pedido" }).getByText(course?.commercial.price ?? ""),
+    ).toBeVisible();
     await expectNoHorizontalScroll(page);
     const width = page.viewportSize()?.width ?? 0;
     await page.screenshot({ path: `tests/screenshots/current/compra-${width}.png`, fullPage: true });

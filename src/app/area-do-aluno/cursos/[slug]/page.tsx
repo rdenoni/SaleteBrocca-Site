@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ProgressBar } from "@/components/student/ProgressBar";
 import { StudentModuleList } from "@/components/student/StudentModuleList";
 import { StudentShell } from "@/components/student/StudentShell";
 import { Button } from "@/components/ui/Button";
-import { getCourseProgress, getEnrolledCourse, getEnrolledCourses, lessonHref } from "@/lib/content/student";
+import { COURSES_PATH } from "@/lib/auth-paths";
+import { getCourse, getCourses } from "@/lib/content/courses";
+import {
+  getCourseProgress,
+  getEnrolledCourse,
+  getStudentProgress,
+  lessonHref,
+  requireStudentSession,
+} from "@/lib/content/student";
 import styles from "./curso-aluno.module.css";
 
 interface StudentCoursePageProps {
@@ -14,21 +22,26 @@ interface StudentCoursePageProps {
 export const dynamicParams = false;
 
 export function generateStaticParams(): { slug: string }[] {
-  return getEnrolledCourses().map((course) => ({ slug: course.slug }));
+  /* Catálogo inteiro: a matrícula é conferida na página, a cada requisição. */
+  return getCourses().map((course) => ({ slug: course.slug }));
 }
 
 export async function generateMetadata({ params }: StudentCoursePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const course = getEnrolledCourse(slug);
+  const course = getCourse(slug);
   return course ? { title: `${course.title} | Área do Aluno` } : {};
 }
 
 export default async function StudentCoursePage({ params }: StudentCoursePageProps) {
   const { slug } = await params;
-  const course = getEnrolledCourse(slug);
-  if (!course) notFound();
+  if (!getCourse(slug)) notFound();
+  await requireStudentSession(`/area-do-aluno/cursos/${slug}`);
+  /* Sem matrícula ativa não há conteúdo do curso. */
+  const course = await getEnrolledCourse(slug);
+  if (!course) redirect(COURSES_PATH);
 
-  const progress = getCourseProgress(course);
+  const progressByCourse = await getStudentProgress();
+  const progress = getCourseProgress(course, progressByCourse);
 
   return (
     <StudentShell eyebrow="Meus cursos" title={course.title} active="cursos" activeIsAncestor>
@@ -55,7 +68,7 @@ export default async function StudentCoursePage({ params }: StudentCoursePagePro
         <h2 id="modulos-aulas" className={styles.heading}>
           Módulos e aulas
         </h2>
-        <StudentModuleList course={course} openModule={progress.current?.moduleNumber} />
+        <StudentModuleList course={course} progress={progressByCourse} openModule={progress.current?.moduleNumber} />
       </section>
     </StudentShell>
   );

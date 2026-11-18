@@ -48,7 +48,7 @@
   align-items: start;
 }
 
-.form {
+.panel {
   grid-area: form;
   display: grid;
   gap: var(--space-6);
@@ -58,23 +58,34 @@
   box-shadow: var(--shadow-card);
 }
 
-.formHeading {
+.panelHeading {
   font: 800 26px/34px var(--font-sans);
 }
 
-.payment {
-  display: grid;
-  gap: var(--space-3);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--light-gray);
+.text {
+  max-width: 60ch;
+  font: 400 17px/28px var(--font-sans);
+  color: var(--charcoal);
 }
 
-.paymentHeading {
-  font: 800 20px/28px var(--font-sans);
-  color: var(--navy);
+.action {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+}
+
+.small {
+  font: 400 15px/24px var(--font-sans);
+  color: var(--text-muted);
+}
+
+.small a {
+  color: var(--blue-strong);
+  font-weight: 700;
 }
 
 .paymentNote {
+  max-width: 60ch;
   display: flex;
   gap: var(--space-3);
   padding: var(--space-4) var(--space-6);
@@ -89,32 +100,6 @@
   width: 22px;
   height: 22px;
   color: var(--blue-strong);
-}
-
-.consent {
-  display: flex;
-  align-items: center;
-  min-height: 48px;
-  gap: var(--space-3);
-  font: 400 15px/22px var(--font-sans);
-  color: var(--charcoal);
-}
-
-.consent input {
-  flex: none;
-  width: 22px;
-  height: 22px;
-  margin: 0;
-  accent-color: var(--blue-strong);
-}
-
-.consent a {
-  color: var(--blue-strong);
-  font-weight: 700;
-}
-
-.submit {
-  justify-self: start;
 }
 
 .summary {
@@ -234,11 +219,11 @@
 }
 
 @media (max-width: 767px) {
-  .form {
+  .panel {
     padding: var(--space-6);
   }
 
-  .submit {
-    justify-self: stretch;
+  .cta {
+    width: 100%;
   }
 }

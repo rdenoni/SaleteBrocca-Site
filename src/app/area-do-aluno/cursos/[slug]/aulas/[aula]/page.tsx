@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ChevronLeft, FileText, Play } from "lucide-react";
 import { CompleteLessonButton } from "@/components/student/CompleteLessonButton";
 import { LessonTabs } from "@/components/student/LessonTabs";
@@ -8,13 +8,17 @@ import { StudentModuleList } from "@/components/student/StudentModuleList";
 import { StudentShell } from "@/components/student/StudentShell";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { COURSES_PATH } from "@/lib/auth-paths";
+import { getCourse, getCourses } from "@/lib/content/courses";
 import {
   findLesson,
   getEnrolledCourse,
-  getEnrolledCourses,
   getLessonRefs,
   getLessonStatus,
+  getStudentProgress,
+  isDemoMode,
   lessonHref,
+  requireStudentSession,
 } from "@/lib/content/student";
 import styles from "./player.module.css";
 
@@ -25,23 +29,29 @@ interface LessonPageProps {
 export const dynamicParams = false;
 
 export function generateStaticParams(): { slug: string; aula: string }[] {
-  return getEnrolledCourses().flatMap((course) =>
+  /* Catálogo inteiro: a matrícula é conferida na página, a cada requisição. */
+  return getCourses().flatMap((course) =>
     getLessonRefs(course).map((lesson) => ({ slug: course.slug, aula: lesson.slug })),
   );
 }
 
 export async function generateMetadata({ params }: LessonPageProps): Promise<Metadata> {
   const { slug, aula } = await params;
-  const course = getEnrolledCourse(slug);
+  const course = getCourse(slug);
   const location = course ? findLesson(course, aula) : undefined;
   return location ? { title: `${location.lesson.title} | Área do Aluno` } : {};
 }
 
 export default async function LessonPage({ params }: LessonPageProps) {
   const { slug, aula } = await params;
-  const course = getEnrolledCourse(slug);
+  const catalogCourse = getCourse(slug);
+  if (!catalogCourse || !findLesson(catalogCourse, aula)) notFound();
+  await requireStudentSession(`/area-do-aluno/cursos/${slug}/aulas/${aula}`);
+  /* Sem matrícula ativa não há conteúdo de aula. */
+  const course = await getEnrolledCourse(slug);
   const location = course ? findLesson(course, aula) : undefined;
-  if (!course || !location) notFound();
+  if (!course || !location) redirect(COURSES_PATH);
+  const progress = await getStudentProgress();
 
   const { lesson, previous, next } = location;
   const position = `Módulo ${lesson.moduleNumber} · Aula ${lesson.numberInModule}`;
@@ -71,7 +81,13 @@ export default async function LessonPage({ params }: LessonPageProps) {
             ) : (
               <span />
             )}
-            <CompleteLessonButton initialCompleted={getLessonStatus(course.slug, lesson.code) === "completed"} />
+            <CompleteLessonButton
+              key={lesson.code}
+              courseSlug={course.slug}
+              lessonCode={lesson.code}
+              initialCompleted={getLessonStatus(course.slug, lesson.code, progress) === "completed"}
+              persist={!isDemoMode()}
+            />
             {next ? (
               <Button href={lessonHref(course.slug, next)} variant="primary">
                 Próxima aula
@@ -80,7 +96,11 @@ export default async function LessonPage({ params }: LessonPageProps) {
               <span />
             )}
           </div>
-          <p className={styles.saveNote}>O progresso será salvo automaticamente quando a Área do Aluno estiver ativa.</p>
+          <p className={styles.saveNote}>
+            {isDemoMode()
+              ? "O progresso será salvo automaticamente quando a Área do Aluno estiver ativa."
+              : "Seu progresso é salvo automaticamente."}
+          </p>
 
           <LessonTabs
             label="Sobre a aula"
@@ -125,7 +145,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
           <h2 id="lista-aulas" className={styles.sidebarTitle}>
             Aulas do curso
           </h2>
-          <StudentModuleList course={course} currentSlug={lesson.slug} compact />
+          <StudentModuleList course={course} progress={progress} currentSlug={lesson.slug} compact />
         </aside>
       </div>
     </StudentShell>

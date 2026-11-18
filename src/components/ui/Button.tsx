@@ -17,6 +17,8 @@ interface CommonProps {
 
 interface LinkButtonProps extends CommonProps {
   href: string;
+  /** Endereço de outro site: renderiza <a rel="noopener"> (navegação completa, sem o roteador do Next). */
+  external?: boolean;
   "aria-label"?: string;
   "aria-current"?: "page";
 }
@@ -43,6 +45,19 @@ export function Button(props: ButtonProps) {
       <span className={labelClassName}>{children}</span>
     </>
   );
+
+  if (props.href !== undefined && props.external) {
+    return (
+      <a
+        href={props.href}
+        rel="noopener"
+        className={classNames(variant, size, className)}
+        aria-label={props["aria-label"]}
+      >
+        {content}
+      </a>
+    );
+  }
 
   if (props.href !== undefined) {
     return (

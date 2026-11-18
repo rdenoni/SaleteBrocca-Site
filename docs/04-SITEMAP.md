@@ -44,6 +44,8 @@ HOME  /
 |
 +-- ÁREA DO ALUNO
 |     +-- Login                  /area-do-aluno/login
+|     +-- Recuperar senha        /area-do-aluno/recuperar-senha
+|     +-- Definir senha          /area-do-aluno/definir-senha (exige sessão do link do e-mail)
 |     +-- Dashboard              /area-do-aluno
 |     +-- Meus cursos            /area-do-aluno/cursos
 |     +-- Curso (módulos/aulas)  /area-do-aluno/cursos/[slug]
@@ -76,6 +78,10 @@ A página `/privacidade` (LGPD) é necessária porque os formulários coletam no
 | `/loja/[slug]` | Produto avulso (sem produto cadastrado, todo slug responde 404) | Rodapé | 5 |
 | `/loja/checkout` | Checkout de produto avulso (visual; sem produto mostra "Nenhum produto selecionado") | Rodapé | 5 |
 | `/area-do-aluno/login` | Login | Área do Aluno | 6 |
+| `/area-do-aluno/recuperar-senha` | Pedido de link para nova senha | Login | 6 |
+| `/area-do-aluno/definir-senha` | Definir senha (convite e recuperação; exige sessão) | E-mail | 6 |
+| `/auth/confirmar` | Página técnica: botão "Continuar" que troca o link do e-mail por sessão (o token só é gasto no clique) | E-mail | 6 |
+| `/auth/confirm` | Rota técnica: endereço antigo, só repassa para `/auth/confirmar` (sem página) | E-mail | 6 |
 | `/area-do-aluno` | Dashboard (inclui progresso) | Área do Aluno | 6 |
 | `/area-do-aluno/cursos` | Meus cursos | Área do Aluno | 6 |
 | `/area-do-aluno/cursos/[slug]` | Curso do aluno | Área do Aluno | 6 |
@@ -238,6 +244,6 @@ Páginas de nível 1 não têm trilha. A Área do Aluno usa as próprias abas e 
 - `src/app/robots.ts` libera o rastreamento e aponta o sitemap. Não bloqueia as páginas com noindex, para o buscador
   conseguir ler essa meta.
 - Endereço absoluto: `NEXT_PUBLIC_SITE_URL`, senão a variável `URL` que a Netlify define no build (o endereço
-  principal do projeto, hoje `saletebrocca.netlify.app`; vira o domínio próprio sozinha quando ele for ligado).
+  principal do projeto), senão `https://saletebrocca.com` (domínio próprio, já ligado ao projeto).
   O layout usa o mesmo valor em `metadataBase`.
 - Testes: `tests/seo.spec.ts`.

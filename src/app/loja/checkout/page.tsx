@@ -39,7 +39,8 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
           stepsLabel="Etapas da compra"
           backHref={`/loja/${product.slug}`}
           backLabel="Voltar ao produto"
-          idPrefix="checkout"
+          checkoutUrl={product.kiwify.checkoutUrl}
+          grantsCourseAccess={false}
         />
       ) : (
         <div className={`container ${styles.page}`}>

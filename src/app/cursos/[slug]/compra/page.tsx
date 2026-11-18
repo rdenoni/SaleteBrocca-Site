@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PurchasePageProps): Promise<M
   return { title: `Inscrição: ${course.title}`, robots: { index: false } };
 }
 
-/* Somente visual nesta etapa: nenhum dado é enviado e não há gateway de pagamento. */
+/* O pagamento acontece na Kiwify; sem link de checkout cadastrado, a página mostra "em preparação". */
 export default async function PurchasePage({ params }: PurchasePageProps) {
   const { slug } = await params;
   const course = getCourse(slug);
@@ -51,7 +51,8 @@ export default async function PurchasePage({ params }: PurchasePageProps) {
         stepsLabel="Etapas da inscrição"
         backHref={`/cursos/${course.slug}`}
         backLabel="Voltar ao curso"
-        idPrefix="compra"
+        checkoutUrl={course.kiwify.checkoutUrl}
+        grantsCourseAccess
       />
     </>
   );

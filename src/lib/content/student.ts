@@ -1,22 +1,113 @@
+import "server-only";
+import { cache } from "react";
+import { redirect } from "next/navigation";
+import { loginPathWithNext } from "@/lib/auth-paths";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import type { EnrollmentStatus } from "@/types/database";
 import type { Course, CourseProgress, LessonRef, LessonStatus, StudentMaterial } from "@/types/content";
 import { getCourse, getCourses } from "./courses";
 
-/* Área do Aluno ainda sem login, vídeo nem banco de dados.
-   O progresso abaixo é um EXEMPLO para mostrar os estados da interface (a tela avisa isso ao aluno).
-   Na integração, trocar estas funções por dados do aluno autenticado, mantendo as assinaturas. */
-export const IS_DEMO = true;
+/* Dois modos, decididos por `isSupabaseConfigured()`:
+   - sem Supabase (deploy atual e testes): demonstração, com o progresso de EXEMPLO abaixo e o aviso na tela;
+   - com Supabase: login real. Cursos = matrículas ativas do aluno; progresso = linhas de `lesson_progress`.
+   As funções de progresso são puras (recebem o `ProgressByCourse` já carregado): a tela carrega uma vez por
+   requisição com `getStudentProgress()` e passa adiante, em vez de consultar o banco aula por aula. */
 
-interface DemoProgress {
-  completed: readonly string[];
-  current: string;
+/** Demonstração: Supabase não configurado. */
+export function isDemoMode(): boolean {
+  return !isSupabaseConfigured();
 }
 
-const DEMO_PROGRESS: Readonly<Record<string, DemoProgress>> = {
+export interface StudentCourseProgress {
+  /** Códigos das aulas concluídas (ex.: "M01_A02"). */
+  completed: readonly string[];
+  /** Aula em andamento (só na demonstração; com login real a próxima aula é a primeira não concluída). */
+  current?: string;
+}
+
+export type ProgressByCourse = Readonly<Record<string, StudentCourseProgress>>;
+
+const DEMO_PROGRESS: ProgressByCourse = {
   "dificuldades-na-aprendizagem": { completed: ["M00_A01", "M00_A02", "M01_A01"], current: "M01_A02" },
 };
 
 /* Nenhum material complementar confirmado ainda: as telas mostram o estado vazio. */
 const MATERIALS: readonly StudentMaterial[] = [];
+
+export const ENROLLMENT_STATUS_LABEL: Readonly<Record<EnrollmentStatus, string>> = {
+  active: "Ativa",
+  refunded: "Reembolsada",
+  chargeback: "Estornada",
+  canceled: "Cancelada",
+};
+
+export interface StudentSession {
+  userId: string;
+  email: string | undefined;
+}
+
+/** Aluno autenticado desta requisição (valida o token com `getClaims`); null sem login ou sem Supabase. */
+export const getStudentSession = cache(async (): Promise<StudentSession | null> => {
+  if (!isSupabaseConfigured()) return null;
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase.auth.getClaims();
+  const claims = data?.claims;
+  if (!claims?.sub) return null;
+  return { userId: claims.sub, email: typeof claims.email === "string" ? claims.email : undefined };
+});
+
+/** Exige login no modo real (o proxy é só a primeira barreira). Na demonstração devolve null e não redireciona. */
+export async function requireStudentSession(returnTo: string): Promise<StudentSession | null> {
+  if (!isSupabaseConfigured()) return null;
+  const session = await getStudentSession();
+  if (!session) redirect(loginPathWithNext(returnTo));
+  return session;
+}
+
+export interface EnrollmentSummary {
+  courseSlug: string;
+  courseTitle: string;
+  status: EnrollmentStatus;
+  createdAt: string;
+}
+
+/** Matrículas do aluno (qualquer status), da mais recente para a mais antiga. O RLS já limita às linhas dele. */
+export const getEnrollments = cache(async (): Promise<readonly EnrollmentSummary[]> => {
+  const session = await getStudentSession();
+  if (!session) return [];
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("enrollments")
+    .select("course_slug, status, created_at")
+    .eq("user_id", session.userId)
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(`Falha ao carregar as matrículas: ${error.message}`);
+  return data.map((row) => ({
+    courseSlug: row.course_slug,
+    courseTitle: getCourse(row.course_slug)?.title ?? row.course_slug,
+    status: row.status,
+    createdAt: row.created_at,
+  }));
+});
+
+/** Progresso do aluno em todos os cursos, carregado uma vez por requisição. */
+export const getStudentProgress = cache(async (): Promise<ProgressByCourse> => {
+  if (isDemoMode()) return DEMO_PROGRESS;
+  const session = await getStudentSession();
+  if (!session) return {};
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("lesson_progress")
+    .select("course_slug, lesson_code")
+    .eq("user_id", session.userId);
+  if (error) throw new Error(`Falha ao carregar o progresso: ${error.message}`);
+  const byCourse = new Map<string, string[]>();
+  for (const row of data) {
+    byCourse.set(row.course_slug, [...(byCourse.get(row.course_slug) ?? []), row.lesson_code]);
+  }
+  return Object.fromEntries([...byCourse].map(([slug, completed]) => [slug, { completed }]));
+});
 
 export function lessonSlug(code: string): string {
   return code.toLowerCase().replace(/_/g, "-");
@@ -49,24 +140,24 @@ export function findLesson(course: Course, slug: string): LessonLocation | undef
   return { lesson: lessons[index], previous: lessons[index - 1], next: lessons[index + 1] };
 }
 
-export function getLessonStatus(courseSlug: string, code: string): LessonStatus {
-  const progress = DEMO_PROGRESS[courseSlug];
-  if (!progress) return "not-started";
-  if (progress.completed.includes(code)) return "completed";
-  return progress.current === code ? "in-progress" : "not-started";
+export function getLessonStatus(courseSlug: string, code: string, progress: ProgressByCourse): LessonStatus {
+  const courseProgress = progress[courseSlug];
+  if (!courseProgress) return "not-started";
+  if (courseProgress.completed.includes(code)) return "completed";
+  return courseProgress.current === code ? "in-progress" : "not-started";
 }
 
-export function getCourseProgress(course: Course): CourseProgress {
+export function getCourseProgress(course: Course, progress: ProgressByCourse): CourseProgress {
   const lessons = getLessonRefs(course);
-  const progress = DEMO_PROGRESS[course.slug];
-  const completed = lessons.filter((lesson) => progress?.completed.includes(lesson.code)).length;
+  const courseProgress = progress[course.slug];
+  const completed = lessons.filter((lesson) => courseProgress?.completed.includes(lesson.code)).length;
   const total = lessons.length;
   const finished = total > 0 && completed === total;
   /* Retoma a aula em andamento; sem ela, a primeira ainda não concluída. Curso concluído: nenhuma. */
   const current = finished
     ? undefined
-    : (lessons.find((lesson) => lesson.code === progress?.current) ??
-      lessons.find((lesson) => !progress?.completed.includes(lesson.code)));
+    : (lessons.find((lesson) => lesson.code === courseProgress?.current) ??
+      lessons.find((lesson) => !courseProgress?.completed.includes(lesson.code)));
   return {
     completed,
     total,
@@ -79,12 +170,23 @@ export function lessonHref(courseSlug: string, lesson: LessonRef): string {
   return `/area-do-aluno/cursos/${courseSlug}/aulas/${lesson.slug}`;
 }
 
-export function getEnrolledCourses(): readonly Course[] {
-  return getCourses();
+/** Slugs dos cursos com matrícula ativa do aluno logado. */
+const getActiveCourseSlugs = cache(async (): Promise<readonly string[]> => {
+  const enrollments = await getEnrollments();
+  return [...new Set(enrollments.filter((item) => item.status === "active").map((item) => item.courseSlug))];
+});
+
+/** Cursos do aluno: na demonstração, o catálogo; com login, só os de matrícula ativa (e que existem no catálogo). */
+export async function getEnrolledCourses(): Promise<readonly Course[]> {
+  if (isDemoMode()) return getCourses();
+  const slugs = await getActiveCourseSlugs();
+  return slugs.flatMap((slug) => getCourse(slug) ?? []);
 }
 
-export function getEnrolledCourse(slug: string): Course | undefined {
-  return getCourse(slug);
+export async function getEnrolledCourse(slug: string): Promise<Course | undefined> {
+  if (isDemoMode()) return getCourse(slug);
+  const slugs = await getActiveCourseSlugs();
+  return slugs.includes(slug) ? getCourse(slug) : undefined;
 }
 
 export function getMaterials(courseSlug?: string): readonly StudentMaterial[] {

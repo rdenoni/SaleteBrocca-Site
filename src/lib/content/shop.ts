@@ -15,7 +15,9 @@ export const PRODUCT_CATEGORIES: readonly ProductCategoryInfo[] = [
 ];
 
 /* Materiais e jogos: nenhum produto confirmado pela cliente ainda.
-   Cadastrar aqui (nome, preço, descrição e imagem reais) quando forem confirmados. */
+   Cadastrar aqui (nome, preço, descrição e imagem reais) quando forem confirmados.
+   Cada produto leva `kiwify: { checkoutUrl: null, productId: null }` até existir na Kiwify
+   (link https://pay.kiwify.com.br/... e ID do produto; ver docs/08-VENDAS-KIWIFY.md). */
 const STANDALONE_PRODUCTS: readonly Product[] = [];
 
 export function getProducts(category?: ProductCategory): readonly Product[] {

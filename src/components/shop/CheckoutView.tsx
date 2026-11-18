@@ -1,10 +1,7 @@
-"use client";
-
 import Link from "next/link";
-import type { FormEvent } from "react";
 import { Check, Lock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Field } from "@/components/ui/Field";
+import { validatedCheckoutUrl } from "@/lib/kiwify/checkout-url";
 import styles from "./CheckoutView.module.css";
 
 export interface CheckoutItem {
@@ -21,25 +18,30 @@ interface CheckoutViewProps {
   stepsLabel: string;
   backHref: string;
   backLabel: string;
-  /** Prefixo dos ids dos campos, para não colidir entre páginas. */
-  idPrefix: string;
+  /** Link de checkout da Kiwify (`kiwify.checkoutUrl`); só é usado se for https em kiwify.com.br. */
+  checkoutUrl: string | null;
+  /** true para curso (compra libera a Área do Aluno); false para produto da Loja, entregue pela própria Kiwify. */
+  grantsCourseAccess: boolean;
 }
 
-const STEPS = ["Seus dados", "Pagamento", "Confirmação"] as const;
+const STEPS = ["Resumo", "Pagamento na Kiwify", "Confirmação por e-mail"] as const;
 
 function Pending() {
   return <span className="pending">A confirmar</span>;
 }
 
-/* Sem gateway ainda: nunca deixa o navegador enviar o formulário (sem isso, um envio
-   acidental mandaria nome, e-mail e telefone para a própria URL em query string). */
-function blockSubmit(event: FormEvent<HTMLFormElement>) {
-  event.preventDefault();
-}
-
-/* Somente visual nesta etapa: nenhum dado é enviado e não há gateway de pagamento.
+/* O pagamento acontece no ambiente da Kiwify: este site não coleta nome, e-mail nem telefone do comprador.
    Usado pela Loja (/loja/checkout) e pela inscrição do curso (/cursos/[slug]/compra). */
-export function CheckoutView({ item, stepsLabel, backHref, backLabel, idPrefix }: CheckoutViewProps) {
+export function CheckoutView({
+  item,
+  stepsLabel,
+  backHref,
+  backLabel,
+  checkoutUrl,
+  grantsCourseAccess,
+}: CheckoutViewProps) {
+  const paymentUrl = validatedCheckoutUrl(checkoutUrl);
+
   return (
     <div className={`container ${styles.page}`}>
       <ol className={styles.steps} aria-label={stepsLabel}>
@@ -80,61 +82,37 @@ export function CheckoutView({ item, stepsLabel, backHref, backLabel, idPrefix }
           </Link>
         </aside>
 
-        <form className={styles.form} aria-labelledby="dados-titulo" onSubmit={blockSubmit}>
-          <h2 id="dados-titulo" className={styles.formHeading}>
-            Seus dados
+        <section className={styles.panel} aria-labelledby="pagamento-titulo">
+          <h2 id="pagamento-titulo" className={styles.panelHeading}>
+            Pagamento
           </h2>
-          <Field id={`${idPrefix}-nome`} name="nome" label="Nome completo" autoComplete="name" required />
-          <Field
-            id={`${idPrefix}-email`}
-            name="email"
-            type="email"
-            label="E-mail"
-            autoComplete="email"
-            inputMode="email"
-            autoCapitalize="none"
-            spellCheck={false}
-            required
-          />
-          <Field
-            id={`${idPrefix}-telefone`}
-            name="telefone"
-            type="tel"
-            inputMode="tel"
-            label="Telefone"
-            autoComplete="tel"
-            hint="Com DDD."
-            required
-          />
+          <p className={styles.text}>
+            O pagamento é feito no ambiente seguro da Kiwify.
+            {grantsCourseAccess
+              ? " Depois da confirmação, você recebe por e-mail o link para criar sua senha da Área do Aluno."
+              : " Depois da confirmação, você recebe o produto pelo e-mail informado na compra."}
+          </p>
 
-          <div className={styles.payment}>
-            <h3 className={styles.paymentHeading}>Forma de pagamento</h3>
-            <div id={`${idPrefix}-pagamento-nota`} className={styles.paymentNote} role="note">
-              <Lock aria-hidden="true" />
-              <p>
-                <strong>Pagamento online em preparação.</strong> As formas de pagamento serão definidas na integração
-                com o meio de pagamento.
+          {paymentUrl ? (
+            <div className={styles.action}>
+              <Button href={paymentUrl} external variant="primary" className={styles.cta}>
+                Ir para o pagamento
+              </Button>
+              <p className={styles.small}>
+                O pagamento abre no site da Kiwify. Veja como tratamos seus dados na{" "}
+                <Link href="/privacidade">política de privacidade</Link>.
               </p>
             </div>
-          </div>
-
-          <label className={styles.consent}>
-            <input type="checkbox" name="privacidade" required />
-            <span>
-              Li e aceito a <Link href="/privacidade">política de privacidade</Link>.
-            </span>
-          </label>
-
-          <Button
-            type="submit"
-            variant="primary"
-            aria-disabled="true"
-            aria-describedby={`${idPrefix}-pagamento-nota`}
-            className={styles.submit}
-          >
-            Continuar para pagamento
-          </Button>
-        </form>
+          ) : (
+            <div className={styles.paymentNote} role="note">
+              <Lock aria-hidden="true" />
+              <p>
+                <strong>Pagamento online em preparação.</strong> O link de pagamento será disponibilizado assim que o
+                produto for publicado na Kiwify.
+              </p>
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );

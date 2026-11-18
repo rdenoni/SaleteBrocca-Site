@@ -1,8 +1,7 @@
 /* Endereço público do site, usado onde o HTML precisa de URL absoluta (sitemap, robots, dados estruturados,
    metadataBase). Ordem: variável própria do projeto → `URL` que a Netlify define no build (o endereço principal do
-   projeto; vira o domínio próprio sozinho quando ele for ligado) → endereço Netlify atual do projeto.
-   Não usar um domínio que ainda não está ligado ao projeto. */
-const FALLBACK_SITE_URL = "https://saletebrocca.netlify.app";
+   projeto) → domínio próprio, já ligado ao projeto na Netlify. */
+const FALLBACK_SITE_URL = "https://saletebrocca.com";
 
 function normalize(origin: string): string {
   return origin.replace(/\/+$/, "");

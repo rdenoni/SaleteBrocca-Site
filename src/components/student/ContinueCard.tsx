@@ -1,19 +1,21 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
-import { getCourseProgress, lessonHref } from "@/lib/content/student";
+import { getCourseProgress, lessonHref, type ProgressByCourse } from "@/lib/content/student";
 import type { Course } from "@/types/content";
 import { ProgressBar } from "./ProgressBar";
 import styles from "./ContinueCard.module.css";
 
 interface ContinueCardProps {
   course: Course;
+  /** Progresso do aluno (carregado pela página com getStudentProgress). */
+  progress: ProgressByCourse;
   /** "wide" no painel (navy, foto grande); "card" em Meus cursos. */
   variant?: "wide" | "card";
 }
 
 /* Curso do aluno com a próxima aula e o progresso. */
-export function ContinueCard({ course, variant = "wide" }: ContinueCardProps) {
-  const progress = getCourseProgress(course);
+export function ContinueCard({ course, progress: progressByCourse, variant = "wide" }: ContinueCardProps) {
+  const progress = getCourseProgress(course, progressByCourse);
   const dark = variant === "wide";
   const titleId = `${variant}-${course.slug}`;
 

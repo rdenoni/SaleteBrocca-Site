@@ -24,7 +24,12 @@ const COURSES: readonly Course[] = [
       "O objetivo deste curso não é transformar professores, familiares ou outros profissionais em responsáveis por estabelecer diagnósticos fora de sua área de atuação. Observar uma dificuldade não significa diagnosticar um transtorno.",
     image: "/images/courses/dificuldades-na-aprendizagem.jpg",
     imageAlt: "Menina concentrada lendo um livro",
-    commercial: { price: null, workload: null, certificate: null, access: null },
+    commercial: { price: "R$ 598,00", workload: null, certificate: null, access: null },
+    /* Produto "Dificuldades na Aprendizagem" na Kiwify (loja da conta Rafael Denoni). Ver docs/08-VENDAS-KIWIFY.md. */
+    kiwify: {
+      checkoutUrl: "https://pay.kiwify.com.br/49R1AdE",
+      productId: "44c49520-e2e8-11f1-9987-25084670ad29",
+    },
     modules: [
       {
         number: 0,

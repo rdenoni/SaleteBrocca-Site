@@ -30,6 +30,14 @@ export interface CourseCommercialInfo {
   access: string | null;
 }
 
+/** Venda pela Kiwify: null enquanto o produto não existir na Kiwify (preencher em courses.ts / shop.ts). */
+export interface KiwifyLink {
+  /** Link de checkout (https://pay.kiwify.com.br/...). */
+  checkoutUrl: string | null;
+  /** ID do produto na Kiwify; o webhook usa para descobrir qual curso liberar. */
+  productId: string | null;
+}
+
 export interface Course {
   slug: string;
   title: string;
@@ -45,6 +53,7 @@ export interface Course {
   imageAlt: string;
   modules: Module[];
   commercial: CourseCommercialInfo;
+  kiwify: KiwifyLink;
 }
 
 export interface ArticleCategory {
@@ -140,6 +149,7 @@ export interface Product {
   highlights: string[];
   /** O que o comprador recebe. */
   includes: string[];
+  kiwify: KiwifyLink;
 }
 
 export type LessonStatus = "completed" | "in-progress" | "not-started";

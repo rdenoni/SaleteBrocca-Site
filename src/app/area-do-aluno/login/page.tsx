@@ -1,42 +1,65 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { AuthCard } from "@/components/student/AuthCard";
 import { LoginForm } from "@/components/student/LoginForm";
-import styles from "./login.module.css";
+import { PasswordLoginForm } from "@/components/student/PasswordLoginForm";
+import { safeNext } from "@/lib/auth-paths";
+import { getStudentSession, isDemoMode } from "@/lib/content/student";
 
 export const metadata: Metadata = {
   title: "Entrar na Área do Aluno",
 };
 
-/* Cartão branco sobre azul-claro com as peças da marca (wireframe 3.12). */
-export default function LoginPage() {
+type SearchParam = string | string[] | undefined;
+
+interface LoginPageProps {
+  searchParams: Promise<{ next?: SearchParam; aviso?: SearchParam }>;
+}
+
+const NOTICES: Readonly<Record<string, string>> = {
+  "link-invalido": "Este link não é mais válido. Peça um novo em “Esqueci minha senha”.",
+};
+
+function first(value: SearchParam): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+const NOT_A_STUDENT = (
+  <>
+    Ainda não é aluno? <Link href="/cursos">Conheça os cursos</Link>
+  </>
+);
+
+/* Sem Supabase: demonstração (o formulário só explica que o login não está ativo; a página continua estática).
+   Com Supabase: login real; quem já entrou vai direto para o destino. */
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  if (isDemoMode()) {
+    return (
+      <AuthCard
+        title="Área do Aluno"
+        lead="Entre com o e-mail usado na inscrição."
+        note="Recuperação de senha e criação de conta serão ativadas junto com o login."
+        footer={NOT_A_STUDENT}
+      >
+        <LoginForm />
+      </AuthCard>
+    );
+  }
+
+  const params = await searchParams;
+  const next = safeNext(first(params.next));
+  if (await getStudentSession()) redirect(next);
+  const aviso = first(params.aviso);
+
   return (
-    <section className={styles.page} aria-labelledby="page-title">
-      <Image
-        src="/brand/patterns/grafismo-pecas.png"
-        alt=""
-        width={1921}
-        height={1081}
-        priority
-        className={styles.pieces}
-        sizes="(max-width: 767px) 120vw, 60vw"
-      />
-      <div className={`container ${styles.inner}`}>
-        <div className={styles.card}>
-          <h1 id="page-title" className={styles.title}>
-            Área do Aluno
-          </h1>
-          <span className="rule" aria-hidden="true" />
-          <p className={styles.lead}>Entre com o e-mail usado na inscrição.</p>
-          <LoginForm />
-          <p className={styles.note}>
-            Recuperação de senha e criação de conta serão ativadas junto com o login.
-          </p>
-          <p className={styles.alt}>
-            Ainda não é aluno? <Link href="/cursos">Conheça os cursos</Link>
-          </p>
-        </div>
-      </div>
-    </section>
+    <AuthCard
+      title="Área do Aluno"
+      lead="Entre com o e-mail usado na compra."
+      note="A conta é criada automaticamente depois da compra. O e-mail de confirmação traz o link para você definir a sua senha."
+      footer={NOT_A_STUDENT}
+    >
+      <PasswordLoginForm next={next} notice={aviso ? NOTICES[aviso] : undefined} />
+    </AuthCard>
   );
 }

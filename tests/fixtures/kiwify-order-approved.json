@@ -1,0 +1,13 @@
+{
+  "order_id": "fixture-order-0001",
+  "order_status": "paid",
+  "webhook_event_type": "order_approved",
+  "Product": {
+    "product_id": "fixture-product-curso",
+    "product_name": "Produto de teste"
+  },
+  "Customer": {
+    "full_name": "Aluna de Teste",
+    "email": "  Aluna@Example.com "
+  }
+}

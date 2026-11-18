@@ -47,3 +47,23 @@
   font-weight: 700;
   text-decoration: underline;
 }
+
+/* Erro geral do formulário (ex.: "E-mail ou senha incorretos."): ícone + texto, nunca só cor. */
+.status .alert {
+  background: color-mix(in srgb, var(--error) 10%, var(--white));
+  color: var(--error);
+}
+
+.status .alert svg {
+  color: var(--error);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  justify-self: start;
+  color: var(--blue-strong);
+  font: 700 15px/22px var(--font-sans);
+  text-decoration: underline;
+}

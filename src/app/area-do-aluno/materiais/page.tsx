@@ -2,16 +2,18 @@ import type { Metadata } from "next";
 import { Download, FileText } from "lucide-react";
 import { StudentShell } from "@/components/student/StudentShell";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { getEnrolledCourses, getMaterials } from "@/lib/content/student";
+import { getCourse } from "@/lib/content/courses";
+import { getMaterials, requireStudentSession } from "@/lib/content/student";
 import styles from "./materiais.module.css";
 
 export const metadata: Metadata = {
   title: "Materiais complementares",
 };
 
-export default function MaterialsPage() {
+export default async function MaterialsPage() {
+  await requireStudentSession("/area-do-aluno/materiais");
   const materials = getMaterials();
-  const courseTitle = (slug: string) => getEnrolledCourses().find((course) => course.slug === slug)?.title ?? "";
+  const courseTitle = (slug: string) => getCourse(slug)?.title ?? "";
 
   return (
     <StudentShell title="Materiais complementares" active="materiais">

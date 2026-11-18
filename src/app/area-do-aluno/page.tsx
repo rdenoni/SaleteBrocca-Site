@@ -5,7 +5,17 @@ import { ProgressBar } from "@/components/student/ProgressBar";
 import { StudentShell } from "@/components/student/StudentShell";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LinkArrow } from "@/components/ui/LinkArrow";
-import { getCourseProgress, getEnrolledCourses, getMaterials } from "@/lib/content/student";
+import { STUDENT_HOME } from "@/lib/auth-paths";
+import {
+  ENROLLMENT_STATUS_LABEL,
+  getCourseProgress,
+  getEnrolledCourses,
+  getEnrollments,
+  getMaterials,
+  getStudentProgress,
+  isDemoMode,
+  requireStudentSession,
+} from "@/lib/content/student";
 import styles from "./painel.module.css";
 
 export const metadata: Metadata = {
@@ -14,16 +24,22 @@ export const metadata: Metadata = {
 
 const LATEST_MATERIALS_LIMIT = 3;
 
-export default function StudentDashboardPage() {
-  const courses = getEnrolledCourses();
+export default async function StudentDashboardPage() {
+  await requireStudentSession(STUDENT_HOME);
+  const demo = isDemoMode();
+  const [courses, progressByCourse, enrollments] = await Promise.all([
+    getEnrolledCourses(),
+    getStudentProgress(),
+    getEnrollments(),
+  ]);
   const [mainCourse] = courses;
-  const progress = mainCourse ? getCourseProgress(mainCourse) : undefined;
+  const progress = mainCourse ? getCourseProgress(mainCourse, progressByCourse) : undefined;
   const latestMaterials = getMaterials().slice(0, LATEST_MATERIALS_LIMIT);
   const courseTitle = (slug: string) => courses.find((course) => course.slug === slug)?.title ?? "";
 
   return (
     <StudentShell title="Olá!" subtitle="Retome suas aulas e acompanhe seu progresso." active="inicio">
-      {mainCourse && <ContinueCard course={mainCourse} />}
+      {mainCourse && <ContinueCard course={mainCourse} progress={progressByCourse} />}
 
       <div className={styles.grid}>
         <section className={`${styles.panel} ${styles.progress}`} aria-labelledby="progresso-titulo">
@@ -42,10 +58,16 @@ export default function StudentDashboardPage() {
           ) : (
             <EmptyState
               icon={<GraduationCap aria-hidden="true" />}
-              title="Nenhum curso em andamento"
-              text="Você ainda não começou um curso."
+              title={demo ? "Nenhum curso em andamento" : "Você ainda não tem cursos"}
+              text={
+                demo
+                  ? "Você ainda não começou um curso."
+                  : "Assim que a compra for confirmada, o curso aparece aqui. Se você acabou de comprar, aguarde alguns minutos."
+              }
             >
-              <LinkArrow href="/area-do-aluno/cursos">Ver meus cursos</LinkArrow>
+              <LinkArrow href={demo ? "/area-do-aluno/cursos" : "/cursos"}>
+                {demo ? "Ver meus cursos" : "Conhecer os cursos"}
+              </LinkArrow>
             </EmptyState>
           )}
         </section>
@@ -79,11 +101,26 @@ export default function StudentDashboardPage() {
           <h2 id="compras-titulo" className={styles.panelTitle}>
             Compras recentes
           </h2>
-          <EmptyState
-            icon={<Receipt aria-hidden="true" />}
-            title="Nenhuma compra registrada"
-            text="O histórico aparecerá aqui quando o pagamento online estiver ativo."
-          />
+          {enrollments.length === 0 ? (
+            <EmptyState
+              icon={<Receipt aria-hidden="true" />}
+              title="Nenhuma compra registrada"
+              text={
+                demo
+                  ? "O histórico aparecerá aqui quando o pagamento online estiver ativo."
+                  : "As compras confirmadas aparecerão aqui."
+              }
+            />
+          ) : (
+            <ul className={styles.materialList}>
+              {enrollments.map((enrollment) => (
+                <li key={`${enrollment.courseSlug}-${enrollment.createdAt}`} className={styles.materialItem}>
+                  <span className={styles.materialTitle}>{enrollment.courseTitle}</span>
+                  <span className={styles.materialMeta}>{ENROLLMENT_STATUS_LABEL[enrollment.status]}</span>
+                </li>
+              ))}
+            </ul>
+          )}
           <LinkArrow href="/loja">Ver a loja</LinkArrow>
         </section>
       </div>

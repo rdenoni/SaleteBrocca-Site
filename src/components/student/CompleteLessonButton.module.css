@@ -32,3 +32,37 @@
   border-color: var(--success);
   color: var(--success);
 }
+
+.button:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.wrap {
+  display: grid;
+  gap: var(--space-2);
+}
+
+/* width 0 + min-width 100%: a mensagem acompanha a largura do botão em vez de alargar a coluna. */
+.error {
+  width: 0;
+  min-width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  font: 400 14px/20px var(--font-sans);
+  color: var(--error);
+  text-align: center;
+}
+
+/* Vazio (sem erro): continua no DOM para o leitor de tela anunciar o aviso, mas não ocupa espaço. */
+.error:empty {
+  margin-top: calc(var(--space-2) * -1);
+}
+
+.error svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+}

@@ -10,8 +10,11 @@ const PAGES = [
 async function showHeaderByScrollingUp(page: Page) {
   await page.mouse.move(700, 450);
   await page.mouse.wheel(0, 6000);
-  /* Rolou para baixo: o cabeçalho original saiu da tela (pin continua "rest"); um pouco para cima o fixa. */
-  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(500);
+  /* Rolou para baixo: o cabeçalho original saiu da tela (pin continua "rest"); um pouco para cima o fixa.
+     Páginas curtas (a inscrição, sem formulário) rolam menos de 500px: o alvo é o fim da página ou 500px. */
+  const maxScroll = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
+  const target = Math.min(500, maxScroll - 2);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(target);
   /* Espera a rolagem para baixo terminar: sob carga ela ainda corre e engoliria o pequeno giro para cima. */
   let previous = -1;
   await expect

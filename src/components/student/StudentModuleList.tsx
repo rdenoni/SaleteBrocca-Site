@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
-import { getLessonRefs, getLessonStatus, lessonHref } from "@/lib/content/student";
+import { getLessonRefs, getLessonStatus, lessonHref, type ProgressByCourse } from "@/lib/content/student";
 import type { Course } from "@/types/content";
 import { LessonStatusBadge } from "./LessonStatusBadge";
 import styles from "./StudentModuleList.module.css";
 
 interface StudentModuleListProps {
   course: Course;
+  /** Progresso do aluno (carregado pela página com getStudentProgress). */
+  progress: ProgressByCourse;
   /** Aula aberta no player: fica marcada e seu módulo começa aberto. */
   currentSlug?: string;
   /** Módulo que começa aberto quando não há aula atual. */
@@ -16,7 +18,7 @@ interface StudentModuleListProps {
 }
 
 /* Módulos em acordeão nativo; cada aula é um link para o player, com o estado em ícone + palavra. */
-export function StudentModuleList({ course, currentSlug, openModule, compact = false }: StudentModuleListProps) {
+export function StudentModuleList({ course, progress, currentSlug, openModule, compact = false }: StudentModuleListProps) {
   const lessons = getLessonRefs(course);
 
   return (
@@ -24,7 +26,7 @@ export function StudentModuleList({ course, currentSlug, openModule, compact = f
       {course.modules.map((module) => {
         const moduleLessons = lessons.filter((lesson) => lesson.moduleNumber === module.number);
         const done = moduleLessons.filter(
-          (lesson) => getLessonStatus(course.slug, lesson.code) === "completed",
+          (lesson) => getLessonStatus(course.slug, lesson.code, progress) === "completed",
         ).length;
         const isOpen =
           module.number === openModule || moduleLessons.some((lesson) => lesson.slug === currentSlug);
@@ -59,7 +61,7 @@ export function StudentModuleList({ course, currentSlug, openModule, compact = f
                         {String(lesson.numberInModule).padStart(2, "0")}
                       </span>
                       <span className={styles.lessonTitle}>{lesson.title}</span>
-                      <LessonStatusBadge status={getLessonStatus(course.slug, lesson.code)} compact={compact} />
+                      <LessonStatusBadge status={getLessonStatus(course.slug, lesson.code, progress)} compact={compact} />
                     </Link>
                   </li>
                 ))}
