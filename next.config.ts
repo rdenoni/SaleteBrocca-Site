@@ -44,7 +44,20 @@ const nextConfig: NextConfig = {
   /* A biblioteca de marca vive em public/biblioteca (arquivos estáticos). O Next não serve index.html de pasta:
      este rewrite faz /biblioteca abrir o índice. */
   async rewrites() {
-    return [{ source: "/biblioteca", destination: "/biblioteca/index.html" }];
+    return [
+      { source: "/biblioteca", destination: "/biblioteca/index.html" },
+      /* Motion Design System (laboratório de movimento): exportação estática do projeto salete-motion-lab em
+         public/motion. Cada rota é um .html ao lado de uma pasta de dados (/motion/home.html, /motion/home/...). */
+      { source: "/motion", destination: "/motion/index.html" },
+      { source: "/motion/:path([^.]+)", destination: "/motion/:path.html" },
+    ];
+  },
+  /* O laboratório de movimento é de revisão: aberto para quem tem o link, fora dos buscadores. */
+  async headers() {
+    return [
+      { source: "/motion", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+      { source: "/motion/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+    ];
   },
 };
 
