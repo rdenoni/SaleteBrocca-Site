@@ -35,6 +35,11 @@ const nextConfig: NextConfig = {
       /* /loja?categoria=cursos não redireciona mais: a Loja tem a categoria "Cursos" (vitrine que leva a /cursos/[slug]). */
     ];
   },
+  /* A biblioteca de marca vive em public/biblioteca (arquivos estáticos). O Next não serve index.html de pasta:
+     este rewrite faz /biblioteca abrir o índice. */
+  async rewrites() {
+    return [{ source: "/biblioteca", destination: "/biblioteca/index.html" }];
+  },
 };
 
 export default nextConfig;
