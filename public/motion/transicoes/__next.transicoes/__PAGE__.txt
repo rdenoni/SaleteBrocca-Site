@@ -1,0 +1,48 @@
+1:"$Sreact.fragment"
+3:"/motion/_next/static/chunks/38k9eue9ah6uc.js"
+4:"/motion/_next/static/chunks/08vzwv3bax797.js"
+5:"/motion/_next/static/chunks/19fyywklyr8_-.js"
+6:I[43805,["$3","$4","$5"],"LabProvider"]
+7:I[79558,["$3","$4","$5"],"LabShell"]
+8:I[39756,["$3","$4","$5"],"default"]
+9:"/motion/_next/static/chunks/3l-udga-yj938.js"
+a:I[1620,["$3","$4","$5","$9"],"FadeTemplate"]
+b:I[37457,["$3","$4","$5"],"default"]
+12:"/motion/_next/static/chunks/1o5jm8gsrfcmz.js"
+13:I[55804,["$3","$4","$5","$12"],"PageIntro"]
+14:I[90276,["$3","$4","$5","$12"],"DemoSection"]
+1e:"ViewportBoundary"
+1f:I[97367,["$3","$4","$5"],"$1e"]
+20:"MetadataBoundary"
+21:I[97367,["$3","$4","$5"],"$20"]
+22:"$Sreact.suspense"
+23:I[27201,["$3","$4","$5"],"IconMark"]
+:HL["/motion/_next/static/chunks/0ql8fx3ck8uec.css","style"]
+:HL["/motion/_next/static/chunks/1nvjxog6fyf_h.css","style"]
+2:["$","style",null,{"children":"[data-reveal]{opacity:1!important;transform:none!important;clip-path:none!important;stroke-dasharray:none!important;stroke-dashoffset:0!important}[data-reveal-transform]{transform:none!important}"}]
+d:X
+10:X
+10:C
+11:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[[["$","$L13",null,{"title":"Transições entre páginas","lead":"Mudar de página é o momento em que o visitante mais precisa de um sinal de continuidade. Aqui a marca faz isso com o traço: uma régua ciano que corre pelo topo enquanto o conteúdo troca, sem nunca cobrir a tela."}],["$","$L14",null,{"title":"Os quatro modos e quando usar cada um","description":"O modo vem do seletor Transição do cabeçalho. No site, a escolha seria fixa: Traço como padrão, e a cortina só se uma área pedir uma assinatura maior.","api":"<PageTransitionProvider mode />","technique":"Motion","surface":"tint","children":["$","ul",null,{"className":"_1KE_Ba_modes","children":[["$","li","Traço",{"className":"_1KE_Ba_mode","children":[["$","h3",null,{"className":"_1KE_Ba_modeName","children":"Traço"}],["$","p",null,{"children":"Uma régua ciano de 3 px corre pelo topo da tela, da esquerda para a direita, até cerca de 70%, enquanto o conteúdo atual esmaece e sobe 4 px. A página nova chega, a régua se completa e some, e o conteúdo novo sobe e aparece. O cabeçalho não se mexe e nada cobre a tela."}],["$","p",null,{"className":"_1KE_Ba_modeUse","children":"É o padrão. Serve para qualquer troca de página, de um artigo ao curso. Termina devagar, como a caneta que completa a letra: o traço da marca."}]]}],["$","li","Cortina das peças",{"className":"_1KE_Ba_mode","children":[["$","h3",null,{"className":"_1KE_Ba_modeName","children":"Cortina das peças"}],["$","p",null,{"children":"Duas peças da marca, uma ciano e uma azul, cruzam a tela, se encaixam e abrem de novo na página nova."}],["$","p",null,{"className":"_1KE_Ba_modeUse","children":"Use só entre grandes áreas do site (por exemplo, da página inicial para um curso). É a assinatura da marca: uma por trajeto."}]]}],["$","li","Esmaecer",{"className":"_1KE_Ba_mode","children":[["$","h3",null,{"className":"_1KE_Ba_modeName","children":"Esmaecer"}],"$L15","$L16"]}],"$L17"]}]}],"$L18","$L19","$L1a"],["$L1b"],"$L1c"]}],"p":"$@1d","v":null,"s":"$d"}}]]
+e:[["children",{"s":"transicoes","h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$L8",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}]}]]}],"p":"$@f","v":"$10","s":"$d"},"c":"$Q11"}]]
+0:{"t":{"t":{"s":"","h":80,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/motion/_next/static/chunks/0ql8fx3ck8uec.css","precedence":"next"}],["$","link","1",{"rel":"stylesheet","href":"/motion/_next/static/chunks/1nvjxog6fyf_h.css","precedence":"next"}],["$","script","script-0",{"src":"/motion/_next/static/chunks/38k9eue9ah6uc.js","async":true}],["$","script","script-1",{"src":"/motion/_next/static/chunks/08vzwv3bax797.js","async":true}],["$","script","script-2",{"src":"/motion/_next/static/chunks/19fyywklyr8_-.js","async":true}]],["$","html",null,{"lang":"pt-BR","className":"IpY2aW_variable qk1sCa_variable","data-scroll-behavior":"smooth","children":["$","body",null,{"children":[["$","noscript",null,{"children":"$2"}],["$","$L6",null,{"children":["$","$L7",null,{"children":["$","$L8",null,{"parallelRouterKey":"children","template":["$","$La",null,{"children":["$","$Lb",null,{}]}],"templateStyles":[],"templateScripts":[["$","script","script-0",{"src":"/motion/_next/static/chunks/3l-udga-yj938.js","async":true}]],"notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]]}]}]}]]}]}]]}],"p":"$@c","v":null,"s":"$d"},"c":"$Qe"},"h":{"r":["$","$1","h",{"children":[null,["$","$L1f",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#0f2438"}],["$","meta","3",{"name":"color-scheme","content":"light"}]]}],["$","$L21",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$22",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Transições entre páginas | Laboratório de movimento Salete Brocca"}],["$","meta","1",{"name":"description","content":"Motion Design System Salete Brocca: tokens, componentes e demonstrações interativas."}],["$","meta","2",{"name":"robots","content":"noindex, nofollow"}],["$","link","3",{"rel":"icon","href":"/brand/logo/icone-app.png"}],["$","$L23","4",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@24","v":null,"s":"$d"}},"a":"$@25","u":"$@26","b":"2eM3Bi5kyR1ZMt5UTSHQ3"}
+27:I[12376,["$3","$4","$5","$12"],"TryTransitions"]
+28:I[36182,["$3","$4","$5","$12"],"CurtainPreview"]
+29:I[97367,["$3","$4","$5"],"OutletBoundary"]
+15:["$","p",null,{"children":"A página nova entra com opacidade e uma subida pequena, sem cobrir nada."}]
+16:["$","p",null,{"className":"_1KE_Ba_modeUse","children":"Use no resto da navegação: entre artigos, entre páginas do mesmo assunto, em qualquer troca frequente."}]
+17:["$","li","Nenhuma",{"className":"_1KE_Ba_mode","children":[["$","h3",null,{"className":"_1KE_Ba_modeName","children":"Nenhuma"}],["$","p",null,{"children":"A página troca na hora, como o navegador faz sozinho."}],["$","p",null,{"className":"_1KE_Ba_modeUse","children":"É o que acontece com movimento reduzido: sem cortina, sem deslocamento, o conteúdo já aparece."}]]}]
+18:["$","$L14",null,{"title":"Navegue para ver","description":"Links reais para outras demonstrações. Depois da troca, o foco vai para o conteúdo e o leitor de tela anuncia o título da página nova.","api":"<TransitionLink href />","technique":"Motion","children":["$","$L27",null,{}]}]
+19:["$","$L14",null,{"title":"Tocar a transição no lugar","description":"Sai e volta sem trocar de página, para inspecionar o traço (ou o encaixe, no modo cortina). Combine com a velocidade ¼× para ver cada passo.","api":"usePageTransition().preview()","technique":"Motion","children":["$","$L28",null,{}]}]
+1a:["$","$L14",null,{"title":"Regras de segurança","description":"O que a transição nunca faz.","technique":"Motion","surface":"tint","children":["$","ul",null,{"className":"_1KE_Ba_rules","children":[["$","li",null,{"children":"Voltar e avançar do navegador, Ctrl/Cmd/Shift/Alt + clique, nova aba, outro site, mesma página e link só de âncora seguem o comportamento normal do navegador."}],["$","li",null,{"children":"Se a página nova demorar mais de 3 segundos, a transição termina mesmo assim."}],["$","li",null,{"children":"A régua e a cortina são decorativas (aria-hidden), nunca guardam o foco; a cortina bloqueia cliques só enquanto cobre. Depois da troca, o foco vai para o conteúdo."}],["$","li",null,{"children":"Saída mais curta que a entrada. Com movimento reduzido, o Traço vira um esmaecer curto, sem régua e sem deslocamento; a cortina troca de página na hora."}]]}]}]
+1b:["$","script","script-0",{"src":"/motion/_next/static/chunks/1o5jm8gsrfcmz.js","async":true}]
+1c:["$","$L29",null,{"children":["$","$22",null,{"name":"Next.MetadataOutlet","children":"$@2a"}]}]
+d:300
+2a:null
+26:true
+d:C
+25:0
+f:"$undefined"
+c:"$undefined"
+24:"$undefined"
+1d:"$undefined"
