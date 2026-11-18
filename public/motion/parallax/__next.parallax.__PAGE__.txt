@@ -1,0 +1,44 @@
+1:"$Sreact.fragment"
+3:"/motion/_next/static/chunks/38k9eue9ah6uc.js"
+4:"/motion/_next/static/chunks/08vzwv3bax797.js"
+5:"/motion/_next/static/chunks/1vxvzywk6f97p.js"
+6:I[43805,["$3","$4","$5"],"LabProvider"]
+7:I[79558,["$3","$4","$5"],"LabShell"]
+8:I[39756,["$3","$4","$5"],"default"]
+9:"/motion/_next/static/chunks/3l-udga-yj938.js"
+a:I[1620,["$3","$4","$5","$9"],"FadeTemplate"]
+b:I[37457,["$3","$4","$5"],"default"]
+12:"/motion/_next/static/chunks/13khx0r1uo9aj.js"
+13:I[55804,["$3","$4","$5","$12"],"PageIntro"]
+14:I[90276,["$3","$4","$5","$12"],"DemoSection"]
+15:I[31763,["$3","$4","$5","$12"],"ParallaxImage"]
+16:I[12286,["$3","$4","$5","$12"],"PortraitDepth"]
+1c:"ViewportBoundary"
+1d:I[97367,["$3","$4","$5"],"$1c"]
+1e:"MetadataBoundary"
+1f:I[97367,["$3","$4","$5"],"$1e"]
+20:"$Sreact.suspense"
+21:I[27201,["$3","$4","$5"],"IconMark"]
+:HL["/motion/_next/static/chunks/0ql8fx3ck8uec.css","style"]
+:HL["/motion/_next/static/chunks/1nvjxog6fyf_h.css","style"]
+2:["$","style",null,{"children":"[data-reveal]{opacity:1!important;transform:none!important;clip-path:none!important;stroke-dasharray:none!important;stroke-dashoffset:0!important}[data-reveal-transform]{transform:none!important}"}]
+d:X
+10:X
+10:C
+11:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[[["$","$L13",null,{"title":"Parallax de fotografias","lead":"A foto se move um pouco mais devagar que a página, dentro de um recorte. A camada é maior que a moldura, então nunca sobra borda vazia, e com movimento reduzido ela fica parada."}],["$","$L14",null,{"title":"Faixa larga","description":"Foto de curso numa faixa de ponta a ponta. Role a página e acompanhe a foto deslizando dentro do recorte.","api":"<ParallaxImage strength={0.15} />","bleed":true,"children":["$","$L15",null,{"src":"/images/courses/dificuldades-na-aprendizagem.jpg","alt":"Menina de perfil lendo um livro aberto, ao ar livre","sizes":"100vw","strength":0.15,"objectPosition":"60% 40%","className":"oLXiHG_band"}]}],["$","$L14",null,{"title":"Retrato com profundidade","description":"Os blocos ciano e navy da marca andam em ritmos diferentes atrás do retrato, que quase não se mexe. Três camadas, três velocidades, e nenhuma passa dos limites da página.","api":"<ParallaxImage /> + useScroll","surface":"tint","children":["$","$L16",null,{}]}],["$","$L14",null,{"title":"Três forças","description":"A mesma técnica com força 0,06, 0,12 e 0,20. Quanto maior a força, mais a foto percorre o recorte; acima de 0,2 já passa a chamar atenção.","api":"<ParallaxImage strength={0.06 | 0.12 | 0.2} />","children":["$","ul",null,{"className":"oLXiHG_grid","children":[["$","li","pac-avaliacao-do-processamento-auditivo",{"children":[["$","$L15",null,{"src":"/images/articles/pac-processamento-auditivo.jpg","alt":"Menino com fone de ouvido durante uma avaliação auditiva","sizes":"(max-width: 767px) 100vw, 33vw","strength":0.06,"objectPosition":"68% center","aspectRatio":"4 / 5","rounded":true}],["$","p",null,{"className":"oLXiHG_gridCaption","children":["Força ",["$","strong",null,{"children":"0,06"}]]}]]}],["$","li","disfagia-sintomas-e-tratamento",{"children":[["$","$L15",null,{"src":"/images/articles/disfagia.jpg","alt":"Criança de boca aberta durante exame com espátula","sizes":"(max-width: 767px) 100vw, 33vw","strength":0.12,"objectPosition":"40% center","aspectRatio":"4 / 5","rounded":true}],"$L17"]}],"$L18"]}]}]],["$L19"],"$L1a"]}],"p":"$@1b","v":null,"s":"$d"}}]]
+e:[["children",{"s":"parallax","h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$L8",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}]}]]}],"p":"$@f","v":"$10","s":"$d"},"c":"$Q11"}]]
+0:{"t":{"t":{"s":"","h":80,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/motion/_next/static/chunks/0ql8fx3ck8uec.css","precedence":"next"}],["$","link","1",{"rel":"stylesheet","href":"/motion/_next/static/chunks/1nvjxog6fyf_h.css","precedence":"next"}],["$","script","script-0",{"src":"/motion/_next/static/chunks/38k9eue9ah6uc.js","async":true}],["$","script","script-1",{"src":"/motion/_next/static/chunks/08vzwv3bax797.js","async":true}],["$","script","script-2",{"src":"/motion/_next/static/chunks/1vxvzywk6f97p.js","async":true}]],["$","html",null,{"lang":"pt-BR","className":"IpY2aW_variable qk1sCa_variable","data-scroll-behavior":"smooth","children":["$","body",null,{"children":[["$","noscript",null,{"children":"$2"}],["$","$L6",null,{"children":["$","$L7",null,{"children":["$","$L8",null,{"parallelRouterKey":"children","template":["$","$La",null,{"children":["$","$Lb",null,{}]}],"templateStyles":[],"templateScripts":[["$","script","script-0",{"src":"/motion/_next/static/chunks/3l-udga-yj938.js","async":true}]],"notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]]}]}]}]]}]}]]}],"p":"$@c","v":null,"s":"$d"},"c":"$Qe"},"h":{"r":["$","$1","h",{"children":[null,["$","$L1d",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#0f2438"}],["$","meta","3",{"name":"color-scheme","content":"light"}]]}],["$","$L1f",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$20",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Parallax de fotografias | Laboratório de movimento Salete Brocca"}],["$","meta","1",{"name":"description","content":"Motion Design System Salete Brocca: tokens, componentes e demonstrações interativas."}],["$","meta","2",{"name":"robots","content":"noindex, nofollow"}],["$","link","3",{"rel":"icon","href":"/brand/logo/icone-app.png"}],["$","$L21","4",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@22","v":null,"s":"$d"}},"a":"$@23","u":"$@24","b":"Gxjd15Xw05_ese7DiuvvX"}
+25:I[97367,["$3","$4","$5"],"OutletBoundary"]
+17:["$","p",null,{"className":"oLXiHG_gridCaption","children":["Força ",["$","strong",null,{"children":"0,12"}]]}]
+18:["$","li","castigo-13-verdades",{"children":[["$","$L15",null,{"src":"/images/articles/castigo-infantil.jpg","alt":"Menina sentada no chão, de costas, virada para a parede","sizes":"(max-width: 767px) 100vw, 33vw","strength":0.2,"objectPosition":"30% 75%","aspectRatio":"4 / 5","rounded":true}],["$","p",null,{"className":"oLXiHG_gridCaption","children":["Força ",["$","strong",null,{"children":"0,20"}]]}]]}]
+19:["$","script","script-0",{"src":"/motion/_next/static/chunks/13khx0r1uo9aj.js","async":true}]
+1a:["$","$L25",null,{"children":["$","$20",null,{"name":"Next.MetadataOutlet","children":"$@26"}]}]
+d:300
+26:null
+24:true
+d:C
+23:0
+f:"$undefined"
+c:"$undefined"
+22:"$undefined"
+1b:"$undefined"
