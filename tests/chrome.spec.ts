@@ -5,8 +5,8 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const DESKTOP_MIN_WIDTH = 1100;
 const NAV_NAME = "Principal";
-/* Menu aprovado, na ordem: a Loja saiu do cabeçalho (a rota segue no ar, pelo rodapé). */
-const MAIN_NAV_LABELS = ["Cursos", "Avaliação", "Conteúdo", "Sobre", "Contato"];
+/* Menu na ordem do cabeçalho; a Loja entrou depois de Cursos. */
+const MAIN_NAV_LABELS = ["Cursos", "Loja", "Avaliação", "Conteúdo", "Sobre", "Contato"];
 
 /* Rodapé aprovado (3 colunas). Os links de curso e de categoria vêm dos dados do site: hoje, 1 curso e 3 categorias. */
 const FOOTER_COLUMNS = [
@@ -125,16 +125,16 @@ test.describe("cabeçalho: gota do item ativo", () => {
     await expect.poll(() => readGota(page), { timeout: 15_000 }).toEqual({ under: "Cursos", opacity: 1 });
   });
 
-  test("o menu tem 5 itens na ordem aprovada e a Loja não está nele", async ({ page }) => {
+  test("o menu tem 6 itens na ordem definida, com a Loja em segundo", async ({ page }) => {
     await page.goto("/cursos");
     const nav = page.getByRole("navigation", { name: NAV_NAME, exact: true });
     await expect(nav.getByRole("link")).toHaveText(MAIN_NAV_LABELS);
     await expect(nav.getByRole("link", { name: "Avaliação", exact: true })).toHaveAttribute("href", "/avaliacao");
-    await expect(nav.getByRole("link", { name: "Loja", exact: true })).toHaveCount(0);
+    await expect(nav.getByRole("link", { name: "Loja", exact: true })).toHaveAttribute("href", "/loja");
   });
 
-  /* Páginas que não são itens do menu (privacidade, termos, Loja) não têm gota nem aria-current. */
-  for (const route of ["/privacidade", "/termos-de-uso", "/loja", "/loja/checkout"]) {
+  /* Páginas que não são itens do menu (privacidade, termos) não têm gota nem aria-current. */
+  for (const route of ["/privacidade", "/termos-de-uso"]) {
     test(`fora do menu (${route}) não há gota`, async ({ page }) => {
       await page.goto(route);
       const nav = page.getByRole("navigation", { name: NAV_NAME, exact: true });
@@ -254,7 +254,7 @@ test.describe("menu móvel", () => {
       expect((await link.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(48);
     }
     await expect(dialog.getByRole("link", { name: "Avaliação", exact: true })).toHaveAttribute("href", "/avaliacao");
-    await expect(dialog.getByRole("link", { name: "Loja", exact: true })).toHaveCount(0);
+    await expect(dialog.getByRole("link", { name: "Loja", exact: true })).toHaveAttribute("href", "/loja");
     await expect(dialog.getByRole("link", { name: "Sobre", exact: true })).toHaveAttribute("aria-current", "page");
     await expect(dialog.getByRole("link", { name: "Área do Aluno" })).toHaveAttribute("href", "/area-do-aluno");
 

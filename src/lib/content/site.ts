@@ -4,9 +4,10 @@ export const SITE_NAME = "Salete Brocca";
 export const SITE_DESCRIPTION =
   "Maria Salete Brocca Denoni, professora e fonoaudióloga clínica. Cursos, conteúdos e avaliação em dificuldades de aprendizagem.";
 
-/* Menu aprovado pela cliente. A Loja saiu do cabeçalho, mas a rota continua no ar e o rodapé aponta para ela. */
+/* Menu aprovado pela cliente sem a Loja; a Loja voltou ao cabeçalho a pedido do desenvolvedor (confirmar com a cliente). */
 export const MAIN_NAV: readonly NavItem[] = [
   { label: "Cursos", href: "/cursos" },
+  { label: "Loja", href: "/loja" },
   { label: "Avaliação", href: "/avaliacao" },
   { label: "Conteúdo", href: "/conteudo" },
   { label: "Sobre", href: "/sobre" },

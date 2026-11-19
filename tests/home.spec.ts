@@ -124,11 +124,9 @@ test.describe("Home", () => {
     if (isDesktop(width)) {
       await expect(desktopNav).toBeVisible();
       await expect(menuButton).toBeHidden();
-      /* Menu aprovado no mapa do site: a Loja saiu do topo (fica no rodapé) e a Avaliação entrou. */
-      for (const label of ["Cursos", "Avaliação", "Conteúdo", "Sobre", "Contato"]) {
+      for (const label of ["Cursos", "Loja", "Avaliação", "Conteúdo", "Sobre", "Contato"]) {
         await expect(desktopNav.getByRole("link", { name: label, exact: true })).toBeVisible();
       }
-      await expect(desktopNav.getByRole("link", { name: "Loja", exact: true })).toHaveCount(0);
       return;
     }
 
