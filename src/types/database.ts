@@ -103,6 +103,40 @@ export type Database = {
         };
         Relationships: [];
       };
+      /* supabase/migrations/20261120120000_lesson_videos.sql: o aluno só lê; quem grava é o servidor. */
+      lesson_videos: {
+        Row: {
+          course_slug: string;
+          lesson_code: string;
+          provider: "mux";
+          asset_id: string;
+          playback_id: string;
+          duration_seconds: number | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          course_slug: string;
+          lesson_code: string;
+          provider?: "mux";
+          asset_id: string;
+          playback_id: string;
+          duration_seconds?: number | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          course_slug?: string;
+          lesson_code?: string;
+          provider?: "mux";
+          asset_id?: string;
+          playback_id?: string;
+          duration_seconds?: number | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: { [_ in never]: never };
     Functions: { [_ in never]: never };
