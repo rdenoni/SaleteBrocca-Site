@@ -186,3 +186,14 @@ Padrão (`padrao-modulo.png`) e peças (`grafismo-pecas.png`) como apoio em áre
 - Um `h1` por página; landmarks `header`, `nav`, `main`, `footer`; rótulos visíveis em todos os campos.
 - Carrossel do hero com pausa e controles acessíveis; não troca sozinho com movimento reduzido.
 - Formulários anunciam erros com `aria-invalid` e `aria-describedby`.
+
+## 16. Movimento: ordem de entrada
+
+Regra da cliente: as entradas seguem a hierarquia da informação. Partituras em `src/motion/timeline.ts`.
+
+- **Cascata**: título (e o que pertence a ele) → subtítulo → texto → o resto (foto, índice, botões). Numa seção que entra ao chegar à tela, o conteúdo espera o título (`afterTitle`).
+- **Página**: o banner/topo primeiro (`afterBanner`), depois as demais seções.
+- **Cabeçalho**: símbolo → logotipo → links → gota da página atual → botões (`headerTimeline`), começando logo que a pílula branca desce.
+- **Nada da página começa antes de a entrada do cabeçalho estar 80% feita** (`useEntranceReady`; o cabeçalho usa `useCurtainReady`). Nas navegações seguintes o cabeçalho não entra de novo, então a página não espera.
+- **Mensagens e frases de destaque** (ex.: "Toda criança, independente da dificuldade, tem a capacidade de ler e escrever."): leitura guiada (`GuidedReading`), ligada à rolagem.
+- Cada passo começa por volta da metade do anterior: a ordem fica clara sem ninguém esperar a animação acabar.

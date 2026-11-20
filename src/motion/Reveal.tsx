@@ -33,7 +33,10 @@ export interface RevealProps {
 /* Saída sempre mais curta que a entrada e com curva "in": some sem disputar atenção. */
 export function revealVariants(variant: RevealVariant, t: ResolvedMotionTokens, delay = 0): Variants {
   const exit = { duration: t.duration.base, ease: t.ease.in };
-  const enter = { duration: t.duration.gentle, ease: t.ease.out, delay };
+  /* Sem atraso próprio, a chave `delay` fica de fora: um `delay: 0` explícito anula o atraso que a cascata do pai
+     (delayChildren/stagger) passa para o filho, e os itens de um Stagger entravam todos juntos. */
+  const ownDelay = delay > 0 ? { delay } : {};
+  const enter = { duration: t.duration.gentle, ease: t.ease.out, ...ownDelay };
 
   /* Reduzido: só opacidade. Transform e recorte ficam neutros nos dois estados, sem animar: o bloco pode ter
      hidratado com o estado inicial do movimento completo (o servidor não sabe a preferência). */
@@ -60,7 +63,7 @@ export function revealVariants(variant: RevealVariant, t: ResolvedMotionTokens, 
         visible: {
           clipPath: "inset(0% 0% 0% 0%)",
           y: 0,
-          transition: { duration: t.duration.slow, ease: t.ease.out, delay },
+          transition: { duration: t.duration.slow, ease: t.ease.out, ...ownDelay },
         },
       };
     case "rise":

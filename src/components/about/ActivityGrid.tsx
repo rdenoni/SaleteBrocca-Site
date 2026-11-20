@@ -14,15 +14,17 @@ const ICONS: Record<ActivityIcon, LucideIcon> = {
 
 interface ActivityGridProps {
   activities: readonly Activity[];
+  /** Espera o título da seção (afterTitle). */
+  delay?: number;
 }
 
 /* Lista editorial das frentes de atuação: duas colunas separadas por filetes finos,
    com uma única marca ciano no topo de cada item. Os itens sobem em cascata ao entrar na tela.
    `pending` (ex.: cidade) fica só nos dados como registro da pendência; não é exibido.
    Quando a cliente confirmar, o dado entra no texto. */
-export function ActivityGrid({ activities }: ActivityGridProps) {
+export function ActivityGrid({ activities, delay = 0 }: ActivityGridProps) {
   return (
-    <Stagger as="ul" pace="items" className={styles.list}>
+    <Stagger as="ul" pace="items" delay={delay} className={styles.list}>
       {activities.map((activity) => {
         const Icon = ICONS[activity.icon];
         return (

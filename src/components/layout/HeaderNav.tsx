@@ -3,7 +3,8 @@
 import { animate, motion, useMotionValue, useTransform, type MotionValue, type ValueAnimationTransition } from "motion/react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { MAIN_NAV } from "@/lib/content/site";
-import { useEntranceReady } from "@/motion/transitions/useEntranceReady";
+import { headerTimeline } from "@/motion/timeline";
+import { useCurtainReady } from "@/motion/transitions/useEntranceReady";
 import { TransitionLink } from "@/motion/transitions/TransitionLink";
 import { useMotionTokens } from "@/motion/useMotionTokens";
 import styles from "./Header.module.css";
@@ -50,7 +51,7 @@ interface HeaderNavProps {
    offsetLeft dos links (não depende da rolagem, então funciona com o cabeçalho fixo) e o raio da gota não deforma. */
 export function HeaderNav({ currentHref, highlightedHref }: HeaderNavProps) {
   const t = useMotionTokens();
-  const ready = useEntranceReady();
+  const ready = useCurtainReady();
 
   /* As chaves são os href (únicos). null = nenhuma página do menu está ativa (privacidade, área do aluno, 404). */
   const activeHref = highlightedHref ?? null;
@@ -179,15 +180,25 @@ export function HeaderNav({ currentHref, highlightedHref }: HeaderNavProps) {
     if (layer) layer.style.willChange = on ? "transform, opacity" : "";
   };
 
+  /* Os links entram depois do símbolo e do nome (headerTimeline), um a um; a gota pinga quando o último chega. */
+  const timeline = headerTimeline(t, MAIN_NAV.length);
+  const itemHidden = { opacity: 0, y: t.reduced ? 0 : -t.distance.small };
+  const itemTransition = (index: number) =>
+    t.reduced
+      ? { duration: t.duration.quick, y: { duration: 0 } }
+      : { duration: timeline.itemDuration, ease: t.ease.out, delay: timeline.navItem(index) };
+
   const gotaIn = ready && measured && activeHref !== null;
+  /* Só a primeira entrada espera a cascata; depois (ex.: vindo de uma página sem item) a gota pinga logo. */
+  const [gotaEntered, setGotaEntered] = useState(false);
+  const gotaDelay = gotaEntered ? t.duration.instant : timeline.gota;
   const hiddenGota = { opacity: 0, scaleY: t.reduced ? 1 : 0 };
   const gotaTransition = t.reduced
     ? { opacity: { duration: t.duration.quick }, scaleY: { duration: 0 } }
     : {
-        /* O pill desce primeiro; a gota começa a pingar quando ele já está pousando. */
-        delay: t.duration.instant,
-        opacity: { duration: t.duration.quick, delay: t.duration.instant },
-        scaleY: { ...t.spring.fit },
+        delay: gotaDelay,
+        opacity: { duration: t.duration.quick, delay: gotaDelay },
+        scaleY: { ...t.spring.fit, delay: gotaDelay },
       };
 
   return (
@@ -200,7 +211,10 @@ export function HeaderNav({ currentHref, highlightedHref }: HeaderNavProps) {
           className={`${styles.markLayer} ${styles.gotaLayer}`}
           data-reveal=""
           onAnimationStart={() => promoteGota(true)}
-          onAnimationComplete={() => promoteGota(false)}
+          onAnimationComplete={() => {
+            promoteGota(false);
+            if (gotaIn) setGotaEntered(true);
+          }}
           style={{ originY: 0 }}
           initial={hiddenGota}
           animate={gotaIn ? { opacity: 1, scaleY: 1 } : hiddenGota}
@@ -221,7 +235,7 @@ export function HeaderNav({ currentHref, highlightedHref }: HeaderNavProps) {
         </motion.span>
 
         <ul className={styles.navList}>
-          {MAIN_NAV.map((item) => (
+          {MAIN_NAV.map((item, index) => (
             <li key={item.href}>
               <TransitionLink
                 href={item.href}
@@ -240,7 +254,16 @@ export function HeaderNav({ currentHref, highlightedHref }: HeaderNavProps) {
                 }}
                 onBlur={() => setFocused(null)}
               >
-                {item.label}
+                {/* Anima só o rótulo: um transform no <li> ou no link vira offsetParent e estraga a medição da gota. */}
+                <motion.span
+                  className={styles.navLabel}
+                  data-reveal=""
+                  initial={{ opacity: 0, y: -t.distance.small }}
+                  animate={ready ? { opacity: 1, y: 0 } : itemHidden}
+                  transition={itemTransition(index)}
+                >
+                  {item.label}
+                </motion.span>
               </TransitionLink>
             </li>
           ))}

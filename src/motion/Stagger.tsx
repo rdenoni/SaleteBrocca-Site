@@ -27,7 +27,7 @@ export function Stagger({ children, as = "div", pace = "items", delay = 0, once 
   const gap = t.reduced ? 0 : t.stagger[pace];
   const variants: Variants = {
     hidden: {},
-    visible: { transition: { delayChildren: staggerChildren(gap, { startDelay: delay }) } },
+    visible: { transition: { delayChildren: staggerChildren(gap, { startDelay: t.reduced ? 0 : delay }) } },
   };
 
   return (

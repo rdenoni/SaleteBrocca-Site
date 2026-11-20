@@ -11,6 +11,8 @@ interface FormationTimelineProps {
   items: readonly FormationItem[];
   /** Registro profissional; null oculta o registro até a cliente confirmar. */
   crfa: string | null;
+  /** Espera o título da seção (afterTitle) antes de desenhar o trilho. */
+  delay?: number;
 }
 
 const OPEN = "inset(0% 0% 0% 0%)";
@@ -21,11 +23,11 @@ const CLOSED = "inset(0% 100% 100% 0%)";
 /* Linha do tempo da formação: horizontal no desktop, vertical no mobile.
    O trilho se desenha (o traço) e cada ponto encaixa com a mola curta quando a linha chega até ele;
    ano e título sobem logo depois. Movimento reduzido: só opacidade. */
-export function FormationTimeline({ items, crfa }: FormationTimelineProps) {
+export function FormationTimeline({ items, crfa, delay = 0 }: FormationTimelineProps) {
   const t = useMotionTokens();
   const draw = t.duration.slow;
   /* Os pontos ficam no início de cada coluna: a linha passa pelo ponto i em i/n do traçado. */
-  const at = (index: number): number => (t.reduced ? 0 : (index / items.length) * draw);
+  const at = (index: number): number => (t.reduced ? 0 : delay + (index / items.length) * draw);
 
   const track: Variants = t.reduced
     ? {
@@ -34,7 +36,7 @@ export function FormationTimeline({ items, crfa }: FormationTimelineProps) {
       }
     : {
         hidden: { clipPath: CLOSED },
-        visible: { clipPath: OPEN, transition: { duration: draw, ease: t.ease.stroke } },
+        visible: { clipPath: OPEN, transition: { duration: draw, ease: t.ease.stroke, delay } },
       };
 
   const dot = (index: number): Variants =>
@@ -79,7 +81,7 @@ export function FormationTimeline({ items, crfa }: FormationTimelineProps) {
       </div>
 
       {crfa && (
-        <motion.p className={styles.register} data-reveal="" variants={revealVariants("rise", t, t.reduced ? 0 : draw)}>
+        <motion.p className={styles.register} data-reveal="" variants={revealVariants("rise", t, t.reduced ? 0 : delay + draw)}>
           <BadgeCheck aria-hidden="true" size={24} />
           <span>Registro profissional</span>
           <strong>{crfa}</strong>

@@ -128,6 +128,11 @@
   display: flex;
 }
 
+/* Rótulo do link: inline-block para receber o deslocamento da entrada. */
+.navLabel {
+  display: inline-block;
+}
+
 .navLink {
   position: relative;
   z-index: 1;

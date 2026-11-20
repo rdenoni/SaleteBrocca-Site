@@ -3,7 +3,7 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { DrawRule } from "@/motion/DrawRule";
-import { heroTimeline } from "@/motion/HeroSequence";
+import { heroTimeline } from "@/motion/timeline";
 import { Reveal } from "@/motion/Reveal";
 import { TextReveal } from "@/motion/TextReveal";
 import { useEntranceReady } from "@/motion/transitions/useEntranceReady";

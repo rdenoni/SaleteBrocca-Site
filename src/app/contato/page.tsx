@@ -8,7 +8,8 @@ import { EMAIL, WHATSAPP } from "@/lib/content/contact";
 import { SOCIAL_LINKS } from "@/lib/content/site";
 import { MotionButton } from "@/motion/MotionButton";
 import { Reveal } from "@/motion/Reveal";
-import { duration, stagger } from "@/motion/tokens";
+import { afterBanner } from "@/motion/timeline";
+import { duration, motionTokens, stagger } from "@/motion/tokens";
 import styles from "./contato.module.css";
 
 export const metadata: Metadata = {
@@ -16,10 +17,17 @@ export const metadata: Metadata = {
   description: "Fale pelo WhatsApp ou envie uma mensagem para Maria Salete Brocca Denoni.",
 };
 
-/* Entrada: depois do banner, os painéis sobem em cascata (WhatsApp → formulário → avaliação), ao montar e
-   esperando a cortina de transição; "Outros canais" entra ao chegar à tela. Página calma: sem ousadia além disso. */
-const PANELS_START = duration.slow;
+const BANNER_TITLE = "Contato";
+/* Entrada por hierarquia, ao montar e esperando a cortina de transição: banner (título → subtítulo) e, com ele já
+   subindo, WhatsApp → avaliação → formulário (que faz a própria cascata, campo a campo) → outros canais.
+   Página calma: sem ousadia além disso. */
+const PANELS_START = afterBanner(motionTokens, BANNER_TITLE);
 const panelDelay = (index: number): number => PANELS_START + index * stagger.cards;
+/* Os campos do formulário começam logo depois do painel dele; os outros canais, quando o último campo (enviar) sai.
+   FORM_STEPS = filhos da cascata em ContactForm: título, nome/telefone, e-mail, assunto, mensagem, consentimento, enviar. */
+const FORM_STEPS = 7;
+const FORM_FIELDS_DELAY = panelDelay(2) + duration.quick;
+const CHANNELS_DELAY = FORM_FIELDS_DELAY + FORM_STEPS * stagger.items;
 
 /* Dados ausentes (null) ficam ocultos; dados existentes mas não confirmados ganham uma nota discreta. */
 export default function ContactPage() {
@@ -30,7 +38,7 @@ export default function ContactPage() {
   return (
     <>
       <PageBanner
-        title="Contato"
+        title={BANNER_TITLE}
         subtitle="Tire dúvidas sobre os cursos ou envie uma mensagem."
         size="compact"
       />
@@ -64,7 +72,7 @@ export default function ContactPage() {
         <Reveal
           as="section"
           trigger="mount"
-          delay={panelDelay(2)}
+          delay={panelDelay(1)}
           id="agendamento"
           className={`${styles.block} ${styles.schedule}`}
           aria-labelledby="agendamento-titulo"
@@ -81,16 +89,22 @@ export default function ContactPage() {
         <Reveal
           as="section"
           trigger="mount"
-          delay={panelDelay(1)}
+          delay={panelDelay(2)}
           id="formulario"
           className={`${styles.panel} ${styles.formCard}`}
           aria-labelledby="formulario-titulo"
         >
-          <ContactForm />
+          <ContactForm entranceDelay={FORM_FIELDS_DELAY} />
         </Reveal>
 
         {hasChannels && (
-          <Reveal as="section" className={`${styles.block} ${styles.channels}`} aria-labelledby="canais-titulo">
+          <Reveal
+            as="section"
+            trigger="mount"
+            delay={CHANNELS_DELAY}
+            className={`${styles.block} ${styles.channels}`}
+            aria-labelledby="canais-titulo"
+          >
             <h2 id="canais-titulo" className={styles.channelsTitle}>
               Outros canais
             </h2>

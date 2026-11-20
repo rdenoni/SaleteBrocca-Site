@@ -11,8 +11,16 @@ async function loadAllImages(page: Page): Promise<void> {
   for (const image of await page.locator("main img, footer img").all()) {
     if (await image.isVisible()) await image.scrollIntoViewIfNeeded();
   }
+  /* Imagem lazy fora da tela não conta: o carrossel de depoimentos troca de slide sozinho e monta a foto nova
+     enquanto o teste já rolou para o rodapé; ela só carrega quando volta à tela (comportamento correto do lazy). */
   await page.waitForFunction(
-    () => Array.from(document.images).every((img) => img.offsetParent === null || img.complete),
+    () =>
+      Array.from(document.images).every((img) => {
+        if (img.offsetParent === null || img.complete) return true;
+        const box = img.getBoundingClientRect();
+        const onScreen = box.bottom > 0 && box.top < window.innerHeight;
+        return img.loading === "lazy" && !onScreen;
+      }),
     undefined,
     { timeout: 15_000 },
   );
