@@ -36,10 +36,10 @@
   color: var(--navy);
 }
 
+/* Ícone de metadado (biblioteca de ícones): 18px, cor herdada do texto. */
 .eyebrow svg {
-  width: 20px;
-  height: 20px;
-  color: var(--blue-strong);
+  width: 18px;
+  height: 18px;
 }
 
 .title {

@@ -1,19 +1,23 @@
+import { Stagger, StaggerItem } from "@/motion/Stagger";
 import type { PodcastEpisode } from "@/types/content";
 import { PodcastEpisodeCard } from "./PodcastEpisodeCard";
 import styles from "./PodcastEpisodeGrid.module.css";
 
 interface PodcastEpisodeGridProps {
   episodes: readonly PodcastEpisode[];
+  /** Espera o título e o texto da seção. */
+  delay?: number;
 }
 
-export function PodcastEpisodeGrid({ episodes }: PodcastEpisodeGridProps) {
+/* Os episódios sobem em cascata, da esquerda para a direita. */
+export function PodcastEpisodeGrid({ episodes, delay = 0 }: PodcastEpisodeGridProps) {
   return (
-    <ul className={styles.grid}>
+    <Stagger as="ul" pace="cards" delay={delay} className={styles.grid}>
       {episodes.map((episode) => (
-        <li key={episode.slug}>
+        <StaggerItem as="li" key={episode.slug}>
           <PodcastEpisodeCard episode={episode} />
-        </li>
+        </StaggerItem>
       ))}
-    </ul>
+    </Stagger>
   );
 }

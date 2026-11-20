@@ -1,9 +1,10 @@
 "use client";
 
 import { motion, stagger as staggerChildren, type Variants } from "motion/react";
-import type { ReactNode } from "react";
-import { inViewWait } from "./pageSequence";
+import { Children, type ReactNode } from "react";
+import { inViewWait, useHoldInView } from "./pageSequence";
 import { revealVariants, type RevealVariant } from "./Reveal";
+import { useEntranceReady } from "./transitions/useEntranceReady";
 import { useMotionTokens } from "./useMotionTokens";
 
 type StaggerTag = "div" | "ul" | "ol" | "section";
@@ -18,21 +19,47 @@ interface StaggerProps {
   once?: boolean;
   className?: string;
   "aria-label"?: string;
+  /** "inView" (padrão): ao entrar na tela. "mount": ao montar (topo da página), depois do cabeçalho e da cortina. */
+  trigger?: "inView" | "mount";
 }
 
-/* Orquestra a entrada dos filhos <StaggerItem> em sequência, quando o grupo entra na tela.
+/* Orquestra a entrada dos filhos <StaggerItem> em sequência, quando o grupo entra na tela (ou ao montar).
    Um único observador de viewport para o grupo inteiro (mais leve que um por item). */
-export function Stagger({ children, as = "div", pace = "items", delay = 0, once = true, className, ...aria }: StaggerProps) {
+export function Stagger({
+  children,
+  as = "div",
+  pace = "items",
+  delay = 0,
+  once = true,
+  className,
+  trigger = "inView",
+  ...aria
+}: StaggerProps) {
   const t = useMotionTokens();
+  const ready = useEntranceReady();
   const MotionTag = motion[as] as typeof motion.div;
   const gap = t.reduced ? 0 : t.stagger[pace];
+  const mount = trigger === "mount";
   const variants: Variants = {
     hidden: {},
-    /* Função: resolvida quando o grupo entra na tela; soma a espera pelo topo da página (ordem de leitura). */
+    /* Função: resolvida quando o grupo entra; por viewport, soma a espera pelo topo da página (ordem de leitura). */
     visible: () => ({
-      transition: { delayChildren: staggerChildren(gap, { startDelay: t.reduced ? 0 : delay + inViewWait() }) },
+      transition: {
+        delayChildren: staggerChildren(gap, { startDelay: t.reduced ? 0 : delay + (mount ? 0 : inViewWait()) }),
+      },
     }),
   };
+  /* Ao montar, a cascata faz parte do topo: o que vem abaixo espera o último item já subindo. */
+  const lastItem = Math.max(0, Children.count(children) - 1);
+  useHoldInView(mount && !t.reduced ? delay + lastItem * gap + t.duration.base : 0, ready);
+
+  const play = mount
+    ? { animate: ready ? "visible" : "hidden" }
+    : {
+        whileInView: "visible",
+        /* Movimento reduzido: nada volta a se esconder ao sair da tela (once forçado), como no Reveal. */
+        viewport: { ...t.viewport, once: once || t.reduced },
+      };
 
   return (
     <MotionTag
@@ -40,10 +67,8 @@ export function Stagger({ children, as = "div", pace = "items", delay = 0, once 
       key={once ? undefined : t.reduced ? "reduced" : "full"}
       className={className}
       initial="hidden"
-      whileInView="visible"
-      /* Movimento reduzido: nada volta a se esconder ao sair da tela (once forçado), como no Reveal. */
-      viewport={{ ...t.viewport, once: once || t.reduced }}
       variants={variants}
+      {...play}
       {...aria}
     >
       {children}

@@ -2,7 +2,7 @@
 
 import { motion, type Variants } from "motion/react";
 import type { ReactNode } from "react";
-import { withInViewWait } from "./pageSequence";
+import { useHoldInView, withInViewWait } from "./pageSequence";
 import { useEntranceReady } from "./transitions/useEntranceReady";
 import { useMotionTokens, type ResolvedMotionTokens } from "./useMotionTokens";
 
@@ -94,6 +94,8 @@ export function Reveal({
   const t = useMotionTokens();
   const ready = useEntranceReady();
   const MotionTag = motion[as] as typeof motion.div;
+  /* Ao montar, o bloco faz parte do topo da página: o que vem abaixo espera ele já subindo (ordem de leitura). */
+  useHoldInView(trigger === "mount" && !t.reduced ? delay + t.duration.base : 0, play ?? ready);
 
   return (
     <MotionTag

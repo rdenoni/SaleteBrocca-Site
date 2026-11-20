@@ -6,6 +6,9 @@ import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { getArticleCategories, getArticleCategory, getArticles } from "@/lib/content/articles";
+import { Reveal } from "@/motion/Reveal";
+import { afterBanner } from "@/motion/timeline";
+import { motionTokens } from "@/motion/tokens";
 import styles from "../../conteudo.module.css";
 
 interface CategoryPageProps {
@@ -34,23 +37,27 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   if (!category) notFound();
 
   const articles = getArticles(category.slug);
+  /* Ordem de leitura: banner → trilha → aviso e categorias → blocos. */
+  const afterTop = afterBanner(motionTokens, category.label);
 
   return (
     <>
       <PageBanner eyebrow="Categoria" title={category.label} subtitle={countLabel(articles.length)} size="compact" />
 
       <div className="container">
-        <Breadcrumbs
-          className={styles.trail}
-          items={[
-            { label: "Conteúdo", href: "/conteudo" },
-            { label: category.label, href: `/conteudo/categoria/${category.slug}` },
-          ]}
-        />
+        <Reveal variant="fade" trigger="mount" delay={afterTop}>
+          <Breadcrumbs
+            className={styles.trail}
+            items={[
+              { label: "Conteúdo", href: "/conteudo" },
+              { label: category.label, href: `/conteudo/categoria/${category.slug}` },
+            ]}
+          />
+        </Reveal>
       </div>
 
       <div className={`container ${styles.page}`}>
-        <ArticleCategoryNav current={category.slug} />
+        <ArticleCategoryNav current={category.slug} entranceDelay={afterTop + motionTokens.stagger.cards} />
 
         <section aria-labelledby="artigos-categoria">
           <h2 id="artigos-categoria" className="visually-hidden">

@@ -1,11 +1,15 @@
 import { Info } from "lucide-react";
 import { FilterNav, type FilterItem } from "@/components/ui/FilterNav";
 import { ARTICLES_ARE_EXAMPLES, getArticleCategories, getArticles } from "@/lib/content/articles";
+import { Reveal } from "@/motion/Reveal";
+import { stagger } from "@/motion/tokens";
 import styles from "./ArticleCategoryNav.module.css";
 
 interface ArticleCategoryNavProps {
   /** Slug da categoria aberta; undefined na biblioteca completa. */
   current?: string;
+  /** Início (s) da entrada ao montar, depois do banner: aviso → pílulas em cascata. Sem valor, estático. */
+  entranceDelay?: number;
 }
 
 function articlesLabel(count: number): string {
@@ -13,7 +17,9 @@ function articlesLabel(count: number): string {
 }
 
 /* id="categorias": âncora dos filtros (/conteudo#categorias). */
-export function ArticleCategoryNav({ current }: ArticleCategoryNavProps) {
+export function ArticleCategoryNav({ current, entranceDelay }: ArticleCategoryNavProps) {
+  const pillsDelay =
+    entranceDelay === undefined ? undefined : entranceDelay + (ARTICLES_ARE_EXAMPLES ? stagger.cards * 2 : 0);
   const total = getArticles().length;
   const items: FilterItem[] = [
     { label: "Todos", href: "/conteudo", current: current === undefined, count: total, countLabel: articlesLabel(total) },
@@ -32,15 +38,17 @@ export function ArticleCategoryNav({ current }: ArticleCategoryNavProps) {
   return (
     <>
       {ARTICLES_ARE_EXAMPLES && (
-        <p className={styles.note} role="note">
-          <Info aria-hidden="true" />
-          <span>
-            <strong>Conteúdo de exemplo.</strong> Os títulos e as categorias vêm do layout de referência e serão
-            trocados pela pauta real da Salete.
-          </span>
-        </p>
+        <Reveal as="div" trigger="mount" delay={entranceDelay ?? 0}>
+          <p className={styles.note} role="note">
+            <Info aria-hidden="true" />
+            <span>
+              <strong>Conteúdo de exemplo.</strong> Os títulos e as categorias vêm do layout de referência e serão
+              trocados pela pauta real da Salete.
+            </span>
+          </p>
+        </Reveal>
       )}
-      <FilterNav id="categorias" label="Categorias de conteúdo" items={items} />
+      <FilterNav id="categorias" label="Categorias de conteúdo" items={items} entranceDelay={pillsDelay} />
     </>
   );
 }

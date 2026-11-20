@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Stagger, StaggerItem } from "@/motion/Stagger";
 import styles from "./FilterNav.module.css";
 
 export interface FilterItem {
@@ -19,15 +20,23 @@ interface FilterNavProps {
   id?: string;
   /** Mantém a rolagem ao trocar de filtro (útil quando só muda a query da mesma página). */
   keepScroll?: boolean;
+  /** Com valor (s), as pílulas entram em cascata ao montar, a partir desse atraso. Sem valor, ficam estáticas. */
+  entranceDelay?: number;
 }
 
 /* Filtros em pílula; o atual vira ciano (texto navy) e recebe aria-current. */
-export function FilterNav({ label, items, id, keepScroll = false }: FilterNavProps) {
+export function FilterNav({ label, items, id, keepScroll = false, entranceDelay }: FilterNavProps) {
+  const animated = entranceDelay !== undefined;
+  const List = animated ? Stagger : "ul";
+  const Item = animated ? StaggerItem : "li";
+  const listProps = animated ? { as: "ul" as const, trigger: "mount" as const, delay: entranceDelay } : {};
+  const itemProps = animated ? { as: "li" as const } : {};
+
   return (
     <nav id={id} aria-label={label} className={styles.nav}>
-      <ul className={styles.list}>
+      <List className={styles.list} {...listProps}>
         {items.map((item) => (
-          <li key={item.href}>
+          <Item key={item.href} {...itemProps}>
             <Link
               href={item.href}
               className={styles.filter}
@@ -42,9 +51,9 @@ export function FilterNav({ label, items, id, keepScroll = false }: FilterNavPro
               )}
               {item.countLabel && <span className="visually-hidden">, {item.countLabel}</span>}
             </Link>
-          </li>
+          </Item>
         ))}
-      </ul>
+      </List>
     </nav>
   );
 }
