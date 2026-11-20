@@ -3,6 +3,7 @@
 import { motion, type Variants } from "motion/react";
 import Image from "next/image";
 import { Reveal } from "@/motion/Reveal";
+import { useHoldInView } from "@/motion/pageSequence";
 import { afterBanner } from "@/motion/timeline";
 import { useEntranceReady } from "@/motion/transitions/useEntranceReady";
 import { useMotionTokens } from "@/motion/useMotionTokens";
@@ -33,6 +34,8 @@ export function AboutIntro({ bannerTitle, intro, sections }: AboutIntroProps) {
   const leadDelay = step(afterBanner(t, bannerTitle));
   const photoDelay = step(afterBanner(t, bannerTitle) + t.duration.base);
   const tocDelay = step(afterBanner(t, bannerTitle) + t.duration.base * 3);
+  /* O que vem abaixo (história...) só entra com o índice e os botões dele já subindo (ordem de leitura). */
+  useHoldInView(t.reduced ? 0 : tocDelay + t.duration.base, ready);
   /* As peças encaixam quando a foto já está se abrindo. */
   const piecesDelay = step(afterBanner(t, bannerTitle) + t.duration.base * 2);
 

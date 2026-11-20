@@ -3,7 +3,8 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { DrawRule } from "@/motion/DrawRule";
-import { heroTimeline } from "@/motion/timeline";
+import { useHoldInView } from "@/motion/pageSequence";
+import { afterBanner, heroTimeline } from "@/motion/timeline";
 import { Reveal } from "@/motion/Reveal";
 import { TextReveal } from "@/motion/TextReveal";
 import { useEntranceReady } from "@/motion/transitions/useEntranceReady";
@@ -36,6 +37,8 @@ export function PageBanner({
 }: PageBannerProps) {
   const t = useMotionTokens();
   const ready = useEntranceReady();
+  /* Seções já na tela ao abrir só entram depois do banner (ordem de leitura). */
+  useHoldInView(t.reduced ? 0 : afterBanner(t, title, Boolean(children)), ready);
   const steps = heroTimeline(t, title.split(/\s+/).length);
   const start = (id: (typeof steps)[number]["id"]): number => steps.find((step) => step.id === id)?.start ?? 0;
 

@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { MotionButton } from "@/motion/MotionButton";
 import { Reveal, revealVariants } from "@/motion/Reveal";
 import { GuidedReading } from "@/motion/GuidedReading";
+import { withInViewWait } from "@/motion/pageSequence";
 import { useMotionTokens } from "@/motion/useMotionTokens";
 import styles from "./AboutQuote.module.css";
 
@@ -35,7 +36,7 @@ export function AboutQuote({ quote, author }: AboutQuoteProps) {
             initial="hidden"
             whileInView="visible"
             viewport={t.viewport}
-            variants={revealVariants("rise", t, afterMark)}
+            variants={withInViewWait(revealVariants("rise", t, afterMark))}
           >
             {author}
           </motion.figcaption>

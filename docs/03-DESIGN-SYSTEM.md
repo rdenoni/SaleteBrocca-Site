@@ -192,7 +192,8 @@ Padrão (`padrao-modulo.png`) e peças (`grafismo-pecas.png`) como apoio em áre
 Regra da cliente: as entradas seguem a hierarquia da informação. Partituras em `src/motion/timeline.ts`.
 
 - **Cascata**: título (e o que pertence a ele) → subtítulo → texto → o resto (foto, índice, botões). Numa seção que entra ao chegar à tela, o conteúdo espera o título (`afterTitle`).
-- **Página**: o banner/topo primeiro (`afterBanner`), depois as demais seções.
+- **Página**: o banner/topo primeiro (`afterBanner`), depois as demais seções, na **ordem de leitura** (de cima para baixo, da esquerda para a direita). Uma seção que já aparece na tela ao abrir (tela alta) espera o topo terminar: as sequências do topo chamam `useHoldInView` e as entradas por viewport somam `inViewWait()` (`src/motion/pageSequence.ts`).
+- Filetes e réguas ciano também entram (o traço, `DrawRule`), nunca ficam estáticos enquanto o resto anima.
 - **Cabeçalho**: símbolo → logotipo → links → gota da página atual → botões (`headerTimeline`), começando logo que a pílula branca desce.
 - **Nada da página começa antes de a entrada do cabeçalho estar 80% feita** (`useEntranceReady`; o cabeçalho usa `useCurtainReady`). Nas navegações seguintes o cabeçalho não entra de novo, então a página não espera.
 - **Mensagens e frases de destaque** (ex.: "Toda criança, independente da dificuldade, tem a capacidade de ler e escrever."): leitura guiada (`GuidedReading`), ligada à rolagem.

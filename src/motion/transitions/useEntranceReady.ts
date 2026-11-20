@@ -23,6 +23,11 @@ export function openPageGateAfterHeader(headerSeconds: number): void {
   listeners.forEach((listener) => listener());
 }
 
+/** Momento (performance.now, ms) em que a página fica liberada pelo cabeçalho; null se ele ainda não começou. */
+export function headerGateAt(): number | null {
+  return pageGateAt;
+}
+
 function gatePassed(): boolean {
   return typeof window !== "undefined" && pageGateAt !== null && performance.now() >= pageGateAt;
 }

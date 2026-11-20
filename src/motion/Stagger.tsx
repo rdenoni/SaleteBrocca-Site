@@ -2,6 +2,7 @@
 
 import { motion, stagger as staggerChildren, type Variants } from "motion/react";
 import type { ReactNode } from "react";
+import { inViewWait } from "./pageSequence";
 import { revealVariants, type RevealVariant } from "./Reveal";
 import { useMotionTokens } from "./useMotionTokens";
 
@@ -27,7 +28,10 @@ export function Stagger({ children, as = "div", pace = "items", delay = 0, once 
   const gap = t.reduced ? 0 : t.stagger[pace];
   const variants: Variants = {
     hidden: {},
-    visible: { transition: { delayChildren: staggerChildren(gap, { startDelay: t.reduced ? 0 : delay }) } },
+    /* Função: resolvida quando o grupo entra na tela; soma a espera pelo topo da página (ordem de leitura). */
+    visible: () => ({
+      transition: { delayChildren: staggerChildren(gap, { startDelay: t.reduced ? 0 : delay + inViewWait() }) },
+    }),
   };
 
   return (

@@ -8,6 +8,7 @@ import styles from "./HeroSequence.module.css";
 import { TextReveal } from "./TextReveal";
 import { TransitionLink } from "./transitions/TransitionLink";
 import { useEntranceReady } from "./transitions/useEntranceReady";
+import { useHoldInView } from "./pageSequence";
 import { heroTimeline, type HeroTimelineStep } from "./timeline";
 import { useMotionTokens } from "./useMotionTokens";
 import { useScrollWillChange } from "./useScrollWillChange";
@@ -78,6 +79,8 @@ export function HeroSequence({
 
   const steps = heroTimeline(t, title.split(/\s+/).filter(Boolean).length);
   const startOf = (id: HeroTimelineStep["id"]): number => (t.reduced ? 0 : (steps.find((step) => step.id === id)?.start ?? 0));
+  /* Seções já na tela ao abrir só entram depois do Hero (ordem de leitura). */
+  useHoldInView(t.reduced ? 0 : startOf("cta") + t.duration.base, ready);
 
   /* Texto e botão: sobem e aparecem (reduzido: só opacidade, rápido). `y: 0` no destino garante que nada fica deslocado. */
   const riseIn = (id: "text" | "cta") => ({

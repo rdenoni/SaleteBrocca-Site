@@ -49,6 +49,10 @@ const pill = (page: Page): Locator => banner(page).locator(":scope > div").first
 async function waitForEntrance(page: Page): Promise<void> {
   await expect(pill(page)).toHaveCSS("opacity", "1");
   await expect(pill(page)).toHaveCSS("transform", "none");
+  /* Os botões entram depois da logo e dos links (ordem do cabeçalho): mede só com eles parados. */
+  const actions = pill(page).locator('[class*="actions"]').first();
+  await expect(actions).toHaveCSS("opacity", "1");
+  await expect(actions).toHaveCSS("transform", "none");
 }
 
 async function noHorizontalScroll(page: Page): Promise<boolean> {

@@ -16,6 +16,7 @@ import {
   PROFILE_ROLE,
 } from "@/lib/content/profile";
 import { Stagger, StaggerItem } from "@/motion/Stagger";
+import { DrawRule } from "@/motion/DrawRule";
 import { TextReveal } from "@/motion/TextReveal";
 import { afterTitle } from "@/motion/timeline";
 import { motionTokens } from "@/motion/tokens";
@@ -56,13 +57,20 @@ export default function AboutPage() {
               text={HISTORY_TITLE}
             />
           </header>
-          <Stagger className={styles.historyText} delay={afterTitle(motionTokens, HISTORY_TITLE)}>
-            {PROFILE_HISTORY.map((paragraph) => (
-              <StaggerItem key={paragraph.slice(0, 32)}>
-                <p>{paragraph}</p>
-              </StaggerItem>
-            ))}
-          </Stagger>
+          {/* Leitura: título (esquerda) → filete ciano se desenha → parágrafos (direita), um a um. */}
+          <div>
+            <DrawRule className={styles.historyRule} delay={afterTitle(motionTokens, HISTORY_TITLE)} />
+            <Stagger
+              className={styles.historyText}
+              delay={afterTitle(motionTokens, HISTORY_TITLE) + motionTokens.duration.base}
+            >
+              {PROFILE_HISTORY.map((paragraph) => (
+                <StaggerItem key={paragraph.slice(0, 32)}>
+                  <p>{paragraph}</p>
+                </StaggerItem>
+              ))}
+            </Stagger>
+          </div>
         </div>
       </section>
 

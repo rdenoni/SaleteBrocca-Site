@@ -2,6 +2,7 @@
 
 import { motion, stagger as staggerChildren, type Variants } from "motion/react";
 import { Fragment } from "react";
+import { inViewWait } from "./pageSequence";
 import styles from "./TextReveal.module.css";
 import { useMotionTokens } from "./useMotionTokens";
 
@@ -34,7 +35,14 @@ export function TextReveal({ text, as = "h2", className, id, delay = 0, trigger 
 
   const container: Variants = {
     hidden: {},
-    visible: { transition: { delayChildren: staggerChildren(t.reduced ? 0 : t.stagger.words, { startDelay: delay }) } },
+    /* Função: resolvida quando a entrada dispara; por viewport, soma a espera pelo topo da página. */
+    visible: () => ({
+      transition: {
+        delayChildren: staggerChildren(t.reduced ? 0 : t.stagger.words, {
+          startDelay: delay + (trigger === "inView" ? inViewWait() : 0),
+        }),
+      },
+    }),
   };
   /* Reduzido: só opacidade, e y zerado nos dois estados. A hidratação roda com o movimento completo
      (o servidor não sabe a preferência), então a palavra pode já estar deslocada quando o modo troca. */

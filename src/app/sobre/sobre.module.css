@@ -27,7 +27,12 @@
   display: grid;
   gap: var(--space-6);
   padding-top: var(--space-8);
-  border-top: 6px solid var(--cyan);
+}
+
+/* O filete ciano de largura inteira acima do texto (antes uma borda): agora se desenha (DrawRule). */
+.historyGrid .historyRule {
+  width: 100%;
+  border-radius: 0;
 }
 
 .historyText p {

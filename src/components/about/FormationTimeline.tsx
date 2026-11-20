@@ -2,6 +2,7 @@
 
 import { BadgeCheck } from "lucide-react";
 import { motion, type Variants } from "motion/react";
+import { withInViewWait } from "@/motion/pageSequence";
 import { revealVariants } from "@/motion/Reveal";
 import { useMotionTokens } from "@/motion/useMotionTokens";
 import type { FormationItem } from "@/types/content";
@@ -29,7 +30,9 @@ export function FormationTimeline({ items, crfa, delay = 0 }: FormationTimelineP
   /* Os pontos ficam no início de cada coluna: a linha passa pelo ponto i em i/n do traçado. */
   const at = (index: number): number => (t.reduced ? 0 : delay + (index / items.length) * draw);
 
-  const track: Variants = t.reduced
+  /* Tudo aqui entra por viewport: cada variante espera o topo da página se a seção já estava na tela. */
+  const rise = (delay: number): Variants => withInViewWait(revealVariants("rise", t, delay));
+  const track: Variants = withInViewWait(t.reduced
     ? {
         hidden: { opacity: 0, clipPath: OPEN, transition: { duration: t.duration.quick, clipPath: { duration: 0 } } },
         visible: { opacity: 1, clipPath: OPEN, transition: { duration: t.duration.quick, clipPath: { duration: 0 } } },
@@ -37,10 +40,10 @@ export function FormationTimeline({ items, crfa, delay = 0 }: FormationTimelineP
     : {
         hidden: { clipPath: CLOSED },
         visible: { clipPath: OPEN, transition: { duration: draw, ease: t.ease.stroke, delay } },
-      };
+      });
 
   const dot = (index: number): Variants =>
-    t.reduced
+    withInViewWait(t.reduced
       ? revealVariants("fade", t)
       : {
           hidden: { opacity: 0, scale: 0 },
@@ -49,7 +52,7 @@ export function FormationTimeline({ items, crfa, delay = 0 }: FormationTimelineP
             scale: 1,
             transition: { ...t.spring.fit, delay: at(index), opacity: { duration: t.duration.quick, delay: at(index) } },
           },
-        };
+        });
 
   return (
     <motion.div className={styles.wrap} initial="hidden" whileInView="visible" viewport={t.viewport}>
@@ -63,7 +66,7 @@ export function FormationTimeline({ items, crfa, delay = 0 }: FormationTimelineP
                 className={styles.year}
                 aria-hidden={item.year ? undefined : true}
                 data-reveal=""
-                variants={revealVariants("rise", t, at(index) + (t.reduced ? 0 : t.duration.instant))}
+                variants={rise(at(index) + (t.reduced ? 0 : t.duration.instant))}
               >
                 {item.year}
               </motion.span>
@@ -71,7 +74,7 @@ export function FormationTimeline({ items, crfa, delay = 0 }: FormationTimelineP
               <motion.p
                 className={styles.title}
                 data-reveal=""
-                variants={revealVariants("rise", t, at(index) + (t.reduced ? 0 : t.duration.quick))}
+                variants={rise(at(index) + (t.reduced ? 0 : t.duration.quick))}
               >
                 {item.title}
               </motion.p>
@@ -81,7 +84,7 @@ export function FormationTimeline({ items, crfa, delay = 0 }: FormationTimelineP
       </div>
 
       {crfa && (
-        <motion.p className={styles.register} data-reveal="" variants={revealVariants("rise", t, t.reduced ? 0 : delay + draw)}>
+        <motion.p className={styles.register} data-reveal="" variants={rise(t.reduced ? 0 : delay + draw)}>
           <BadgeCheck aria-hidden="true" size={24} />
           <span>Registro profissional</span>
           <strong>{crfa}</strong>

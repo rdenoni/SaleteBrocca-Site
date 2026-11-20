@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { User } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { HOME_FEATURED_NAV_HREF, MAIN_NAV, STUDENT_AREA } from "@/lib/content/site";
 import { BLUE_PIECE, CYAN_PIECE, SYMBOL_STROKE, SYMBOL_VIEWBOX } from "@/motion/BrandSymbol";
 import { MotionButton } from "@/motion/MotionButton";
@@ -179,7 +179,8 @@ function HeaderBar() {
   const timeline = headerTimeline(t, MAIN_NAV.length);
   /* A página só entra com o cabeçalho 80% feito: avisa quando a entrada começa (uma vez; depois o momento já passou). */
   const headerSeconds = t.reduced ? t.duration.quick : timeline.end;
-  useEffect(() => {
+  /* Layout effect: roda antes dos da página, que estimam a própria espera a partir deste momento. */
+  useLayoutEffect(() => {
     if (ready) openPageGateAfterHeader(headerSeconds);
   }, [ready, headerSeconds]);
   const pathname = usePathname() ?? HOME_HREF;

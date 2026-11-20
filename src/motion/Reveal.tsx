@@ -2,6 +2,7 @@
 
 import { motion, type Variants } from "motion/react";
 import type { ReactNode } from "react";
+import { withInViewWait } from "./pageSequence";
 import { useEntranceReady } from "./transitions/useEntranceReady";
 import { useMotionTokens, type ResolvedMotionTokens } from "./useMotionTokens";
 
@@ -110,7 +111,8 @@ export function Reveal({
             /* Movimento reduzido: nada volta a se esconder ao sair da tela (once forçado). */
             viewport: { ...t.viewport, once: once || t.reduced, amount: amount ?? t.viewport.amount },
           })}
-      variants={revealVariants(variant, t, delay)}
+      /* Por viewport: espera o topo da página se a seção já estava na tela ao abrir (ordem de leitura). */
+      variants={trigger === "inView" ? withInViewWait(revealVariants(variant, t, delay)) : revealVariants(variant, t, delay)}
       {...aria}
     >
       {children}
