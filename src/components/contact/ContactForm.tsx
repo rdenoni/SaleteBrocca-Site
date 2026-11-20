@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { flushSync } from "react-dom";
-import { CircleAlert, CircleCheck } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { CircleAlert } from "lucide-react";
 import { Field, SelectField, TextAreaField } from "@/components/ui/Field";
 import { CONTACT_SUBJECTS } from "@/lib/content/contact";
+import { AnimatedCheck } from "@/motion/icons";
+import { MotionButton } from "@/motion/MotionButton";
 import {
   compactErrors,
   validateConsent,
@@ -121,9 +122,9 @@ export function ContactForm() {
       </div>
 
       <div className={styles.actions}>
-        <Button type="submit" variant="primary">
+        <MotionButton type="submit" variant="primary">
           Enviar mensagem
-        </Button>
+        </MotionButton>
         <p className={errorCount > 0 ? styles.error : styles.status} role="status">
           {errorCount > 0 && (
             <>
@@ -133,7 +134,8 @@ export function ContactForm() {
           )}
           {submitted && (
             <>
-              <CircleCheck aria-hidden="true" />
+              {/* O check se desenha (o traço) a cada envio conferido. */}
+              <AnimatedCheck size={18} />
               Dados conferidos. O envio online será ativado em breve.
             </>
           )}

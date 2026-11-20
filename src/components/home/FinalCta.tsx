@@ -1,10 +1,20 @@
+"use client";
+
 import Image from "next/image";
-import { Button } from "@/components/ui/Button";
+import { MotionButton } from "@/motion/MotionButton";
+import { Reveal } from "@/motion/Reveal";
+import { Stagger, StaggerItem } from "@/motion/Stagger";
+import { TextReveal } from "@/motion/TextReveal";
+import { useMotionTokens } from "@/motion/useMotionTokens";
 import styles from "./FinalCta.module.css";
 
 /* Chamada final em fundo branco com as peças da marca (o footer é navy:
-   nunca duas seções navy seguidas). Texto proposto — validar com a cliente. */
+   nunca duas seções navy seguidas). Texto proposto — validar com a cliente.
+   Entrada: título palavra por palavra → texto → botões em cascata. */
 export function FinalCta() {
+  const t = useMotionTokens();
+  const step = (n: number): number => (t.reduced ? 0 : n);
+
   return (
     <section className={styles.section} aria-labelledby="cta-titulo">
       <Image
@@ -16,18 +26,22 @@ export function FinalCta() {
         sizes="(max-width: 767px) 120vw, 60vw"
       />
       <div className={`container ${styles.inner}`}>
-        <h2 id="cta-titulo" className={styles.title}>
-          Marque uma avaliação
-        </h2>
-        <p className={styles.text}>Converse com a Salete sobre as dificuldades de aprendizagem.</p>
-        <div className={styles.actions}>
-          <Button href="/avaliacao" variant="primary">
-            Marcar avaliação
-          </Button>
-          <Button href="/cursos" variant="outline">
-            Explorar cursos
-          </Button>
-        </div>
+        <TextReveal as="h2" id="cta-titulo" className={styles.title} text="Marque uma avaliação" />
+        <Reveal as="p" className={styles.text} delay={step(t.duration.base)}>
+          Converse com a Salete sobre as dificuldades de aprendizagem.
+        </Reveal>
+        <Stagger className={styles.actions} delay={step(t.duration.gentle)}>
+          <StaggerItem>
+            <MotionButton href="/avaliacao" variant="primary" withCurtain>
+              Marcar avaliação
+            </MotionButton>
+          </StaggerItem>
+          <StaggerItem>
+            <MotionButton href="/cursos" variant="outline" withCurtain>
+              Explorar cursos
+            </MotionButton>
+          </StaggerItem>
+        </Stagger>
       </div>
     </section>
   );

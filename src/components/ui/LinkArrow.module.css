@@ -18,13 +18,20 @@
 }
 
 .link svg {
-  width: 20px;
-  height: 20px;
-  transition: transform var(--duration) var(--ease);
+  flex: none;
+  transition: transform var(--motion-quick) var(--ease-out);
 }
 
-.link:hover svg {
+.link:hover svg,
+.link:focus-visible svg {
   transform: translateX(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link:hover svg,
+  .link:focus-visible svg {
+    transform: none;
+  }
 }
 
 .inverse {

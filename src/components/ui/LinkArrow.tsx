@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { ReactNode } from "react";
 import styles from "./LinkArrow.module.css";
 
@@ -22,7 +22,8 @@ export function LinkArrow({ href, children, tone = "default", className, decorat
       aria-hidden={decorative ? true : undefined}
     >
       {children}
-      <ChevronRight aria-hidden="true" strokeWidth={2.5} />
+      {/* Seta "Acesse" da biblioteca: arrow-right de 18px, traço 2, avança 4px no hover. */}
+      <ArrowRight aria-hidden="true" size={18} />
     </Link>
   );
 }

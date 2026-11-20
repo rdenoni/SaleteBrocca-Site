@@ -1,5 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { DrawRule } from "@/motion/DrawRule";
+import { heroTimeline } from "@/motion/HeroSequence";
+import { Reveal } from "@/motion/Reveal";
+import { TextReveal } from "@/motion/TextReveal";
+import { useEntranceReady } from "@/motion/transitions/useEntranceReady";
+import { useMotionTokens } from "@/motion/useMotionTokens";
 import styles from "./PageBanner.module.css";
 
 interface PageBannerProps {
@@ -14,7 +22,9 @@ interface PageBannerProps {
 }
 
 /* Banner das páginas internas: mesmo tratamento azul do hero da Home, mais baixo.
-   Também reserva o espaço do header flutuante. */
+   Também reserva o espaço do header flutuante.
+   Entrada na mesma partitura do Hero (título palavra por palavra → régua → texto → extra), ao montar,
+   esperando a cortina de transição abrir quando a página chega por ela. */
 export function PageBanner({
   title,
   eyebrow,
@@ -24,6 +34,11 @@ export function PageBanner({
   size = "default",
   children,
 }: PageBannerProps) {
+  const t = useMotionTokens();
+  const ready = useEntranceReady();
+  const steps = heroTimeline(t, title.split(/\s+/).length);
+  const start = (id: (typeof steps)[number]["id"]): number => steps.find((step) => step.id === id)?.start ?? 0;
+
   return (
     <section className={styles.banner} data-size={size} data-surface="photo" aria-labelledby="page-title">
       {image && (
@@ -38,13 +53,31 @@ export function PageBanner({
         />
       )}
       <div className={styles.inner}>
-        {eyebrow && <p className={`eyebrow ${styles.eyebrow}`}>{eyebrow}</p>}
-        <h1 id="page-title" className={styles.title}>
-          {title}
-        </h1>
-        <span className={`rule ${styles.rule}`} aria-hidden="true" />
-        {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
-        {children && <div className={styles.extra}>{children}</div>}
+        {eyebrow && (
+          <Reveal as="p" variant="fade" trigger="mount" play={ready} className={`eyebrow ${styles.eyebrow}`}>
+            {eyebrow}
+          </Reveal>
+        )}
+        <TextReveal
+          as="h1"
+          id="page-title"
+          className={styles.title}
+          text={title}
+          trigger="mount"
+          play={ready}
+          delay={start("title")}
+        />
+        <DrawRule className={styles.rule} trigger="mount" play={ready} delay={start("rule")} />
+        {subtitle && (
+          <Reveal as="p" trigger="mount" play={ready} delay={start("text")} className={styles.subtitle}>
+            {subtitle}
+          </Reveal>
+        )}
+        {children && (
+          <Reveal trigger="mount" play={ready} delay={start("cta")} className={styles.extra}>
+            {children}
+          </Reveal>
+        )}
       </div>
     </section>
   );

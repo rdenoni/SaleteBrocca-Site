@@ -36,7 +36,8 @@ test.describe("Sobre", () => {
     }
     await expect(page.getByText("em 1960, numa escola multisseriada")).toBeVisible();
     await expect(page.getByText("APAE de Cocal do Sul")).toBeVisible();
-    await expect(page.getByText("Toda criança, independente da dificuldade")).toBeVisible();
+    /* A frase usa TextReveal (texto para leitores de tela + palavras animadas): confere pelo blockquote. */
+    await expect(page.locator("blockquote")).toContainText("Toda criança, independente da dificuldade");
   });
 
   test("dados ausentes ficam ocultos (nunca inventados nem marcados na página)", async ({ page }) => {

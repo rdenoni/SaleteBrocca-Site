@@ -3,8 +3,11 @@
   gap: var(--space-12);
 }
 
-.timeline {
+.rail {
   position: relative;
+}
+
+.timeline {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-8);
@@ -13,9 +16,8 @@
   list-style: none;
 }
 
-/* Trilho que liga os pontos (desktop). */
-.timeline::before {
-  content: "";
+/* Trilho que liga os pontos (desktop). Elemento real, não ::before: ele se desenha na entrada. */
+.track {
   position: absolute;
   left: 0;
   right: 0;
@@ -67,10 +69,9 @@
   color: var(--navy);
 }
 
+/* Ícone de 24px (padrão de interface) com a cor herdada do texto, como pede a iconografia. */
 .register svg {
-  width: 22px;
-  height: 22px;
-  color: var(--blue-strong);
+  flex: none;
 }
 
 @media (max-width: 767px) {
@@ -80,7 +81,7 @@
     padding-left: var(--space-8);
   }
 
-  .timeline::before {
+  .track {
     left: 9px;
     right: auto;
     top: 8px;

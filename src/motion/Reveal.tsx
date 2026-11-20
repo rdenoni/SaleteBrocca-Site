@@ -2,6 +2,7 @@
 
 import { motion, type Variants } from "motion/react";
 import type { ReactNode } from "react";
+import { useEntranceReady } from "./transitions/useEntranceReady";
 import { useMotionTokens, type ResolvedMotionTokens } from "./useMotionTokens";
 
 export type RevealVariant = "rise" | "fade" | "mask" | "scale";
@@ -20,6 +21,13 @@ export interface RevealProps {
   className?: string;
   id?: string;
   "aria-labelledby"?: string;
+  "aria-hidden"?: boolean;
+  /** Superfície do bloco (ex.: "dark"), lida pelos estilos globais de foco e link. */
+  "data-surface"?: string;
+  /** "inView" (padrão): ao entrar na tela. "mount": ao montar (topo da página), segurado por `play`. */
+  trigger?: "inView" | "mount";
+  /** Só com trigger "mount": false segura o estado inicial. Sem valor, espera a cortina de transição abrir. */
+  play?: boolean;
 }
 
 /* Saída sempre mais curta que a entrada e com curva "in": some sem disputar atenção. */
@@ -75,9 +83,12 @@ export function Reveal({
   amount,
   className,
   id,
+  trigger = "inView",
+  play,
   ...aria
 }: RevealProps) {
   const t = useMotionTokens();
+  const ready = useEntranceReady();
   const MotionTag = motion[as] as typeof motion.div;
 
   return (
@@ -89,9 +100,13 @@ export function Reveal({
       className={className}
       data-reveal=""
       initial="hidden"
-      whileInView="visible"
-      /* Movimento reduzido: nada volta a se esconder ao sair da tela (once forçado). */
-      viewport={{ ...t.viewport, once: once || t.reduced, amount: amount ?? t.viewport.amount }}
+      {...(trigger === "mount"
+        ? { animate: (play ?? ready) ? "visible" : "hidden" }
+        : {
+            whileInView: "visible",
+            /* Movimento reduzido: nada volta a se esconder ao sair da tela (once forçado). */
+            viewport: { ...t.viewport, once: once || t.reduced, amount: amount ?? t.viewport.amount },
+          })}
       variants={revealVariants(variant, t, delay)}
       {...aria}
     >

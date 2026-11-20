@@ -61,11 +61,12 @@
   color: var(--success);
 }
 
+/* 18px: tamanho da iconografia para metadados e mensagens. */
 .error svg,
 .status svg {
   flex: none;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
 }
 
 .actions {
