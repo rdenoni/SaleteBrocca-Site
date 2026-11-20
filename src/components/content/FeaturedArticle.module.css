@@ -44,24 +44,6 @@
   text-decoration: none;
 }
 
-/* O bloco inteiro é clicável; o foco aparece no card. */
-.link::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-}
-
-.link:focus-visible {
-  outline: none;
-}
-
-/* Anel por dentro do card: ciano sobre navy (por fora ficaria ciano sobre branco, 1.9:1). */
-.card:has(.link:focus-visible) {
-  outline: 3px solid var(--cyan);
-  outline-offset: -8px;
-}
-
 .author {
   font: 400 15px/22px var(--font-sans);
   color: var(--on-navy-muted);
@@ -71,11 +53,14 @@
   margin-top: var(--space-2);
 }
 
-.card:hover .photo img {
+/* O card não é um botão: só o título e "Leia o artigo" são links. Passando por eles, a foto aproxima e a
+   palavra-chave ganha o sublinhado (o foco usa o anel padrão da superfície escura). */
+.card:has(.link:hover, .more:hover) .photo img {
   transform: scale(1.03);
 }
 
-.card:hover .title strong {
+.link:hover strong,
+.link:focus-visible strong {
   text-decoration: underline;
   text-decoration-thickness: 3px;
   text-underline-offset: 6px;
