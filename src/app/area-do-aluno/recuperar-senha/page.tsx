@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 
 const BACK_TO_LOGIN = <Link href={LOGIN_PATH}>Voltar para o login</Link>;
 
+/* Entrada (AuthCard, ao montar): título → régua → texto → e-mail → botão → nota → privacidade → "Voltar para o login". */
 export default async function RecoverPasswordPage() {
   if (isDemoMode()) {
     return (
@@ -30,6 +31,7 @@ export default async function RecoverPasswordPage() {
     <AuthCard
       title="Recuperar senha"
       lead="Informe o e-mail da sua conta. Enviaremos um link para criar uma nova senha."
+      formItems={2}
       footer={BACK_TO_LOGIN}
     >
       <RecoverPasswordForm />

@@ -32,6 +32,11 @@
   line-height: 38px;
 }
 
+/* O botão fica dentro de um bloco de entrada: ele ocupa a célula toda (como antes, esticado no celular). */
+.cta {
+  display: grid;
+}
+
 .heading {
   margin-bottom: var(--space-6);
   font: 800 30px/38px var(--font-sans);

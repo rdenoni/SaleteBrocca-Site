@@ -23,8 +23,9 @@
 }
 
 .button svg {
-  width: 20px;
-  height: 20px;
+  flex: none;
+  width: 18px;
+  height: 18px;
 }
 
 /* Concluída: verde de sucesso, sempre com o ícone de check (nunca só cor). */
@@ -62,7 +63,7 @@
 
 .error svg {
   flex: none;
-  width: 16px;
-  height: 16px;
-  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
 }

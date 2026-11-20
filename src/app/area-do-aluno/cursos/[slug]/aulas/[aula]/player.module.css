@@ -21,8 +21,7 @@
 }
 
 .back svg {
-  width: 20px;
-  height: 20px;
+  flex: none;
 }
 
 /* Player largo à esquerda, lista de aulas rolável à direita. */
@@ -69,8 +68,8 @@
 }
 
 .play svg {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   margin-left: 4px;
   fill: currentColor;
 }
@@ -85,6 +84,11 @@
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: var(--space-3);
+}
+
+/* Cada botão fica num bloco de entrada: o bloco ocupa a célula e o botão o preenche. */
+.actions > * {
+  display: grid;
 }
 
 .actions > :first-child {
@@ -155,8 +159,8 @@
   }
 
   .play svg {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
   }
 
   .screenText {

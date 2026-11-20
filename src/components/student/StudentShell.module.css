@@ -65,7 +65,7 @@
   width: 18px;
   height: 18px;
   margin-top: 1px;
-  color: var(--blue-strong);
+  color: currentColor;
 }
 
 .demo strong {
