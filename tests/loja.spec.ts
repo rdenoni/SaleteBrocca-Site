@@ -37,7 +37,7 @@ test.describe("Loja — catálogo", () => {
     await page.goto("/loja");
   });
 
-  test("filtros e seções seguem a ordem das cinco categorias", async ({ page }) => {
+  test("filtros seguem a ordem das cinco categorias e o título mostra a visão Todos", async ({ page }) => {
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1, name: "Loja" })).toBeVisible();
     await expect(
@@ -51,40 +51,71 @@ test.describe("Loja — catálogo", () => {
       await expect(filters.getByRole("link", { name: new RegExp(label) })).toBeVisible();
     }
 
-    const sections = page.getByRole("main").getByRole("heading", { level: 2 });
-    await expect(sections).toHaveText(CATEGORIES.map((category) => category.label));
+    await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText([
+      "Todos os produtos",
+      "Procurando os cursos?",
+    ]);
   });
 
-  test("Todos: cada categoria lista os próprios itens", async ({ page }) => {
-    for (const { id, label, items } of CATEGORIES) {
-      const section = page.getByRole("region", { name: label, exact: true });
-      await expect(section.getByRole("heading", { level: 3 })).toHaveCount(items);
-      await expect(page.getByRole("navigation", { name: "Categorias da loja" }).getByRole("link", { name: new RegExp(label) })).toHaveAttribute(
-        "href",
-        `/loja?categoria=${id}`,
-      );
+  test("Todos: uma grade só com todos os itens, sem repetir o destaque", async ({ page }) => {
+    const catalog = page.getByRole("region", { name: "Catálogo da loja" });
+    /* 11 itens: 1 em destaque (h3 da seção) + 10 cards na grade. */
+    const total = CATEGORIES.reduce((sum, category) => sum + category.items, 0);
+    await expect(catalog.getByRole("heading", { level: 3 })).toHaveCount(total);
+    await expect(catalog.locator("article")).toHaveCount(total - 1);
+    await expect(catalog.locator("article").getByRole("heading", { level: 3, name: "Brinqueletrando Box" })).toHaveCount(0);
+
+    const filters = page.getByRole("navigation", { name: "Categorias da loja" });
+    for (const { id, label } of CATEGORIES) {
+      await expect(filters.getByRole("link", { name: new RegExp(label) })).toHaveAttribute("href", `/loja?categoria=${id}`);
     }
-    await expect(page.getByRole("link", { name: "Ver produto" })).toHaveCount(8);
   });
 
-  test("Cursos: o curso disponível leva a /cursos e o curso em breve fica desabilitado", async ({ page }) => {
-    const section = page.getByRole("region", { name: "Cursos" });
-    await expect(section.getByRole("heading", { level: 3, name: "Dificuldades na Aprendizagem" })).toBeVisible();
-    await expect(section.getByRole("link", { name: "Ver curso" })).toHaveAttribute("href", `/cursos/${COURSE_SLUG}`);
+  test("destaque aparece só em Todos e o Comprar leva ao checkout do produto", async ({ page }) => {
+    const featured = page.getByRole("region", { name: "Brinqueletrando Box" });
+    await expect(featured.getByText("Destaque", { exact: true })).toBeVisible();
+    await expect(featured.getByText("R$ 399,00")).toBeVisible();
+    await expect(featured.getByText("Reembolso: a confirmar")).toBeVisible();
+    await expect(featured.getByRole("link", { name: "Comprar Brinqueletrando Box" })).toHaveAttribute(
+      "href",
+      "/loja/checkout?produto=brinqueletrando-box",
+    );
+    await expect(featured.getByRole("link", { name: "Ver detalhes de Brinqueletrando Box" })).toHaveAttribute(
+      "href",
+      "/loja/brinqueletrando-box",
+    );
 
-    await expect(section.getByRole("heading", { level: 3, name: "Alfabetização" })).toBeVisible();
-    const soon = section.getByRole("button", { name: "Em breve" });
-    await expect(soon).toBeDisabled();
-    await expect(soon).toHaveAttribute("aria-disabled", "true");
+    await page.goto("/loja?categoria=jogos");
+    await expect(page.getByRole("region", { name: "Brinqueletrando Box" })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /^Comprar/ })).toHaveCount(0);
+    await expect(page.getByRole("heading", { level: 3, name: "Brinqueletrando Box" })).toBeVisible();
+  });
+
+  test("Cursos: o curso disponível leva a /cursos e o curso em breve não tem link", async ({ page }) => {
+    const catalog = page.getByRole("region", { name: "Catálogo da loja" });
+    const available = catalog.locator("article", {
+      has: page.getByRole("heading", { level: 3, name: "Dificuldades na Aprendizagem" }),
+    });
+    await expect(available.getByRole("link", { name: "Dificuldades na Aprendizagem" })).toHaveAttribute(
+      "href",
+      `/cursos/${COURSE_SLUG}`,
+    );
+
+    const soon = catalog.locator("article", { has: page.getByRole("heading", { level: 3, name: "Alfabetização" }) });
+    await expect(soon.getByText("Em breve", { exact: true })).toBeVisible();
+    await expect(soon.getByText("Indisponível no momento")).toBeVisible();
+    await expect(soon.getByRole("link")).toHaveCount(0);
     await expect(page.locator("a[href='/cursos/alfabetizacao']")).toHaveCount(0);
   });
 
-  test("Aplicativos: o aplicativo aparece como em breve e indisponível", async ({ page }) => {
-    const section = page.getByRole("region", { name: "Aplicativos" });
-    await expect(section.getByRole("heading", { level: 3, name: "Brinqueletrando" })).toBeVisible();
-    await expect(section.getByText("Em breve", { exact: true })).toBeVisible();
-    await expect(section.getByText("Indisponível no momento")).toBeVisible();
-    await expect(section.getByRole("link", { name: "Ver detalhes" })).toHaveAttribute("href", "/loja/brinqueletrando-app");
+  test("Aplicativos: o aplicativo aparece como em breve, indisponível e com link para os detalhes", async ({ page }) => {
+    const catalog = page.getByRole("region", { name: "Catálogo da loja" });
+    const app = catalog.locator("article", {
+      has: page.getByRole("heading", { level: 3, name: "Brinqueletrando", exact: true }),
+    });
+    await expect(app.getByText("Em breve", { exact: true })).toBeVisible();
+    await expect(app.getByText("Indisponível no momento")).toBeVisible();
+    await expect(app.getByRole("link", { name: "Brinqueletrando" })).toHaveAttribute("href", "/loja/brinqueletrando-app");
   });
 
   test("produtos sem foto usam o grafismo da marca, sem imagem de produto inventada", async ({ page }) => {
@@ -95,7 +126,10 @@ test.describe("Loja — catálogo", () => {
   test("filtro Aplicativos mostra só a categoria", async ({ page }) => {
     await page.getByRole("navigation", { name: "Categorias da loja" }).getByRole("link", { name: /Aplicativos/ }).click();
     await expect(page).toHaveURL(/categoria=aplicativos$/);
-    await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText(["Aplicativos"]);
+    await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText([
+      "Aplicativos",
+      "Procurando os cursos?",
+    ]);
     await expect(page.getByRole("heading", { level: 3, name: "Brinqueletrando", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { level: 3, name: "Brinqueletrando Box" })).toHaveCount(0);
   });
@@ -103,8 +137,11 @@ test.describe("Loja — catálogo", () => {
   test("filtro Cursos não redireciona e mostra os dois cursos", async ({ page }) => {
     await page.getByRole("navigation", { name: "Categorias da loja" }).getByRole("link", { name: /Cursos/ }).click();
     await expect(page).toHaveURL(/\/loja\?categoria=cursos$/);
-    await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText(["Cursos"]);
-    await expect(page.getByRole("main").getByRole("heading", { level: 3 })).toHaveText([
+    await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText([
+      "Cursos",
+      "Procurando os cursos?",
+    ]);
+    await expect(page.getByRole("region", { name: "Catálogo da loja" }).getByRole("heading", { level: 3 })).toHaveText([
       "Dificuldades na Aprendizagem",
       "Alfabetização",
     ]);
@@ -112,11 +149,28 @@ test.describe("Loja — catálogo", () => {
 
   test("categoria desconhecida mostra o catálogo inteiro", async ({ page }) => {
     await page.goto("/loja?categoria=nao-existe");
-    await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveCount(CATEGORIES.length);
+    await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText([
+      "Todos os produtos",
+      "Procurando os cursos?",
+    ]);
+    await expect(page.getByRole("region", { name: "Brinqueletrando Box" })).toBeVisible();
   });
 
-  test("atalho para o catálogo completo de cursos", async ({ page }) => {
+  test("faixa Sobre a compra: Kiwify, entrega e contato", async ({ page }) => {
+    const trust = page.getByRole("region", { name: "Sobre a compra" });
+    await expect(trust.getByText("O pagamento online pela Kiwify está em preparação.")).toBeVisible();
+    await expect(
+      trust.getByText("Materiais em PDF por e-mail; jogos e kits pelos Correios, com frete grátis para todo o Brasil."),
+    ).toBeVisible();
+    await expect(trust.getByRole("link", { name: "Fale pela página de contato" })).toHaveAttribute(
+      "href",
+      "/contato#formulario",
+    );
+  });
+
+  test("ponte para os cursos mostra o curso disponível e leva a /cursos", async ({ page }) => {
     const main = page.getByRole("main");
+    await expect(main.getByText("Dificuldades na Aprendizagem · R$ 598,00")).toBeVisible();
     await main.getByRole("link", { name: "Ver todos os cursos" }).click();
     await expect(page).toHaveURL("/cursos");
   });

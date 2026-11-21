@@ -73,7 +73,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               Pular para o conteúdo
             </a>
             <Header />
-            <main id="conteudo">{children}</main>
+            {/* tabIndex -1: o link "Pular para o conteúdo" realmente leva o foco para cá (motion.css tira o contorno). */}
+            <main id="conteudo" tabIndex={-1}>
+              {children}
+            </main>
             <Footer columns={footerColumns} year={year} />
           </PageTransitionProvider>
         </MotionProvider>

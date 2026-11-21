@@ -22,10 +22,12 @@ interface FilterNavProps {
   keepScroll?: boolean;
   /** Com valor (s), as pílulas entram em cascata ao montar, a partir desse atraso. Sem valor, ficam estáticas. */
   entranceDelay?: number;
+  /** "vertical": coluna de pílulas a partir de 1100px (barra lateral); abaixo disso, igual ao padrão. */
+  orientation?: "horizontal" | "vertical";
 }
 
 /* Filtros em pílula; o atual vira ciano (texto navy) e recebe aria-current. */
-export function FilterNav({ label, items, id, keepScroll = false, entranceDelay }: FilterNavProps) {
+export function FilterNav({ label, items, id, keepScroll = false, entranceDelay, orientation = "horizontal" }: FilterNavProps) {
   const animated = entranceDelay !== undefined;
   const List = animated ? Stagger : "ul";
   const Item = animated ? StaggerItem : "li";
@@ -33,7 +35,7 @@ export function FilterNav({ label, items, id, keepScroll = false, entranceDelay 
   const itemProps = animated ? { as: "li" as const } : {};
 
   return (
-    <nav id={id} aria-label={label} className={styles.nav}>
+    <nav id={id} aria-label={label} className={orientation === "vertical" ? `${styles.nav} ${styles.vertical}` : styles.nav}>
       <List className={styles.list} {...listProps}>
         {items.map((item) => (
           <Item key={item.href} {...itemProps}>

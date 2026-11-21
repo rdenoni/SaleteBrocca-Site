@@ -70,12 +70,6 @@
   transform: translateX(3px);
 }
 
-.links a:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 3px;
-  border-radius: 2px;
-}
-
 /* Bloco da marca na metade direita: logo empilhado e os perfis. */
 .brand {
   display: grid;
@@ -105,7 +99,7 @@
 }
 
 .socialCaption {
-  font: 400 11px/16px var(--font-sans);
+  font: 400 12px/16px var(--font-sans);
   color: var(--on-navy-muted);
 }
 
@@ -134,6 +128,13 @@
   background: var(--cyan);
   color: var(--navy);
   cursor: pointer;
+}
+
+/* O alvo real é o botão de 36px: a célula de 48px é só um div. A área de toque cresce sem mudar o visual. */
+.socialButton::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
 }
 
 .socialGlyph {
@@ -233,12 +234,6 @@
 
 .legalButton:hover {
   text-decoration-color: var(--cyan);
-}
-
-.legalButton:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 3px;
-  border-radius: 2px;
 }
 
 .backToTop {

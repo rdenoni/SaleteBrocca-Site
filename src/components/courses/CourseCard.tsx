@@ -34,7 +34,7 @@ export function CourseCard({ course }: CourseCardProps) {
                 {lessons} aulas
               </li>
             </ul>
-            <Button href={`/cursos/${course.slug}`} variant="primary" className={styles.cta}>
+            <Button href={`/cursos/${course.slug}`} variant="primary" className={styles.cta} aria-label={`Ver curso: ${course.title}`}>
               Ver curso
             </Button>
           </>

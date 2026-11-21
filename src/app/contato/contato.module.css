@@ -141,6 +141,9 @@
 }
 
 .channelList a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
   color: var(--blue-strong);
   font-weight: 700;
 }
@@ -217,5 +220,13 @@
   .phone {
     font-size: 24px;
     line-height: 30px;
+  }
+}
+
+/* 320px: o número (nowrap, para não quebrar no hífen) não cabe em 24px; a 20px cabe nos 240px úteis do painel. */
+@media (max-width: 400px) {
+  .phone {
+    font-size: 20px;
+    line-height: 28px;
   }
 }

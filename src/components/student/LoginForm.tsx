@@ -75,6 +75,8 @@ export function LoginForm() {
           type={showPassword ? "text" : "password"}
           label="Senha"
           autoComplete="current-password"
+          autoCapitalize="none"
+          spellCheck={false}
           error={errors.senha}
         />
       </motion.div>
