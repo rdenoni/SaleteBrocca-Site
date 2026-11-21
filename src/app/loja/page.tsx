@@ -20,8 +20,28 @@ import {
   SHOP_FEATURED_SLUG,
   type ShopEntry,
 } from "@/lib/content/shop";
+import { Reveal } from "@/motion/Reveal";
+import { Stagger, StaggerItem } from "@/motion/Stagger";
+import { TextReveal } from "@/motion/TextReveal";
+import { afterBanner, afterTitle } from "@/motion/timeline";
+import { motionTokens } from "@/motion/tokens";
 import type { Product } from "@/types/content";
 import styles from "./loja.module.css";
+
+const BANNER_TITLE = "Loja";
+const { duration, stagger } = motionTokens;
+/* Movimento (ordem por hierarquia): banner → título do catálogo → total → categorias (lateral) → destaque (o cartão
+   se desvela, o texto sobe item a item e só então a foto) — tudo ao montar. Daqui para baixo, ao chegar à tela:
+   a grade em cascata, a faixa "Sobre a compra" e a ponte para os cursos. */
+const TOP_START = afterBanner(motionTokens, BANNER_TITLE);
+const ALL_TITLE = "Todos os produtos";
+/* Tempos do topo (ao montar): título → total → rótulo "Categorias" → pílulas. Fixos pelo título "Todos": se
+   variassem com a categoria, trocar o filtro re-registraria a espera do topo e a grade nova esperaria segundos. */
+const TOTAL_START = TOP_START + afterTitle(motionTokens, ALL_TITLE);
+const SIDEBAR_START = TOTAL_START + stagger.items;
+/* Itens do texto do destaque: selo, tipo, título, resumo, preço, pagamento e botões. */
+const FEATURED_TEXT_ITEMS = 7;
+const BRIDGE_TITLE = "Procurando os cursos?";
 
 const SUBTITLE =
   "Cursos, aplicativo, jogos educativos, kits personalizados e materiais em PDF de Maria Salete Brocca Denoni.";
@@ -52,36 +72,54 @@ function EntryCard({ entry }: { entry: ShopEntry }) {
   return entry.type === "course" ? <ShopCourseCard course={entry.course} /> : <ProductCard product={entry.product} />;
 }
 
+/* O texto começa com o cartão já se abrindo; a foto nunca antes do texto que a apresenta (último item já subindo). */
+const FEATURED_TEXT_START = duration.base;
+const FEATURED_MEDIA_START = FEATURED_TEXT_START + (FEATURED_TEXT_ITEMS - 1) * stagger.items + duration.base;
+
+/* Por viewport, não ao montar: na primeira carga espera o topo (pílulas) pela ordem de leitura; ao voltar para
+   "Todos" pelo filtro (mesma página, sem banner), entra logo em vez de esperar os tempos do topo. */
 function FeaturedProduct({ product }: { product: Product }) {
   return (
-    <section className={styles.featured} aria-labelledby="destaque-titulo">
-      <div className={styles.featuredMedia}>
+    <Reveal as="section" variant="mask" className={styles.featured} aria-labelledby="destaque-titulo">
+      <Reveal variant="mask" delay={FEATURED_MEDIA_START} className={styles.featuredMedia}>
         <ProductMedia product={product} sizes="(max-width: 767px) 100vw, 480px" />
-      </div>
-      <div className={styles.featuredText}>
-        <span className={styles.featuredFlag}>Destaque</span>
-        <p className={styles.featuredKind}>{product.kind}</p>
-        <h3 id="destaque-titulo" className={styles.featuredTitle}>
-          {product.title}
-        </h3>
-        <p className={styles.featuredSummary}>{product.summary}</p>
-        <p className={styles.featuredPrice}>{product.price ?? <span className="pending">A confirmar</span>}</p>
-        <p className={styles.secure}>
-          <Lock size={16} aria-hidden="true" />
-          <span>
-            Pagamento pela Kiwify, em preparação ·<span className="pending">Reembolso: a confirmar</span>
-          </span>
-        </p>
-        <div className={styles.featuredActions}>
+      </Reveal>
+      <Stagger className={styles.featuredText} delay={FEATURED_TEXT_START}>
+        <StaggerItem>
+          <span className={styles.featuredFlag}>Destaque</span>
+        </StaggerItem>
+        <StaggerItem>
+          <p className={styles.featuredKind}>{product.kind}</p>
+        </StaggerItem>
+        <StaggerItem>
+          <h3 id="destaque-titulo" className={styles.featuredTitle}>
+            {product.title}
+          </h3>
+        </StaggerItem>
+        <StaggerItem>
+          <p className={styles.featuredSummary}>{product.summary}</p>
+        </StaggerItem>
+        <StaggerItem>
+          <p className={styles.featuredPrice}>{product.price ?? <span className="pending">A confirmar</span>}</p>
+        </StaggerItem>
+        <StaggerItem>
+          <p className={styles.secure}>
+            <Lock size={16} aria-hidden="true" />
+            <span>
+              Pagamento pela Kiwify, em preparação ·<span className="pending">Reembolso: a confirmar</span>
+            </span>
+          </p>
+        </StaggerItem>
+        <StaggerItem className={styles.featuredActions}>
           <Button href={getCheckoutHref(product)} variant="primary" aria-label={`Comprar ${product.title}`}>
             Comprar
           </Button>
           <Button href={`/loja/${product.slug}`} variant="outline" aria-label={`Ver detalhes de ${product.title}`}>
             Ver detalhes
           </Button>
-        </div>
-      </div>
-    </section>
+        </StaggerItem>
+      </Stagger>
+    </Reveal>
   );
 }
 
@@ -89,8 +127,8 @@ function TrustStrip() {
   return (
     <section className={styles.trust} aria-label="Sobre a compra">
       <div className="container">
-        <ul className={styles.trustList}>
-          <li className={styles.trustItem}>
+        <Stagger as="ul" pace="cards" className={styles.trustList}>
+          <StaggerItem as="li" className={styles.trustItem}>
             <span className={styles.trustIcon}>
               <Lock size={22} aria-hidden="true" />
             </span>
@@ -98,8 +136,8 @@ function TrustStrip() {
               <strong>Pagamento pela Kiwify</strong>
               <br />O pagamento online pela Kiwify está em preparação.
             </p>
-          </li>
-          <li className={styles.trustItem}>
+          </StaggerItem>
+          <StaggerItem as="li" className={styles.trustItem}>
             <span className={styles.trustIcon}>
               <Package size={22} aria-hidden="true" />
             </span>
@@ -108,8 +146,8 @@ function TrustStrip() {
               <br />
               {SHOP_DELIVERY_SUMMARY}
             </p>
-          </li>
-          <li className={styles.trustItem}>
+          </StaggerItem>
+          <StaggerItem as="li" className={styles.trustItem}>
             <span className={styles.trustIcon}>
               <MessageCircle size={22} aria-hidden="true" />
             </span>
@@ -120,8 +158,8 @@ function TrustStrip() {
                 Fale pela página de contato
               </Link>
             </p>
-          </li>
-        </ul>
+          </StaggerItem>
+        </Stagger>
       </div>
     </section>
   );
@@ -134,18 +172,18 @@ function CoursesBridge() {
       <div className="container">
         <div className={styles.bridge}>
           <div>
-            <h2 id="ponte-cursos" className={styles.heading}>
-              Procurando os cursos?
-            </h2>
+            <TextReveal as="h2" id="ponte-cursos" className={styles.heading} text={BRIDGE_TITLE} />
             {course?.commercial.price && (
-              <p className={styles.bridgeLine}>
+              <Reveal as="p" delay={afterTitle(motionTokens, BRIDGE_TITLE)} className={styles.bridgeLine}>
                 {course.title} · {course.commercial.price}
-              </p>
+              </Reveal>
             )}
           </div>
-          <Button href="/cursos" variant="primary" className={styles.bridgeButton}>
-            Ver todos os cursos
-          </Button>
+          <Reveal delay={afterTitle(motionTokens, BRIDGE_TITLE) + stagger.items}>
+            <Button href="/cursos" variant="primary" className={styles.bridgeButton}>
+              Ver todos os cursos
+            </Button>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -185,47 +223,66 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     }),
   ];
 
+  const heading = active ? active.label : ALL_TITLE;
+  /* Trocar o filtro não remonta a página: a chave remonta a grade, que refaz a cascata com os itens novos. */
+  const viewKey = active?.id ?? "todos";
+
   return (
     <>
-      <PageBanner title="Loja" subtitle={SUBTITLE} size="compact" />
+      <PageBanner title={BANNER_TITLE} subtitle={SUBTITLE} size="compact" />
 
       <section className={styles.catalog} aria-label="Catálogo da loja">
         <div className={`container ${styles.layout}`}>
           <div className={styles.sidebar}>
-            <p className={styles.eyebrow} aria-hidden="true">
+            <Reveal as="p" trigger="mount" delay={SIDEBAR_START} className={styles.eyebrow} aria-hidden>
               Categorias
-            </p>
-            <FilterNav label="Categorias da loja" items={filters} keepScroll orientation="vertical" />
+            </Reveal>
+            <FilterNav
+              label="Categorias da loja"
+              items={filters}
+              keepScroll
+              orientation="vertical"
+              entranceDelay={SIDEBAR_START + stagger.items}
+            />
           </div>
 
           <div className={styles.content}>
             <header className={styles.header}>
-              <h2 className={styles.heading}>{active ? active.label : "Todos os produtos"}</h2>
-              {entries.length > 0 && <p className={styles.total}>{availabilityLabel(entries)}</p>}
+              <TextReveal as="h2" className={styles.heading} text={heading} trigger="mount" delay={TOP_START} />
+              {entries.length > 0 && (
+                <Reveal as="p" trigger="mount" delay={TOTAL_START} className={styles.total}>
+                  {availabilityLabel(entries)}
+                </Reveal>
+              )}
             </header>
 
             {featured && <FeaturedProduct product={featured} />}
 
+            {/* Por viewport: espera o topo se já estiver na tela ao abrir (ordem de leitura). */}
             {entries.length === 0 ? (
               <>
-                {active && <UpcomingCategory category={active} tone="navy" showTitle={false} />}
-                <div className={styles.notify}>
+                {active && (
+                  <Reveal key={`breve-${viewKey}`}>
+                    <UpcomingCategory category={active} tone="navy" showTitle={false} />
+                  </Reveal>
+                )}
+                <Reveal key={`aviso-${viewKey}`} delay={stagger.cards} className={styles.notify}>
                   <p>
                     <strong>Quer saber quando chegar?</strong> Fale com a Salete pela página de contato.
                   </p>
                   <Button href="/contato#formulario" variant="outline">
                     Ir para contato
                   </Button>
-                </div>
+                </Reveal>
               </>
             ) : (
-              <ul className={styles.grid}>
+              <Stagger key={viewKey} as="ul" pace="cards" className={styles.grid}>
                 {gridEntries.map((entry) => (
-                  <li key={entry.key}>
+                  <StaggerItem as="li" key={entry.key}>
                     <EntryCard entry={entry} />
-                  </li>
+                  </StaggerItem>
                 ))}
-              </ul>
+              </Stagger>
             )}
           </div>
         </div>
