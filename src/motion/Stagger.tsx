@@ -7,7 +7,7 @@ import { revealVariants, type RevealVariant } from "./Reveal";
 import { useEntranceReady } from "./transitions/useEntranceReady";
 import { useMotionTokens } from "./useMotionTokens";
 
-type StaggerTag = "div" | "ul" | "ol" | "section";
+type StaggerTag = "div" | "ul" | "ol" | "dl" | "section";
 type ItemTag = "div" | "li" | "article";
 
 interface StaggerProps {
