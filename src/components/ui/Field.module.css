@@ -9,10 +9,12 @@
 }
 
 .input {
+  /* Borda de repouso com 3:1 contra branco, light-blue e light-gray (mistura navy/branco); o fundo cinza claro sozinho tem 1,2:1. */
+  --field-border: color-mix(in srgb, var(--navy) 60%, var(--white));
   width: 100%;
   min-height: 52px;
   padding: 14px 18px;
-  border: 2px solid transparent;
+  border: 1px solid var(--field-border);
   border-radius: var(--radius-sm);
   background-color: var(--light-gray);
   color: var(--navy);
@@ -27,12 +29,11 @@
 }
 
 .input:hover {
-  border-color: var(--light-blue);
+  border-color: var(--blue-strong);
 }
 
+/* O anel global de foco (3px, afastado 3px) continua valendo; borda, fundo branco e halo reforçam. */
 .input:focus {
-  /* Transparente (não "none"): continua visível em modo de alto contraste. */
-  outline: 2px solid transparent;
   background-color: var(--white);
   border-color: var(--blue-strong);
   box-shadow: 0 0 0 3px var(--light-blue);
@@ -63,12 +64,15 @@
 .field[data-invalid] .input {
   background-color: var(--white);
   border-color: var(--error);
+  box-shadow: inset 0 0 0 1px var(--error);
 }
 
-/* Inválido + foco: mantém um anel claro de 3px, sem perder a borda de erro. */
+/* Inválido + foco: mantém um halo claro de 3px, sem perder a borda de erro. */
 .field[data-invalid] .input:focus {
   border-color: var(--error);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--error) 40%, var(--white));
+  box-shadow:
+    inset 0 0 0 1px var(--error),
+    0 0 0 3px color-mix(in srgb, var(--error) 40%, var(--white));
 }
 
 .hint {
@@ -79,7 +83,7 @@
 .error {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-2);
   font: 400 14px/20px var(--font-sans);
   color: var(--error);
 }

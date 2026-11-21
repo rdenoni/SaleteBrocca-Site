@@ -76,11 +76,19 @@ export function ContinueCard({ course, progress: progressByCourse, variant = "wi
         </StaggerItem>
         <StaggerItem className={styles.actions}>
           {progress.current && (
-            <MotionButton href={lessonHref(course.slug, progress.current)} variant={dark ? "accent" : "primary"}>
+            <MotionButton
+              href={lessonHref(course.slug, progress.current)}
+              variant={dark ? "accent" : "primary"}
+              aria-label={`Continuar aula: ${progress.current.title}`}
+            >
               Continuar aula
             </MotionButton>
           )}
-          <MotionButton href={`/area-do-aluno/cursos/${course.slug}`} variant={dark ? "ghost" : "outline"}>
+          <MotionButton
+            href={`/area-do-aluno/cursos/${course.slug}`}
+            variant={dark ? "ghost" : "outline"}
+            aria-label={`Ver módulos: ${course.title}`}
+          >
             Ver módulos
           </MotionButton>
         </StaggerItem>

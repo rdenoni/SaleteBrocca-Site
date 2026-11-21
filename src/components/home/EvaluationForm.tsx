@@ -89,7 +89,13 @@ function QuestionMark() {
 
 /* Sem backend nesta etapa: valida os campos e informa que o envio online ainda não está ativo.
    Integração prevista: rota de servidor + e-mail/CRM (ver docs/06-TECHNICAL-ARCHITECTURE.md). */
-export function EvaluationForm() {
+interface EvaluationFormProps {
+  /** "home": título em duas linhas com "?" (padrão). "page": título numa linha, rótulos visíveis e campos em cartão (/avaliacao). */
+  variant?: "home" | "page";
+}
+
+export function EvaluationForm({ variant = "home" }: EvaluationFormProps) {
+  const isPage = variant === "page";
   const id = useId();
   const t = useMotionTokens();
   const [errors, setErrors] = useState<FormErrors>({});
@@ -135,22 +141,34 @@ export function EvaluationForm() {
   const nomeErrorId = `${id}-nome-erro`;
   const telefoneErrorId = `${id}-telefone-erro`;
 
+  /* Na página o rótulo é visível; na Home continua só para leitor de tela. */
+  const labelClass = isPage ? styles.pageLabel : "visually-hidden";
+
   return (
-    <form
-      className={styles.form}
-      onSubmit={handleSubmit}
-      noValidate
-      aria-labelledby={titleId}
-      data-reduced={t.reduced ? "" : undefined}
-    >
-      <div className={styles.head}>
-        <QuestionMark />
-        {/* As duas linhas do título ficam como no site; leitores de tela recebem a frase numa linha só. */}
-        <TextReveal as="h2" id={titleId} className={styles.title} text={EVALUATION.titleLines.join("\n")} />
-      </div>
+    <>
+      {/* Na página o título fica fora do cartão; o form o referencia por aria-labelledby. */}
+      {isPage && (
+        <h2 id={titleId} className={styles.pageTitle}>
+          {EVALUATION.titleLines.join(" ")}
+        </h2>
+      )}
+      <form
+        className={isPage ? `${styles.form} ${styles.formPage}` : styles.form}
+        onSubmit={handleSubmit}
+        noValidate
+        aria-labelledby={titleId}
+        data-reduced={t.reduced ? "" : undefined}
+      >
+      {!isPage && (
+        <div className={styles.head}>
+          <QuestionMark />
+          {/* As duas linhas do título ficam como no site; leitores de tela recebem a frase numa linha só. */}
+          <TextReveal as="h2" id={titleId} className={styles.title} text={EVALUATION.titleLines.join("\n")} />
+        </div>
+      )}
 
       <div className={styles.field} data-invalid={errors.nome ? "" : undefined}>
-        <label htmlFor={`${id}-nome`} className="visually-hidden">
+        <label htmlFor={`${id}-nome`} className={labelClass}>
           {EVALUATION.nameLabel}
         </label>
         <div className={styles.control}>
@@ -171,7 +189,7 @@ export function EvaluationForm() {
       </div>
 
       <div className={styles.field} data-invalid={errors.telefone ? "" : undefined}>
-        <label htmlFor={`${id}-telefone`} className="visually-hidden">
+        <label htmlFor={`${id}-telefone`} className={labelClass}>
           {EVALUATION.phoneLabel}
         </label>
         <div className={styles.control}>
@@ -211,7 +229,7 @@ export function EvaluationForm() {
       </div>
 
       <div className={styles.actions}>
-        <MotionButton type="submit" variant="outline">
+        <MotionButton type="submit" variant={isPage ? "primary" : "outline"}>
           {EVALUATION.submit}
         </MotionButton>
       </div>
@@ -235,6 +253,7 @@ export function EvaluationForm() {
           ) : null}
         </AnimatePresence>
       </div>
-    </form>
+      </form>
+    </>
   );
 }

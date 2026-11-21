@@ -1,55 +1,30 @@
 .heading {
   margin: 0;
-  font: 800 34px/42px var(--font-sans);
+  font: 800 40px/48px var(--font-sans);
   color: var(--navy);
 }
 
-/* ---------- Quem atende: retrato à esquerda com peças deslocadas, texto à direita ---------- */
+/* ---------- Formulário (esquerda) e retrato com legenda sobreposta (direita) ---------- */
 
-.who {
-  padding-block: var(--space-16) var(--space-24);
+.request {
+  padding-block: var(--space-24);
+  background: var(--white);
 }
 
-.whoGrid {
+.requestGrid {
   display: grid;
-  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
   gap: var(--space-16);
-  align-items: start;
+  align-items: center;
 }
 
 .portrait {
   position: relative;
-  width: 100%;
-  max-width: 280px;
-  justify-self: center;
-}
-
-.portrait::before,
-.portrait::after {
-  content: "";
-  position: absolute;
-  border-radius: var(--radius-lg);
-}
-
-.portrait::before {
-  left: -24px;
-  bottom: -24px;
-  width: 70%;
-  height: 60%;
-  background: var(--cyan);
-}
-
-.portrait::after {
-  right: -24px;
-  top: -24px;
-  width: 45%;
-  height: 40%;
-  background: var(--navy);
+  margin: 0;
 }
 
 .portrait img {
-  position: relative;
-  z-index: 1;
+  display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 4 / 5;
@@ -57,220 +32,330 @@
   border-radius: var(--radius-lg);
 }
 
-.whoText {
+.portraitCaption {
+  position: absolute;
+  left: var(--space-6);
+  right: var(--space-6);
+  bottom: var(--space-6);
   display: grid;
-  justify-items: start;
-  gap: var(--space-4);
-  padding-top: var(--space-8);
-  border-top: 6px solid var(--cyan);
-}
-
-.name {
-  margin-top: var(--space-4);
-  font: 800 28px/36px var(--font-sans);
-  color: var(--navy);
-}
-
-.role {
-  margin-top: calc(-1 * var(--space-3));
-  font: 700 16px/24px var(--font-sans);
-  color: var(--blue-strong);
-}
-
-.reading {
-  max-width: 62ch;
-  font: 400 18px/32px var(--font-serif);
-  color: var(--charcoal);
-}
-
-.formation {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2) var(--space-3);
-  margin: var(--space-2) 0 var(--space-4);
-  padding: 0;
-  list-style: none;
-}
-
-.formation li {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 6px var(--space-4);
-  border: 2px solid var(--light-blue);
-  border-radius: var(--radius-pill);
-  font: 700 14px/20px var(--font-sans);
-  color: var(--navy);
-}
-
-.year {
-  color: var(--blue-strong);
-}
-
-/* ---------- Pedido: formulário (branco) e depoimento real (navy), como na Home ---------- */
-
-.request {
-  display: grid;
-  grid-template-columns: 48fr 52fr;
-  min-height: 500px;
-}
-
-/* Sem depoimento real não há coluna navy vazia: o formulário ocupa a largura toda. */
-.requestSolo {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.formColumn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-16) var(--page-gutter);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-md);
   background: var(--white);
+  box-shadow: var(--shadow-card);
 }
 
-.formInner {
-  display: flex;
-  justify-content: center;
-  width: 100%;
+.portraitName {
+  font: 800 18px/26px var(--font-sans);
+  color: var(--navy);
 }
 
-.testimonialColumn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-16) var(--space-16) var(--space-12);
-  background: var(--navy);
-  color: var(--white);
+.portraitRole {
+  font: 400 15px/22px var(--font-sans);
+  color: var(--text-muted);
 }
 
 /* ---------- Como funciona: ficha com o que ainda não foi confirmado ---------- */
 
 .how {
   padding-block: var(--space-24);
-  background: var(--light-blue);
-}
-
-.howGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  gap: var(--space-16);
-  align-items: start;
+  background: var(--light-gray);
 }
 
 .howHead {
-  display: grid;
-  justify-items: start;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
   gap: var(--space-6);
+  margin-bottom: var(--space-12);
+}
+
+.howIntroBlock {
+  display: grid;
+  gap: var(--space-3);
 }
 
 .howIntro {
-  max-width: 36ch;
-  font: 400 17px/28px var(--font-serif);
+  max-width: 56ch;
+  margin: 0;
+  font: 400 17px/1.6 var(--font-sans);
+  color: var(--text-muted);
+}
+
+/* Só existe com etapas confirmadas (EVALUATION_STEPS). */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-6);
+  margin: 0 0 var(--space-6);
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+}
+
+.stepNumber {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--white);
+  font: 800 18px/1 var(--font-sans);
+}
+
+.stepTitle {
+  margin: 0;
+  font: 700 18px/26px var(--font-sans);
+  color: var(--navy);
+}
+
+.stepText {
+  margin: 0;
+  font: 400 16px/1.6 var(--font-sans);
   color: var(--charcoal);
 }
 
 .facts {
   display: grid;
-  gap: var(--space-3);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-6);
   margin: 0;
 }
 
 .fact {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: var(--space-4);
-  min-height: 72px;
-  padding: var(--space-4) var(--space-6);
-  border-radius: var(--radius-md);
+  min-height: 192px;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+}
+
+.toneCyan {
+  background: var(--cyan);
+}
+
+.toneLightBlue {
+  background: var(--light-blue);
+}
+
+.toneWhite {
   background: var(--white);
 }
 
 .fact dt {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  font: 700 16px/24px var(--font-sans);
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4);
+  font: 700 15px/22px var(--font-sans);
   color: var(--navy);
 }
 
-.fact dt svg {
-  flex: none;
+.factIcon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--white);
+}
+
+.toneWhite .factIcon {
+  background: var(--light-gray);
+}
+
+.factIcon svg {
   width: 22px;
   height: 22px;
   color: var(--blue-strong);
 }
 
 .fact dd {
-  margin: 0;
+  margin: auto 0 0;
   font: 700 16px/24px var(--font-sans);
   color: var(--navy);
-  text-align: right;
+}
+
+/* Texto sobre ciano é sempre navy. */
+.toneCyan dd :global(.pending) {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+/* ---------- Depoimento real (um só) ---------- */
+
+.testimonial {
+  padding-block: var(--space-24);
+  background: var(--white);
+}
+
+/* A legenda precisa ser filha direta do figure: a grade põe a foto ao lado do texto e da legenda. */
+.quoteCard {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-4) var(--space-12);
+  margin: 0;
+  padding: var(--space-12) clamp(24px, 4vw, 64px);
+  border-radius: var(--radius-lg);
+  background: var(--navy);
+  color: var(--white);
+}
+
+.quoteCardNoPhoto {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.quotePhoto {
+  grid-row: 1 / span 2;
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 6px var(--cyan);
+}
+
+.quote {
+  margin: 0;
+  font: 300 24px/40px var(--font-serif);
+  color: var(--white);
+}
+
+.quoteMark {
+  display: block;
+  height: 32px;
+  font: 800 48px/1 var(--font-serif);
+  color: var(--blue);
+}
+
+.quoteCaption {
+  display: grid;
+}
+
+.quoteAuthor {
+  font: 800 16px/24px var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+.quoteRole {
+  font: 400 15px/22px var(--font-sans);
+  color: var(--on-navy-muted);
+}
+
+/* ---------- Quem atende ---------- */
+
+.who {
+  padding-block: var(--space-24);
+  background: var(--light-blue);
+}
+
+.whoGrid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.whoText {
+  display: grid;
+  flex: 1 1 480px;
+  gap: var(--space-4);
+}
+
+.whoSide {
+  display: grid;
+  flex: 1 1 360px;
+  justify-items: start;
+  gap: var(--space-6);
+}
+
+.reading {
+  max-width: 62ch;
+  margin: 0;
+  font: 400 18px/32px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.activity {
+  max-width: 62ch;
+  margin: 0;
+  font: 400 16px/1.6 var(--font-sans);
+  color: var(--charcoal);
+}
+
+.formation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.formation li {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  font: 400 15px/22px var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  color: var(--navy);
 }
 
 @media (max-width: 1099px) {
-  .whoGrid,
-  .howGrid {
-    gap: var(--space-8);
-  }
-
-  .request {
-    /* minmax(0, 1fr): a coluna nunca passa da tela (o formulário a empurrava em 320px). */
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .testimonialColumn {
-    padding: var(--space-16) var(--page-gutter);
-  }
-
-  .howGrid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-@media (max-width: 767px) {
-  .heading {
-    font-size: 26px;
-    line-height: 32px;
-  }
-
-  .who {
-    padding-block: var(--space-12) var(--space-16);
-  }
-
-  .whoGrid {
+  .requestGrid {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-12);
   }
 
   .portrait {
-    max-width: calc(100% - 48px);
+    width: 100%;
+    max-width: 420px;
+    margin-inline: auto;
   }
 
-  .name {
-    font-size: 24px;
-    line-height: 30px;
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .heading {
+    font-size: 32px;
+    line-height: 40px;
   }
 
-  .reading {
-    font-size: 17px;
-    line-height: 30px;
-  }
-
-  .formColumn {
-    padding-block: var(--space-12);
-  }
-
-  .how {
+  .request,
+  .how,
+  .testimonial,
+  .who {
     padding-block: var(--space-16);
   }
 
-  .fact {
-    flex-wrap: wrap;
-    padding: var(--space-4);
+  .facts {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .fact dd {
-    text-align: left;
+  .quoteCard {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+  }
+
+  .quotePhoto {
+    grid-row: auto;
+  }
+
+  .quote {
+    font-size: 20px;
+    line-height: 34px;
   }
 }

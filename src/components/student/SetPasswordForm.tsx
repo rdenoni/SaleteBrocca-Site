@@ -41,6 +41,8 @@ export function SetPasswordForm() {
           label="Nova senha"
           hint={`Pelo menos ${MIN_PASSWORD_LENGTH} caracteres.`}
           autoComplete="new-password"
+          autoCapitalize="none"
+          spellCheck={false}
           error={state.fieldErrors?.senha}
         />
       </motion.div>
@@ -51,6 +53,8 @@ export function SetPasswordForm() {
           type={type}
           label="Repita a nova senha"
           autoComplete="new-password"
+          autoCapitalize="none"
+          spellCheck={false}
           error={state.fieldErrors?.confirmacao}
         />
       </motion.div>

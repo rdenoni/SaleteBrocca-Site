@@ -125,7 +125,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
             <div className={styles.teacherFigure}>
               <Image
                 src="/images/about/salete-avatar.jpg"
-                alt="Maria Salete Brocca Denoni"
+                alt=""
                 width={480}
                 height={480}
                 sizes="120px"

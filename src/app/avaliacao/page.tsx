@@ -2,12 +2,15 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Clock, MapPin, Tag, Users, type LucideIcon } from "lucide-react";
 import { EvaluationForm } from "@/components/home/EvaluationForm";
-import { TestimonialSlider } from "@/components/home/TestimonialSlider";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { Button } from "@/components/ui/Button";
-import { LinkArrow } from "@/components/ui/LinkArrow";
 import { Reveal } from "@/motion/Reveal";
-import { EVALUATION_FACTS, EVALUATION_PAGE, type EvaluationFactIcon } from "@/lib/content/evaluation";
+import {
+  EVALUATION_FACTS,
+  EVALUATION_PAGE,
+  EVALUATION_STEPS,
+  type EvaluationFactIcon,
+} from "@/lib/content/evaluation";
 import {
   PROFILE_ACTIVITIES,
   PROFILE_FORMATION,
@@ -25,10 +28,13 @@ const FACT_ICONS: Record<EvaluationFactIcon, LucideIcon> = {
   price: Tag,
 };
 
+/* Fundo de cada bloco da ficha, pela ordem de EVALUATION_FACTS: ciano, azul claro e dois brancos. */
+const FACT_TONES = [styles.toneCyan, styles.toneLightBlue, styles.toneWhite, styles.toneWhite];
+
 /* Só o que a cliente confirmou: o atendimento do consultório e o da APAE (profile.ts) e o depoimento real da Daniele. */
 const clinic = PROFILE_ACTIVITIES.find((activity) => activity.icon === "clinic");
 const institution = PROFILE_ACTIVITIES.find((activity) => activity.icon === "institution");
-const realTestimonials = getTestimonials().filter((testimonial) => !testimonial.simulated);
+const realTestimonial = getTestimonials().filter((testimonial) => !testimonial.simulated)[0];
 
 function lowerFirst(text: string): string {
   return text.charAt(0).toLowerCase() + text.slice(1);
@@ -46,84 +52,65 @@ export default function EvaluationPage() {
     <>
       <PageBanner title={EVALUATION_PAGE.title} subtitle={`Pedido de avaliação com ${PROFILE_NAME}, fonoaudióloga clínica.`} size="compact" />
 
-      <section id="quem-atende" className={styles.who} aria-labelledby="quem-atende-titulo">
-        <div className={`container ${styles.whoGrid}`}>
-          <div className={styles.portrait}>
+      <section id="formulario" className={styles.request} aria-label="Pedido de avaliação">
+        <div className={`container ${styles.requestGrid}`}>
+          <Reveal>
+            <EvaluationForm variant="page" />
+          </Reveal>
+
+          <figure className={styles.portrait}>
             <Image
               src="/images/about/salete-perfil.jpg"
               alt="Maria Salete Brocca Denoni, de blazer azul-marinho e óculos, em seu escritório diante de uma estante de livros"
               width={900}
               height={1125}
-              sizes="(max-width: 767px) 80vw, 280px"
+              sizes="(max-width: 1099px) 420px, 40vw"
             />
-          </div>
-
-          <div className={styles.whoText}>
-            <h2 id="quem-atende-titulo" className={styles.heading}>
-              {EVALUATION_PAGE.whoTitle}
-            </h2>
-            <p className={styles.name}>{PROFILE_NAME}</p>
-            <p className={styles.role}>{PROFILE_ROLE}</p>
-            <p className={styles.reading}>{PROFILE_INTRO}</p>
-            {clinic && (
-              <p className={styles.reading}>
-                <strong>{clinic.title}.</strong> {clinic.text}
-              </p>
-            )}
-            {institution && (
-              <p className={styles.reading}>
-                <strong>{institution.title}.</strong> {institution.text}
-              </p>
-            )}
-            <ul className={styles.formation} aria-label="Formação">
-              {PROFILE_FORMATION.map((item) => (
-                <li key={item.title}>
-                  {item.year && <span className={styles.year}>{item.year}</span>}
-                  {item.title}
-                </li>
-              ))}
-            </ul>
-            <LinkArrow href={EVALUATION_PAGE.whoLink.href}>{EVALUATION_PAGE.whoLink.label}</LinkArrow>
-          </div>
+            <figcaption className={styles.portraitCaption}>
+              <span className={styles.portraitName}>{PROFILE_NAME}</span>
+              <span className={styles.portraitRole}>{PROFILE_ROLE}</span>
+            </figcaption>
+          </figure>
         </div>
-      </section>
-
-      <section
-        id="formulario"
-        className={`${styles.request} ${realTestimonials.length === 0 ? styles.requestSolo : ""}`}
-        aria-label="Pedido de avaliação"
-      >
-        <div className={styles.formColumn}>
-          <Reveal className={styles.formInner}>
-            <EvaluationForm />
-          </Reveal>
-        </div>
-        {realTestimonials.length > 0 && (
-          <div className={styles.testimonialColumn} data-surface="dark">
-            <TestimonialSlider items={realTestimonials} />
-          </div>
-        )}
       </section>
 
       <section id="como-funciona" className={styles.how} aria-labelledby="como-funciona-titulo">
-        <div className={`container ${styles.howGrid}`}>
+        <div className="container">
           <header className={styles.howHead}>
-            <h2 id="como-funciona-titulo" className={styles.heading}>
-              {EVALUATION_PAGE.howTitle}
-            </h2>
-            <p className={styles.howIntro}>{EVALUATION_PAGE.howIntro}</p>
+            <div className={styles.howIntroBlock}>
+              <h2 id="como-funciona-titulo" className={styles.heading}>
+                {EVALUATION_PAGE.howTitle}
+              </h2>
+              <p className={styles.howIntro}>{EVALUATION_PAGE.howIntro}</p>
+            </div>
             <Button href="#formulario" variant="primary">
               {EVALUATION_PAGE.backToForm}
             </Button>
           </header>
 
+          {EVALUATION_STEPS.length > 0 && (
+            <ol className={styles.steps}>
+              {EVALUATION_STEPS.map((step, index) => (
+                <li key={step.title} className={styles.step}>
+                  <span className={styles.stepNumber} aria-hidden="true">
+                    {index + 1}
+                  </span>
+                  <h3 className={styles.stepTitle}>{step.title}</h3>
+                  <p className={styles.stepText}>{step.text}</p>
+                </li>
+              ))}
+            </ol>
+          )}
+
           <dl className={styles.facts}>
-            {EVALUATION_FACTS.map((fact) => {
+            {EVALUATION_FACTS.map((fact, index) => {
               const Icon = FACT_ICONS[fact.icon];
               return (
-                <div key={fact.label} className={styles.fact}>
+                <div key={fact.label} className={`${styles.fact} ${FACT_TONES[index] ?? styles.toneWhite}`}>
                   <dt>
-                    <Icon aria-hidden="true" />
+                    <span className={styles.factIcon}>
+                      <Icon aria-hidden="true" />
+                    </span>
                     {fact.label}
                   </dt>
                   <dd>{fact.value ?? <span className="pending">{EVALUATION_PAGE.pendingLabel}</span>}</dd>
@@ -131,6 +118,77 @@ export default function EvaluationPage() {
               );
             })}
           </dl>
+        </div>
+      </section>
+
+      {realTestimonial && (
+        <section className={styles.testimonial} aria-label="Depoimento">
+          <div className="container">
+            <figure
+              className={`${styles.quoteCard} ${realTestimonial.photo ? "" : styles.quoteCardNoPhoto}`}
+              data-surface="dark"
+            >
+              {realTestimonial.photo && (
+                <Image
+                  className={styles.quotePhoto}
+                  src={realTestimonial.photo}
+                  alt=""
+                  width={128}
+                  height={128}
+                />
+              )}
+              <blockquote className={styles.quote}>
+                <span className={styles.quoteMark} aria-hidden="true">
+                  “
+                </span>
+                {realTestimonial.quote}
+              </blockquote>
+              <figcaption className={styles.quoteCaption}>
+                <span className={styles.quoteAuthor}>{realTestimonial.author}</span>
+                <span className={styles.quoteRole}>{realTestimonial.role}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+      )}
+
+      <section id="quem-atende" className={styles.who} aria-labelledby="quem-atende-titulo">
+        <div className={`container ${styles.whoGrid}`}>
+          <div className={styles.whoText}>
+            <h2 id="quem-atende-titulo" className={styles.heading}>
+              {EVALUATION_PAGE.whoTitle}
+            </h2>
+            <p className={styles.reading}>{PROFILE_INTRO}</p>
+            {clinic && (
+              <p className={styles.activity}>
+                <strong>{clinic.title}.</strong> {clinic.text}
+              </p>
+            )}
+            {institution && (
+              <p className={styles.activity}>
+                <strong>{institution.title}.</strong> {institution.text}
+              </p>
+            )}
+          </div>
+
+          <div className={styles.whoSide}>
+            <ul className={styles.formation} aria-label="Formação">
+              {PROFILE_FORMATION.map((item) => (
+                <li key={item.title}>
+                  {item.year && (
+                    <>
+                      <strong>{item.year}</strong>
+                      {" · "}
+                    </>
+                  )}
+                  {item.title}
+                </li>
+              ))}
+            </ul>
+            <Button href={EVALUATION_PAGE.whoLink.href} variant="outline">
+              {EVALUATION_PAGE.whoLink.label}
+            </Button>
+          </div>
         </div>
       </section>
     </>

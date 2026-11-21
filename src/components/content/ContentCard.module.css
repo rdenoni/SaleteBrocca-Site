@@ -49,9 +49,8 @@
   margin: 0 -28px 40px 26%;
   padding: 22px 28px 22px 24px;
   border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  /* Sem backdrop-filter: ele faria do painel o bloco de contenção do ::after do link e o card inteiro deixaria de ser clicável. */
   background: color-mix(in srgb, var(--white) 82%, transparent);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
 }
 
 .card[data-tone="blue"] .panel {
