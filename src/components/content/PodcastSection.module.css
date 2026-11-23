@@ -1,7 +1,5 @@
 .section {
   margin-top: var(--space-24);
-  /* Âncora (/conteudo#podcast) abaixo do header flutuante. */
-  scroll-margin-top: var(--header-height-compact);
 }
 
 .head {

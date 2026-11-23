@@ -4,7 +4,7 @@ import { motion, stagger as staggerChildren, type Variants } from "motion/react"
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { User } from "lucide-react";
-import { useCallback, useEffect, useRef, useState, type MouseEvent, type SyntheticEvent } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type MouseEvent, type SyntheticEvent } from "react";
 import { MAIN_NAV, STUDENT_AREA } from "@/lib/content/site";
 import { MenuToggleIcon } from "@/motion/icons";
 import { useMotionTokens } from "@/motion/useMotionTokens";
@@ -25,6 +25,7 @@ interface MobileMenuProps {
 
 export function MobileMenu({ currentHref }: MobileMenuProps) {
   const t = useMotionTokens();
+  const dialogId = useId();
   const pathname = usePathname() ?? "";
   const { go } = useChromeNavigation();
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -125,6 +126,7 @@ export function MobileMenu({ currentHref }: MobileMenuProps) {
         className={styles.trigger}
         aria-label="Abrir menu"
         aria-haspopup="dialog"
+        aria-controls={dialogId}
         aria-expanded={open}
         onClick={openMenu}
       >
@@ -133,6 +135,7 @@ export function MobileMenu({ currentHref }: MobileMenuProps) {
 
       <dialog
         ref={dialogRef}
+        id={dialogId}
         className={styles.panel}
         aria-label="Menu"
         data-surface="dark"

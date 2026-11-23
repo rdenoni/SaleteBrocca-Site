@@ -62,6 +62,8 @@ export function PasswordLoginForm({ next, notice }: PasswordLoginFormProps) {
           type={showPassword ? "text" : "password"}
           label="Senha"
           autoComplete="current-password"
+          autoCapitalize="none"
+          spellCheck={false}
           error={state.fieldErrors?.senha}
         />
       </motion.div>

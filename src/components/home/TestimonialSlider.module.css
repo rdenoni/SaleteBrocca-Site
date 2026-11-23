@@ -237,7 +237,7 @@
 }
 
 /* Preenchimento do tempo no ponto ativo: barra fina sob o ponto, só scaleX. Pausa junto com o relógio.
-   Em movimento reduzido fica invisível, mas segue rodando: é ela que dispara a troca. */
+   Em movimento reduzido fica invisível e a duração vira 0ms (globals.css): não há troca automática, só manual. */
 .progress {
   position: absolute;
   bottom: 8px;

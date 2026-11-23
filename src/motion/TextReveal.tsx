@@ -4,6 +4,7 @@ import { motion, stagger as staggerChildren, type Variants } from "motion/react"
 import { Fragment } from "react";
 import { inViewWait } from "./pageSequence";
 import styles from "./TextReveal.module.css";
+import { useEntranceReady } from "./transitions/useEntranceReady";
 import { useMotionTokens } from "./useMotionTokens";
 
 type TextTag = "h1" | "h2" | "h3" | "p" | "span";
@@ -17,15 +18,17 @@ interface TextRevealProps {
   delay?: number;
   /** "mount": anima ao montar (Hero). "inView": ao entrar na tela. */
   trigger?: "mount" | "inView";
-  /** Só com trigger "mount": false segura o estado inicial (ex.: esperar a cortina de transição abrir). */
+  /** Só com trigger "mount": false segura o estado inicial. Sem valor, espera a cortina de transição abrir. */
   play?: boolean;
 }
 
 /* Título que surge palavra por palavra, cada uma subindo de dentro de uma máscara (como a linha de um caderno).
    Acessibilidade: leitores de tela recebem o texto inteiro (visually-hidden); as palavras animadas ficam aria-hidden.
    Quebra de linha natural: cada palavra é inline-block, então funciona em qualquer largura sem medir linhas. */
-export function TextReveal({ text, as = "h2", className, id, delay = 0, trigger = "inView", play = true }: TextRevealProps) {
+export function TextReveal({ text, as = "h2", className, id, delay = 0, trigger = "inView", play }: TextRevealProps) {
   const t = useMotionTokens();
+  const ready = useEntranceReady();
+  const shouldPlay = play ?? ready;
   const Tag = as;
   const lines = text
     .split("\n")
@@ -57,7 +60,7 @@ export function TextReveal({ text, as = "h2", className, id, delay = 0, trigger 
       };
 
   const playProps =
-    trigger === "mount" ? { animate: play ? "visible" : "hidden" } : { whileInView: "visible", viewport: t.viewport };
+    trigger === "mount" ? { animate: shouldPlay ? "visible" : "hidden" } : { whileInView: "visible", viewport: t.viewport };
 
   return (
     <Tag id={id} className={className}>

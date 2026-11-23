@@ -323,8 +323,10 @@ function TestimonialCarousel({ items, delay, label, simulatedLabel, note, play }
   const goNext = () => goTo(state.index + 1, 1);
   const goPrev = () => goTo(state.index - 1, -1);
 
+  /* Com movimento reduzido o globals.css força animation-duration: 0ms (!important) e o animationend dispararia
+     em cada remontagem: o carrossel giraria sem parar. elapsedTime 0 = relógio zerado, então não avança sozinho. */
   function handleProgressEnd(event: AnimationEvent<HTMLSpanElement>) {
-    if (event.target === event.currentTarget) goTo(state.index + 1, 1, false);
+    if (event.target === event.currentTarget && event.elapsedTime > 0) goTo(state.index + 1, 1, false);
   }
 
   /* Só foco por teclado pausa: clicar num ponto com o mouse não deve travar o autoplay para sempre. */
@@ -413,15 +415,18 @@ function TestimonialCarousel({ items, delay, label, simulatedLabel, note, play }
             );
           })}
         </div>
-        <button
-          type="button"
-          className={styles.pause}
-          aria-label={userPaused ? "Retomar depoimentos" : "Pausar depoimentos"}
-          aria-pressed={userPaused}
-          onClick={() => setUserPaused((value) => !value)}
-        >
-          {userPaused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}
-        </button>
+        {/* Com movimento reduzido nada roda sozinho, então não há o que pausar. */}
+        {t.reduced ? null : (
+          <button
+            type="button"
+            className={styles.pause}
+            aria-label={userPaused ? "Retomar depoimentos" : "Pausar depoimentos"}
+            aria-pressed={userPaused}
+            onClick={() => setUserPaused((value) => !value)}
+          >
+            {userPaused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}
+          </button>
+        )}
       </div>
       {note ? <p className={styles.note}>{note}</p> : null}
       {/* Anúncio só depois de uma troca feita pela pessoa (nunca na carga da página nem no autoplay). */}

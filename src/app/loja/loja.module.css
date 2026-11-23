@@ -1,48 +1,129 @@
-.page {
-  padding-block: var(--space-12) var(--space-24);
+.catalog {
+  padding-block: var(--space-24);
+  background: var(--white);
 }
 
-/* Uma seção por categoria; o espaço entre elas separa os grupos na visão "Todos". */
-.section + .section {
-  margin-top: var(--space-24);
+/* Barra lateral + conteúdo a partir de 1100px; abaixo disso empilha. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
 }
 
-/* Atalho para o catálogo completo de cursos, com a descrição de cada um. */
-.coursesHint {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2) var(--space-4);
+.eyebrow {
+  display: none;
+  margin-bottom: var(--space-4);
+  font: 700 13px/16px var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blue-strong);
+}
+
+.content {
+  min-width: 0;
+}
+
+.header {
   margin-bottom: var(--space-8);
-  font: 400 16px/24px var(--font-sans);
-  color: var(--text-muted);
 }
 
 .heading {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-2) var(--space-6);
-  margin-bottom: var(--space-8);
-}
-
-.title {
-  font: 800 34px/42px var(--font-sans);
+  font: 800 40px/48px var(--font-sans);
+  letter-spacing: -0.015em;
   color: var(--navy);
 }
 
 .total {
+  margin-top: var(--space-2);
   font: 400 16px/24px var(--font-sans);
+  font-variant-numeric: tabular-nums;
   color: var(--text-muted);
 }
 
-/* Três colunas com a do meio deslocada: a assimetria dos blocos da referência. */
+/* Produto em destaque (só na visão "Todos"). */
+.featured {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-8);
+  align-items: center;
+  margin-bottom: var(--space-8);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--light-blue);
+}
+
+.featuredMedia {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+.featuredText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.featuredFlag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+  color: var(--navy);
+  font: 700 13px/16px var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.featuredKind {
+  font: 700 13px/16px var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+
+.featuredTitle {
+  font: 800 clamp(26px, 3vw, 32px) / 1.25 var(--font-sans);
+  color: var(--navy);
+}
+
+.featuredSummary {
+  font: 400 17px/1.6 var(--font-serif);
+  color: var(--charcoal);
+}
+
+.featuredPrice {
+  font: 800 32px/40px var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  color: var(--navy);
+}
+
+.secure {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font: 400 15px/22px var(--font-sans);
+  color: var(--charcoal);
+}
+
+.secure svg {
+  flex: none;
+  margin-top: 3px;
+}
+
+.featuredActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-8);
-  align-items: start;
+  gap: var(--space-6);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -56,36 +137,141 @@
   flex: 1;
 }
 
-.grid > li:nth-child(3n + 2) {
-  margin-top: var(--space-16);
+.notify {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  padding: var(--space-6) var(--space-8);
+  border: 1px solid var(--light-blue);
+  border-radius: var(--radius-md);
+  font: 400 16px/24px var(--font-sans);
+  color: var(--charcoal);
 }
 
-.empty {
-  max-width: 720px;
+.notify strong {
+  color: var(--navy);
+}
+
+/* Faixa "Sobre a compra". */
+.trust {
+  padding-block: var(--space-12);
+  background: var(--light-blue);
+}
+
+.trustList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trustItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  font: 400 15px/24px var(--font-sans);
+  color: var(--charcoal);
+}
+
+.trustItem strong {
+  color: var(--navy);
+}
+
+.trustIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--navy);
+}
+
+.trustLink {
+  color: var(--blue-strong);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Ponte para os cursos: ciano com texto navy. */
+.bridgeSection {
+  padding-block: var(--space-16);
+  background: var(--white);
+}
+
+.bridge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding: var(--space-12);
+  border-radius: var(--radius-lg);
+  background: var(--cyan);
+  color: var(--navy);
+}
+
+.bridgeLine {
+  margin-top: var(--space-2);
+  font: 700 17px/26px var(--font-sans);
+  color: var(--navy);
+}
+
+/* Navy com texto branco: sobre o ciano o botão primário azul perderia contraste. */
+.bridge .bridgeButton {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.bridge .bridgeButton:hover {
+  background: var(--blue-strong);
+}
+
+@media (min-width: 1100px) {
+  .layout {
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: var(--space-12);
+  }
+
+  .eyebrow {
+    display: block;
+  }
 }
 
 @media (max-width: 1099px) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-6);
-  }
-
-  .grid > li:nth-child(3n + 2) {
-    margin-top: 0;
   }
 }
 
 @media (max-width: 767px) {
-  .page {
-    padding-block: var(--space-8) var(--space-16);
+  .catalog {
+    padding-block: var(--space-12);
   }
 
-  .title {
-    font-size: 26px;
-    line-height: 32px;
+  .heading {
+    font-size: 32px;
+    line-height: 40px;
   }
 
-  .grid {
+  .featured {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .grid,
+  .trustList {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bridge {
+    padding: var(--space-8) var(--space-6);
   }
 }

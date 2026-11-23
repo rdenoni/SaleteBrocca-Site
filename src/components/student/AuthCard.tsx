@@ -19,10 +19,12 @@ const FormDelayContext = createContext(0);
 /* Entrada em cascata dos formulários dentro do AuthCard (login, recuperar, definir senha, confirmar):
    cada filho direto do formulário é um motion.* com data-reveal e variants={item}, na ordem de leitura.
    O atraso inicial vem do cartão, que sabe quanto o título e o texto levam. */
-export function useAuthCascade(): { ready: boolean; delay: number; cascade: Variants; item: Variants } {
+/** `delayOverride`: para formulário fora do AuthCard (ex.: Minha conta), que não recebe o atraso pelo contexto. */
+export function useAuthCascade(delayOverride?: number): { ready: boolean; delay: number; cascade: Variants; item: Variants } {
   const t = useMotionTokens();
   const ready = useEntranceReady();
-  const delay = useContext(FormDelayContext);
+  const contextDelay = useContext(FormDelayContext);
+  const delay = delayOverride ?? contextDelay;
   const cascade: Variants = {
     hidden: {},
     visible: { transition: { delayChildren: stagger(t.reduced ? 0 : t.stagger.items, { startDelay: delay }) } },

@@ -72,6 +72,7 @@
 .count {
   font: 400 14px/20px var(--font-sans);
   color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 

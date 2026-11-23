@@ -39,6 +39,13 @@ export const PRODUCT_CATEGORIES: readonly ProductCategoryInfo[] = [
   },
 ];
 
+/* Escolha provisória do produto em destaque na vitrine: confirmar com a cliente. null = sem destaque. */
+export const SHOP_FEATURED_SLUG: string | null = "brinqueletrando-box";
+
+/* Resumo da entrega para a faixa "Sobre a compra"; deve acompanhar PDF_DELIVERY, CORREIOS_DELIVERY e FREE_SHIPPING. */
+export const SHOP_DELIVERY_SUMMARY =
+  "Materiais em PDF por e-mail; jogos e kits pelos Correios, com frete grátis para todo o Brasil.";
+
 const NO_KIWIFY = { checkoutUrl: null, productId: null } as const;
 
 const PDF_DELIVERY = "Por e-mail após a confirmação do pagamento";

@@ -87,9 +87,6 @@
   padding: 20px 24px 20px 22px;
   border-radius: var(--radius-lg) 0 0 var(--radius-lg);
   background: color-mix(in srgb, var(--white) 82%, transparent);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  transition: transform var(--motion-base) var(--ease-out);
 }
 
 .card[data-tone="blue"] .panel {
@@ -168,10 +165,6 @@
 @media (hover: hover) {
   .card:hover .photo img {
     transform: scale(1.04);
-  }
-
-  .card:hover .panel {
-    transform: translateY(calc(-1 * var(--motion-distance-small)));
   }
 
   .card:hover .arrow {

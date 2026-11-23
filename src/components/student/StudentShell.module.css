@@ -84,6 +84,12 @@
   .tab {
     padding: 0 var(--space-4);
   }
+
+  /* Quatro abas não cabem em 375px: quebram em duas linhas, para a aba ativa nunca ficar escondida na rolagem. */
+  .nav ul {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
 }
 
 .signOut {
