@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useMotionPace } from "./MotionPace";
 import { MOTION_SPEED } from "./settings";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 import { distance, duration, ease, follow, spring, stagger, viewport } from "./tokens";
@@ -21,6 +22,8 @@ export interface ResolvedMotionTokens {
   reduced: boolean;
   /** Multiplicador de tempo (1 / velocidade). Fixo em 1 em produção. */
   timeScale: number;
+  /** Ritmo das entradas (MotionPace). 1 em useMotionTokens; useEntranceTokens traz o do trecho. */
+  pace: number;
 }
 
 const TIME_SCALE = 1 / MOTION_SPEED;
@@ -53,6 +56,18 @@ export function useMotionTokens(): ResolvedMotionTokens {
       viewport,
       reduced,
       timeScale: TIME_SCALE,
+      pace: 1,
     };
   }, [reduced]);
+}
+
+/* Só para os componentes de entrada (Reveal, Stagger, TextReveal, DrawRule): durações e cadências no ritmo do trecho.
+   O atraso recebido por prop continua em tempo normal; o componente multiplica por `pace`. */
+export function useEntranceTokens(): ResolvedMotionTokens {
+  const t = useMotionTokens();
+  const pace = useMotionPace();
+  return useMemo(
+    () => (pace === 1 ? t : { ...t, pace, duration: scale(t.duration, pace), stagger: scale(t.stagger, pace) }),
+    [t, pace],
+  );
 }

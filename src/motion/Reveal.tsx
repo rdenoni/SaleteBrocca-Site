@@ -4,7 +4,7 @@ import { motion, type Variants } from "motion/react";
 import type { ReactNode } from "react";
 import { useHoldInView, withInViewWait } from "./pageSequence";
 import { useEntranceReady } from "./transitions/useEntranceReady";
-import { useMotionTokens, type ResolvedMotionTokens } from "./useMotionTokens";
+import { useEntranceTokens, type ResolvedMotionTokens } from "./useMotionTokens";
 
 export type RevealVariant = "rise" | "fade" | "mask" | "scale";
 type RevealTag = "div" | "section" | "article" | "header" | "footer" | "aside" | "figure" | "li" | "ul" | "ol" | "p";
@@ -91,11 +91,13 @@ export function Reveal({
   play,
   ...aria
 }: RevealProps) {
-  const t = useMotionTokens();
+  const t = useEntranceTokens();
   const ready = useEntranceReady();
   const MotionTag = motion[as] as typeof motion.div;
-  /* Ao montar, o bloco faz parte do topo da página: o que vem abaixo espera ele já subindo (ordem de leitura). */
-  useHoldInView(trigger === "mount" && !t.reduced ? delay + t.duration.base : 0, play ?? ready);
+  /* Ao montar, o bloco faz parte do topo da página: o que vem abaixo espera ele já subindo (ordem de leitura).
+     A espera vai em tempo normal (useHoldInView aplica o ritmo). */
+  useHoldInView(trigger === "mount" && !t.reduced ? delay + t.duration.base / t.pace : 0, play ?? ready);
+  const variants = revealVariants(variant, t, delay * t.pace);
 
   return (
     <MotionTag
@@ -114,7 +116,7 @@ export function Reveal({
             viewport: { ...t.viewport, once: once || t.reduced, amount: amount ?? t.viewport.amount },
           })}
       /* Por viewport: espera o topo da página se a seção já estava na tela ao abrir (ordem de leitura). */
-      variants={trigger === "inView" ? withInViewWait(revealVariants(variant, t, delay)) : revealVariants(variant, t, delay)}
+      variants={trigger === "inView" ? withInViewWait(variants) : variants}
       {...aria}
     >
       {children}

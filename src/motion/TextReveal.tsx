@@ -5,7 +5,7 @@ import { Fragment } from "react";
 import { inViewWait } from "./pageSequence";
 import styles from "./TextReveal.module.css";
 import { useEntranceReady } from "./transitions/useEntranceReady";
-import { useMotionTokens } from "./useMotionTokens";
+import { useEntranceTokens } from "./useMotionTokens";
 
 type TextTag = "h1" | "h2" | "h3" | "p" | "span";
 
@@ -26,7 +26,7 @@ interface TextRevealProps {
    Acessibilidade: leitores de tela recebem o texto inteiro (visually-hidden); as palavras animadas ficam aria-hidden.
    Quebra de linha natural: cada palavra é inline-block, então funciona em qualquer largura sem medir linhas. */
 export function TextReveal({ text, as = "h2", className, id, delay = 0, trigger = "inView", play }: TextRevealProps) {
-  const t = useMotionTokens();
+  const t = useEntranceTokens();
   const ready = useEntranceReady();
   const shouldPlay = play ?? ready;
   const Tag = as;
@@ -42,7 +42,7 @@ export function TextReveal({ text, as = "h2", className, id, delay = 0, trigger 
     visible: () => ({
       transition: {
         delayChildren: staggerChildren(t.reduced ? 0 : t.stagger.words, {
-          startDelay: delay + (trigger === "inView" ? inViewWait() : 0),
+          startDelay: delay * t.pace + (trigger === "inView" ? inViewWait() : 0),
         }),
       },
     }),

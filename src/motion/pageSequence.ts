@@ -2,6 +2,7 @@
 
 import type { TargetAndTransition, Transition, Variants } from "motion/react";
 import { useLayoutEffect } from "react";
+import { useMotionPace } from "./MotionPace";
 import { headerGateAt } from "./transitions/useEntranceReady";
 
 /* Ordem de leitura (de cima para baixo, da esquerda para a direita): uma seção que já está na tela quando a página
@@ -20,8 +21,9 @@ export function inViewWait(): number {
   return Math.max(0, (holdUntil - now()) / 1000);
 }
 
-/** Sequências do topo: até quando (s a partir do início delas) as entradas por viewport devem esperar. */
-export function useHoldInView(seconds: number, ready: boolean): void {
+/** Sequências do topo: até quando (s a partir do início delas, em tempo normal) as entradas por viewport devem esperar. */
+export function useHoldInView(normalSeconds: number, ready: boolean): void {
+  const seconds = normalSeconds * useMotionPace();
   /* Layout effect: roda antes de qualquer observador de viewport disparar. Sem `ready` (esperando o cabeçalho ou a
      cortina), estima o início pelo momento em que o cabeçalho libera a página; ao liberar, recalcula. */
   useLayoutEffect(() => {

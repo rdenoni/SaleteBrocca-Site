@@ -1,6 +1,7 @@
 "use client";
 
-import MuxPlayer from "@mux/mux-player-react";
+/* Versão "lazy": o código do player (pesado) carrega à parte, sem atrasar a página nem as entradas. */
+import MuxPlayer from "@mux/mux-player-react/lazy";
 import type { LessonPlayback } from "@/lib/mux/lesson-playback";
 
 interface LessonVideoProps {

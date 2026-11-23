@@ -5,7 +5,7 @@ import { Children, type ReactNode } from "react";
 import { inViewWait, useHoldInView } from "./pageSequence";
 import { revealVariants, type RevealVariant } from "./Reveal";
 import { useEntranceReady } from "./transitions/useEntranceReady";
-import { useMotionTokens } from "./useMotionTokens";
+import { useEntranceTokens } from "./useMotionTokens";
 
 type StaggerTag = "div" | "ul" | "ol" | "dl" | "section";
 type ItemTag = "div" | "li" | "article";
@@ -35,7 +35,7 @@ export function Stagger({
   trigger = "inView",
   ...aria
 }: StaggerProps) {
-  const t = useMotionTokens();
+  const t = useEntranceTokens();
   const ready = useEntranceReady();
   const MotionTag = motion[as] as typeof motion.div;
   const gap = t.reduced ? 0 : t.stagger[pace];
@@ -45,13 +45,13 @@ export function Stagger({
     /* Função: resolvida quando o grupo entra; por viewport, soma a espera pelo topo da página (ordem de leitura). */
     visible: () => ({
       transition: {
-        delayChildren: staggerChildren(gap, { startDelay: t.reduced ? 0 : delay + (mount ? 0 : inViewWait()) }),
+        delayChildren: staggerChildren(gap, { startDelay: t.reduced ? 0 : delay * t.pace + (mount ? 0 : inViewWait()) }),
       },
     }),
   };
   /* Ao montar, a cascata faz parte do topo: o que vem abaixo espera o último item já subindo. */
   const lastItem = Math.max(0, Children.count(children) - 1);
-  useHoldInView(mount && !t.reduced ? delay + lastItem * gap + t.duration.base : 0, ready);
+  useHoldInView(mount && !t.reduced ? delay + (lastItem * gap + t.duration.base) / t.pace : 0, ready);
 
   const play = mount
     ? { animate: ready ? "visible" : "hidden" }
@@ -84,7 +84,7 @@ interface StaggerItemProps {
 }
 
 export function StaggerItem({ children, as = "div", variant = "rise", className }: StaggerItemProps) {
-  const t = useMotionTokens();
+  const t = useEntranceTokens();
   const MotionTag = motion[as] as typeof motion.div;
   return (
     <MotionTag className={className} data-reveal="" variants={revealVariants(variant, t)}>

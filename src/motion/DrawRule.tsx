@@ -2,7 +2,7 @@
 
 import { motion, type Variants } from "motion/react";
 import { withInViewWait } from "./pageSequence";
-import { useMotionTokens } from "./useMotionTokens";
+import { useEntranceTokens } from "./useMotionTokens";
 
 interface DrawRuleProps {
   className?: string;
@@ -14,8 +14,9 @@ interface DrawRuleProps {
 
 /* O traço: a régua ciano (classe global .rule, 120×6) se desenha da esquerda para a direita,
    como a caneta que sublinha uma palavra. Decorativa: aria-hidden. */
-export function DrawRule({ className, delay = 0, trigger = "inView", play: shouldPlay = true }: DrawRuleProps) {
-  const t = useMotionTokens();
+export function DrawRule({ className, delay: delayProp = 0, trigger = "inView", play: shouldPlay = true }: DrawRuleProps) {
+  const t = useEntranceTokens();
+  const delay = delayProp * t.pace;
   /* Reduzido: só opacidade, com a escala fixa em 1 (a régua pode ter hidratado com scaleX 0). */
   const from = t.reduced ? { opacity: 0, scaleX: 1 } : { scaleX: 0 };
   const to = t.reduced ? { opacity: 1, scaleX: 1 } : { scaleX: 1 };

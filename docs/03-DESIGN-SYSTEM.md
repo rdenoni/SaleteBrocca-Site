@@ -198,3 +198,4 @@ Regra da cliente: as entradas seguem a hierarquia da informação. Partituras em
 - **Nada da página começa antes de a entrada do cabeçalho estar 80% feita** (`useEntranceReady`; o cabeçalho usa `useCurtainReady`). Nas navegações seguintes o cabeçalho não entra de novo, então a página não espera.
 - **Mensagens e frases de destaque** (ex.: "Toda criança, independente da dificuldade, tem a capacidade de ler e escrever."): leitura guiada (`GuidedReading`), ligada à rolagem.
 - Cada passo começa por volta da metade do anterior: a ordem fica clara sem ninguém esperar a animação acabar.
+- **Telas abertas muitas vezes seguidas** (a aula da Área do Aluno): mesma ordem, em ritmo curto. `<MotionPace pace={0.4}>` multiplica as entradas (durações, cadências, atrasos e a espera do topo) sem mexer em hover, toque e abas. Os atrasos continuam escritos em tempo normal.
