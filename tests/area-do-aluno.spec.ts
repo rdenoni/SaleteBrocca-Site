@@ -63,7 +63,8 @@ test.describe("Área do Aluno — painel", () => {
       page.getByRole("navigation", { name: "Seções da Área do Aluno" }).getByRole("link", { name: "Início" }),
     ).toHaveAttribute("aria-current", "page");
     await expect(page.getByRole("progressbar", { name: "Progresso geral" })).toHaveAttribute("aria-valuenow", "14");
-    await expect(page.getByText("Nenhum material ainda")).toBeVisible();
+    const panel = page.getByRole("region", { name: "Últimos materiais" });
+    await expect(panel.getByRole("listitem")).toHaveText([/Comece aqui/, /Guia prático/, /Quadros essenciais/]);
     await expect(page.getByText("Nenhuma compra registrada")).toBeVisible();
   });
 
@@ -125,7 +126,9 @@ test.describe("Área do Aluno — player", () => {
     await tabs.getByRole("tab", { name: "Descrição" }).focus();
     await page.keyboard.press("ArrowRight");
     await expect(tabs.getByRole("tab", { name: "Materiais da aula" })).toBeFocused();
-    await expect(page.getByText("Nenhum material nesta aula")).toBeVisible();
+    await expect(page.getByRole("tabpanel", { name: "Materiais da aula" }).getByRole("listitem")).toHaveText([
+      /Quadros essenciais/,
+    ]);
     await tabs.getByRole("tab", { name: "Anotações" }).click();
     await expect(page.getByRole("tabpanel", { name: "Anotações" })).toBeVisible();
   });
@@ -143,11 +146,34 @@ test.describe("Área do Aluno — player", () => {
 });
 
 test.describe("Área do Aluno — materiais", () => {
-  test("estado vazio honesto", async ({ page }) => {
+  test("lista os 11 PDFs na ordem, com link pela rota protegida", async ({ page }) => {
     await page.goto("/area-do-aluno/materiais");
     await expect(page.getByRole("heading", { level: 1, name: "Materiais complementares" })).toBeVisible();
-    await expect(page.getByText("Nenhum material disponível por enquanto")).toBeVisible();
+    const items = page.getByRole("main").getByRole("listitem").filter({ has: page.getByRole("link", { name: /Baixar/ }) });
+    await expect(items).toHaveCount(11);
+    await expect(items.first()).toContainText("00 · Comece aqui: biblioteca de materiais");
+    await expect(items.last()).toContainText("10 · Revisão rápida dos 6 módulos");
+    await expect(items.nth(1).getByRole("link")).toHaveAttribute("href", "/api/materiais/guia-pratico");
     await expectNoHorizontalScroll(page);
     await fullPageShot(page, "materiais");
+  });
+
+  test("aba Materiais da aula lista os PDFs da aula; sem PDF mostra o estado vazio", async ({ page }) => {
+    for (const [lesson, expected] of [
+      ["m02-a05", [/Quadros essenciais/, /Casos para pensar/, /Ferramentas de observação/]],
+      ["m00-a01", []],
+    ] as const) {
+      await page.goto(`${COURSE}/aulas/${lesson}?aba=materiais`);
+      const panel = page.getByRole("tabpanel", { name: "Materiais da aula" });
+      await expect(panel).toBeVisible();
+      if (expected.length) {
+        await expect(panel.getByRole("listitem")).toHaveText([...expected]);
+        await expect(panel.getByRole("link").first()).toHaveAttribute("href", "/api/materiais/quadros-essenciais");
+        await expectNoHorizontalScroll(page);
+        await fullPageShot(page, "aula-materiais");
+      } else {
+        await expect(panel.getByText("Nenhum material nesta aula")).toBeVisible();
+      }
+    }
   });
 });
