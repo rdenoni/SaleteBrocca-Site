@@ -5,7 +5,7 @@ import { loginPathWithNext } from "@/lib/auth-paths";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { EnrollmentStatus } from "@/types/database";
-import type { Course, CourseProgress, LessonRef, LessonStatus, StudentMaterial } from "@/types/content";
+import type { Course, CourseProgress, LessonRef, LessonStatus } from "@/types/content";
 import { getCourse, getCourses } from "./courses";
 
 /* Dois modos, decididos por `isSupabaseConfigured()`:
@@ -31,9 +31,6 @@ export type ProgressByCourse = Readonly<Record<string, StudentCourseProgress>>;
 const DEMO_PROGRESS: ProgressByCourse = {
   "dificuldades-na-aprendizagem": { completed: ["M00_A01", "M00_A02", "M01_A01"], current: "M01_A02" },
 };
-
-/* Nenhum material complementar confirmado ainda: as telas mostram o estado vazio. */
-const MATERIALS: readonly StudentMaterial[] = [];
 
 export const ENROLLMENT_STATUS_LABEL: Readonly<Record<EnrollmentStatus, string>> = {
   active: "Ativa",
@@ -189,6 +186,4 @@ export async function getEnrolledCourse(slug: string): Promise<Course | undefine
   return slugs.includes(slug) ? getCourse(slug) : undefined;
 }
 
-export function getMaterials(courseSlug?: string): readonly StudentMaterial[] {
-  return courseSlug ? MATERIALS.filter((material) => material.courseSlug === courseSlug) : MATERIALS;
-}
+export { getLessonMaterials, getMaterial, getMaterials } from "./materials";

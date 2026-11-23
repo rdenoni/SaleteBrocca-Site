@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ChevronLeft, FileText, Play } from "lucide-react";
+import { ChevronLeft, Download, FileText, Play } from "lucide-react";
 import { CompleteLessonButton } from "@/components/student/CompleteLessonButton";
 import { LessonVideo } from "@/components/student/LessonVideo";
 import { LessonTabs } from "@/components/student/LessonTabs";
@@ -13,6 +13,7 @@ import { getCourse, getCourses } from "@/lib/content/courses";
 import {
   findLesson,
   getEnrolledCourse,
+  getLessonMaterials,
   getLessonRefs,
   getLessonStatus,
   getStudentProgress,
@@ -28,6 +29,7 @@ import { Stagger, StaggerItem } from "@/motion/Stagger";
 import { TextReveal } from "@/motion/TextReveal";
 import { afterTitle } from "@/motion/timeline";
 import { motionTokens } from "@/motion/tokens";
+import materialStyles from "../../../../materiais/materiais.module.css";
 import styles from "./player.module.css";
 
 const SIDEBAR_TITLE = "Aulas do curso";
@@ -93,6 +95,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
   const { lesson, previous, next } = location;
   const start = studentContentStart(lesson.title);
+  const materials = getLessonMaterials(course.slug, lesson.code);
   const position = `Módulo ${lesson.moduleNumber} · Aula ${lesson.numberInModule}`;
 
   return (
@@ -178,13 +181,32 @@ export default async function LessonPage({ params }: LessonPageProps) {
                   {
                     id: "materiais",
                     label: "Materiais da aula",
-                    content: (
-                      <EmptyState
-                        icon={<FileText aria-hidden="true" />}
-                        title="Nenhum material nesta aula"
-                        text="Quando houver arquivos de apoio, eles aparecerão aqui."
-                      />
-                    ),
+                    content:
+                      materials.length === 0 ? (
+                        <EmptyState
+                          icon={<FileText aria-hidden="true" />}
+                          title="Nenhum material nesta aula"
+                          text="Quando houver arquivos de apoio, eles aparecerão aqui."
+                        />
+                      ) : (
+                        <ul className={materialStyles.list}>
+                          {materials.map((material) => (
+                            <li key={material.id} className={materialStyles.item}>
+                              <span className={materialStyles.icon} aria-hidden="true">
+                                <FileText />
+                              </span>
+                              <span className={materialStyles.info}>
+                                <span className={materialStyles.title}>{material.title}</span>
+                                <span className={materialStyles.meta}>{material.format}</span>
+                              </span>
+                              <a href={material.href} className={materialStyles.download} download>
+                                <Download aria-hidden="true" size={18} />
+                                Baixar<span className="visually-hidden"> {material.title}</span>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      ),
                   },
                   {
                     id: "anotacoes",

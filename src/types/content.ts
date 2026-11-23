@@ -219,10 +219,17 @@ export interface CourseProgress {
 }
 
 export interface StudentMaterial {
+  /** Identificador estável e seguro para URL (`/api/materiais/<id>`). */
+  id: string;
   title: string;
   courseSlug: string;
   /** Ex.: "PDF". */
   format: string;
+  /** Nome do arquivo dentro da pasta do curso no bucket privado `materiais`. */
+  fileName: string;
+  /** Aulas (ex.: "M02_A05") em que o material aparece; vazio = só na biblioteca do curso. */
+  lessonCodes: readonly string[];
+  /** Sempre `/api/materiais/<id>`: a rota confere a matrícula e assina a URL do arquivo. */
   href: string;
 }
 
