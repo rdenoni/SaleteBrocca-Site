@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ChevronLeft, FileText, Play } from "lucide-react";
 import { CompleteLessonButton } from "@/components/student/CompleteLessonButton";
+import { LessonVideo } from "@/components/student/LessonVideo";
 import { LessonTabs } from "@/components/student/LessonTabs";
 import { StudentModuleList } from "@/components/student/StudentModuleList";
 import { StudentShell, studentContentStart } from "@/components/student/StudentShell";
@@ -19,6 +20,7 @@ import {
   lessonHref,
   requireStudentSession,
 } from "@/lib/content/student";
+import { getLessonPlayback, type LessonPlaybackResult } from "@/lib/mux/lesson-playback";
 import { MotionButton } from "@/motion/MotionButton";
 import { Reveal } from "@/motion/Reveal";
 import { Stagger, StaggerItem } from "@/motion/Stagger";
@@ -29,6 +31,22 @@ import styles from "./player.module.css";
 
 const SIDEBAR_TITLE = "Aulas do curso";
 const { duration, stagger } = motionTokens;
+
+/* Falha ao buscar o vídeo não derruba a aula: o aluno ainda navega, conclui e lê as abas. */
+async function loadPlayback(slug: string, aula: string): Promise<LessonPlaybackResult> {
+  try {
+    return await getLessonPlayback(slug, aula);
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : "falha ao carregar o vídeo da aula");
+    return { ok: false, reason: "not-configured" };
+  }
+}
+
+function videoNotice(result: LessonPlaybackResult): string {
+  if (result.ok || isDemoMode()) return "O vídeo desta aula será exibido aqui.";
+  if (result.reason === "no-video") return "O vídeo desta aula ainda não foi publicado.";
+  return "O vídeo está indisponível no momento. Tente recarregar a página mais tarde.";
+}
 
 interface LessonPageProps {
   params: Promise<{ slug: string; aula: string }>;
@@ -63,7 +81,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const course = await getEnrolledCourse(slug);
   const location = course ? findLesson(course, aula) : undefined;
   if (!course || !location) redirect(COURSES_PATH);
-  const progress = await getStudentProgress();
+  const [progress, playback] = await Promise.all([getStudentProgress(), loadPlayback(course.slug, aula)]);
 
   const { lesson, previous, next } = location;
   const start = studentContentStart(lesson.title);
@@ -80,20 +98,26 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
       <div className={styles.layout}>
         <div className={styles.main}>
-          {/* Placeholder do vídeo: o serviço de vídeo ainda não foi definido. */}
-          <Reveal
-            as="figure"
-            variant="fade"
-            trigger="mount"
-            delay={start + stagger.cards}
-            className={styles.player}
-            data-surface="dark"
-          >
-            <span className={styles.play} aria-hidden="true">
-              <Play />
-            </span>
-            <figcaption className={styles.screenText}>O vídeo desta aula será exibido aqui.</figcaption>
-          </Reveal>
+          {playback.ok ? (
+            <Reveal variant="fade" trigger="mount" delay={start + stagger.cards}>
+              <LessonVideo playback={playback.playback} title={lesson.title} className={styles.video} />
+            </Reveal>
+          ) : (
+            /* Sem vídeo liberado (não publicado, indisponível ou modo de demonstração): espaço reservado. */
+            <Reveal
+              as="figure"
+              variant="fade"
+              trigger="mount"
+              delay={start + stagger.cards}
+              className={styles.player}
+              data-surface="dark"
+            >
+              <span className={styles.play} aria-hidden="true">
+                <Play />
+              </span>
+              <figcaption className={styles.screenText}>{videoNotice(playback)}</figcaption>
+            </Reveal>
+          )}
 
           <Stagger className={styles.actions} pace="items">
             <StaggerItem>
