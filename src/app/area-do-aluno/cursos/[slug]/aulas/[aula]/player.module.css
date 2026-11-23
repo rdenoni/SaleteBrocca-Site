@@ -57,6 +57,17 @@
   cursor: default;
 }
 
+/* Mux Player: mesmo formato do espaço reservado; cor de destaque da marca nos controles. */
+.video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--navy);
+  --media-accent-color: var(--blue-strong);
+}
+
 .play {
   display: grid;
   place-items: center;

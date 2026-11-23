@@ -112,8 +112,16 @@ não "public", e depois passe os IDs de cada aula para serem gravados no banco.
   vídeo ainda não gravado; 503 sem Supabase ou sem a chave (ou chave colada errada, registrada no log). Nunca em cache.
 - Token já emitido não pode ser revogado: depois de um reembolso, vale até o `exp` (no máximo a duração + 2 h).
 
-**Falta: o player.** Toca `https://stream.mux.com/{playback_id}.m3u8?token={JWT}`. Nada de parâmetros extras na URL
-assinada (eles invalidam a assinatura). O Mux Player é pacote novo e depende de aprovação.
+**Feito (23/11/2026): o player.** `@mux/mux-player-react` (aprovado em 23/11/2026) em
+`src/components/student/LessonVideo.tsx`. A página da aula chama `getLessonPlayback` no servidor (sem passar pela API) e
+entrega ao player o `playback_id` e os três tokens; legenda automática aparece no menu do player. Sem vídeo liberado,
+fica o espaço reservado com o motivo ("ainda não foi publicado" ou "indisponível no momento"); erro do banco não derruba
+a página da aula.
+
+**Estado do upload (23/11/2026).** A conta Mux está no plano gratuito, que aceita **10 vídeos**: subiram M00_A01 a
+M02_A05; as outras 11 foram recusadas ("Free plan is limited to 10 assets") e precisam de novo upload depois da troca
+para Pay as you Go. M01_A01 e M01_A02 estão na Mux mas fora do banco até confirmar o conteúdo (o cartão de abertura dos
+vídeos diz o contrário do roteiro).
 
 ## Passo 7. Testes antes de liberar
 
