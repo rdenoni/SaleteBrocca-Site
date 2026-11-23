@@ -6,6 +6,7 @@ export const LOGIN_PATH = "/area-do-aluno/login";
 export const RECOVER_PATH = "/area-do-aluno/recuperar-senha";
 export const SET_PASSWORD_PATH = "/area-do-aluno/definir-senha";
 export const COURSES_PATH = "/area-do-aluno/cursos";
+export const ACCOUNT_PATH = "/area-do-aluno/conta";
 /* Destino dos links dos e-mails do Supabase: só mostra o botão "Continuar"; o token é consumido no clique (POST). */
 export const CONFIRM_PATH = "/auth/confirmar";
 

@@ -2,7 +2,15 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { CONFIRM_PATH, LOGIN_PATH, SET_PASSWORD_PATH, STUDENT_HOME, safeNext } from "@/lib/auth-paths";
+import {
+  ACCOUNT_PATH,
+  CONFIRM_PATH,
+  LOGIN_PATH,
+  SET_PASSWORD_PATH,
+  STUDENT_HOME,
+  loginPathWithNext,
+  safeNext,
+} from "@/lib/auth-paths";
 import type { AuthFormState } from "@/lib/auth-form-state";
 import { getStudentSession } from "@/lib/content/student";
 import { absoluteUrl } from "@/lib/site-url";
@@ -77,13 +85,14 @@ export async function requestPasswordReset(_previous: AuthFormState, formData: F
   };
 }
 
-/** Define a nova senha de quem chegou pelo link do e-mail (convite ou recuperação). Exige sessão. */
-export async function updatePassword(_previous: AuthFormState, formData: FormData): Promise<AuthFormState> {
-  if (!isSupabaseConfigured()) return { error: NOT_ACTIVE };
+type SupabaseServerClient = Awaited<ReturnType<typeof createSupabaseServerClient>>;
 
-  const session = await getStudentSession();
-  if (!session) redirect(LOGIN_PATH);
-
+/** Valida e grava a nova senha na sessão do `supabase` recebido. Devolve o estado de erro, ou null se salvou. */
+async function saveNewPassword(
+  supabase: SupabaseServerClient,
+  formData: FormData,
+  fallbackError: string,
+): Promise<AuthFormState | null> {
   const password = field(formData, "senha");
   const confirmation = field(formData, "confirmacao");
   if (password.length < MIN_PASSWORD_LENGTH) {
@@ -96,20 +105,60 @@ export async function updatePassword(_previous: AuthFormState, formData: FormDat
     return { fieldErrors: { confirmacao: "As senhas não são iguais." } };
   }
 
-  const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.updateUser({ password });
   if (error) {
+    if (error.code === "reauthentication_needed") {
+      return { error: "Por segurança, saia e entre de novo antes de trocar a senha." };
+    }
     if (error.code === "same_password") {
       return { fieldErrors: { senha: "Escolha uma senha diferente da atual." } };
     }
     if (error.code === "weak_password") {
       return { fieldErrors: { senha: "Essa senha é fraca demais. Misture letras, números e símbolos." } };
     }
-    return { error: isServiceFailure(error) ? SERVICE_UNAVAILABLE : "Não foi possível salvar a senha. Peça um novo link." };
+    return { error: isServiceFailure(error) ? SERVICE_UNAVAILABLE : fallbackError };
   }
+  return null;
+}
+
+/** Define a nova senha de quem chegou pelo link do e-mail (convite ou recuperação). Exige sessão. */
+export async function updatePassword(_previous: AuthFormState, formData: FormData): Promise<AuthFormState> {
+  if (!isSupabaseConfigured()) return { error: NOT_ACTIVE };
+
+  const session = await getStudentSession();
+  if (!session) redirect(LOGIN_PATH);
+
+  const supabase = await createSupabaseServerClient();
+  const failed = await saveNewPassword(supabase, formData, "Não foi possível salvar a senha. Peça um novo link.");
+  if (failed) return failed;
 
   revalidatePath(STUDENT_HOME, "layout");
   redirect(STUDENT_HOME);
+}
+
+/** Troca a senha de quem já está logado (Minha conta): confere a senha atual antes, para uma sessão esquecida aberta
+    não bastar para tomar a conta. Entrar de novo também deixa a sessão recente, como o Supabase pede para trocar senha. */
+export async function changePassword(_previous: AuthFormState, formData: FormData): Promise<AuthFormState> {
+  if (!isSupabaseConfigured()) return { error: NOT_ACTIVE };
+
+  const session = await getStudentSession();
+  if (!session) redirect(loginPathWithNext(ACCOUNT_PATH));
+  if (!session.email) return { error: SERVICE_UNAVAILABLE };
+
+  const current = field(formData, "atual");
+  if (!current) return { fieldErrors: { atual: "Digite a sua senha atual." } };
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.signInWithPassword({ email: session.email, password: current });
+  if (error) {
+    return isServiceFailure(error) ? { error: SERVICE_UNAVAILABLE } : { fieldErrors: { atual: "Senha atual incorreta." } };
+  }
+
+  /* O mesmo cliente que acabou de entrar: a troca usa a sessão recém-confirmada, não a dos cookies antigos. */
+  const failed = await saveNewPassword(supabase, formData, "Não foi possível salvar a senha. Tente de novo.");
+  if (failed) return failed;
+
+  return { success: "Senha alterada. Use a nova senha no próximo login." };
 }
 
 /** Encerra a sessão deste aparelho (escopo local: não derruba o aluno nos outros aparelhos) e volta para o login. */

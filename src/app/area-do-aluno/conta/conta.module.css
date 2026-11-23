@@ -1,0 +1,91 @@
+/* Minha conta: três blocos lado a lado (como o painel do Início); empilham no celular. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-8);
+  align-items: start;
+  margin-top: var(--space-12);
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.stretch {
+  align-self: stretch;
+}
+
+.title {
+  font: 700 16px/22px var(--font-sans);
+  color: var(--blue-strong);
+}
+
+.label {
+  font: 700 13px/16px var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+
+.value {
+  margin-top: var(--space-1);
+  font: 700 17px/24px var(--font-sans);
+  color: var(--navy);
+  overflow-wrap: anywhere;
+}
+
+.text,
+.note {
+  font: 400 16px/26px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.note {
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.itemTitle {
+  font: 700 17px/24px var(--font-sans);
+  color: var(--navy);
+}
+
+.itemMeta {
+  font: 400 14px/20px var(--font-sans);
+  color: var(--text-muted);
+}
+
+@media (max-width: 1099px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: var(--space-8);
+  }
+}

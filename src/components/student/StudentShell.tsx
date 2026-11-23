@@ -11,12 +11,13 @@ import { afterBanner } from "@/motion/timeline";
 import { motionTokens } from "@/motion/tokens";
 import styles from "./StudentShell.module.css";
 
-export type StudentSection = "inicio" | "cursos" | "materiais";
+export type StudentSection = "inicio" | "cursos" | "materiais" | "conta";
 
 const SECTIONS: readonly { id: StudentSection; label: string; href: string }[] = [
   { id: "inicio", label: "Início", href: "/area-do-aluno" },
   { id: "cursos", label: "Meus cursos", href: "/area-do-aluno/cursos" },
   { id: "materiais", label: "Materiais", href: "/area-do-aluno/materiais" },
+  { id: "conta", label: "Minha conta", href: "/area-do-aluno/conta" },
 ];
 
 const { duration, stagger } = motionTokens;
