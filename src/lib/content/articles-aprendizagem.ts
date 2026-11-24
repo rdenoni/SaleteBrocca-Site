@@ -1,7 +1,7 @@
 import type { ArticleBlock } from "@/types/content";
 
 /* Gerado de SAIDA/ARTIGOS/ARTIGOS_6_NOVOS_REVISAO.md (base: curso Dificuldades na Aprendizagem, materiais V3).
-   RASCUNHO: aguarda a revisão da autora antes de ir para produção. Corrigir no .md e regerar, para os dois não divergirem. */
+   Aprovados pela autora em 24/11/2026. Corrigir no .md e regerar, para os dois não divergirem. */
 
 export const DIFICULDADE_BODY: ArticleBlock[] = [
   { type: "paragraph", text: "Quando uma criança vai mal na escola, a primeira pergunta costuma ser “o que ela tem?”. É uma pergunta compreensível, mas que pula etapas. Antes de pensar em um diagnóstico, é preciso entender o que está acontecendo, em que situações e como a criança responde quando recebe ajuda." },

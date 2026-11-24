@@ -330,7 +330,7 @@ const ARTICLES: readonly Article[] = [
     publishedAt: PUBLISHED_AT,
     body: GAGUEIRA_BODY,
   },
-  /* Seis textos novos (articles-aprendizagem.ts), ainda sem a revisão da autora: sem data até a publicação.
+  /* Seis textos novos (articles-aprendizagem.ts), aprovados pela autora e publicados em 24/11/2026.
      Fotos: Pexels, provisórias. */
   {
     slug: "dificuldade-ou-transtorno-de-aprendizagem",
@@ -340,7 +340,7 @@ const ARTICLES: readonly Article[] = [
     image: "/images/articles/dificuldade-ou-transtorno.jpg",
     imageAlt: "Menina de tranças debruçada sobre o caderno, escrevendo com caneta vermelha",
     imagePosition: "40% center",
-    publishedAt: null,
+    publishedAt: PUBLISHED_AT,
     body: DIFICULDADE_BODY,
   },
   {
@@ -351,7 +351,7 @@ const ARTICLES: readonly Article[] = [
     image: "/images/articles/dislexia.jpg",
     imageAlt: "Duas crianças organizam cartões com letras sobre uma mesa amarela",
     imagePosition: "60% center",
-    publishedAt: null,
+    publishedAt: PUBLISHED_AT,
     body: DISLEXIA_BODY,
   },
   {
@@ -362,7 +362,7 @@ const ARTICLES: readonly Article[] = [
     image: "/images/articles/leitura-fluencia.jpg",
     imageAlt: "Menino em pé na sala de aula folheando um livro ilustrado",
     imagePosition: "58% center",
-    publishedAt: null,
+    publishedAt: PUBLISHED_AT,
     body: LEITURA_BODY,
   },
   {
@@ -373,7 +373,7 @@ const ARTICLES: readonly Article[] = [
     image: "/images/articles/funcoes-executivas.jpg",
     imageAlt: "Menino concentrado segurando um cubo mágico colorido",
     imagePosition: "45% center",
-    publishedAt: null,
+    publishedAt: PUBLISHED_AT,
     body: FUNCOES_EXECUTIVAS_BODY,
   },
   {
@@ -384,7 +384,7 @@ const ARTICLES: readonly Article[] = [
     image: "/images/articles/queixas-visuais-leitura.jpg",
     imageAlt: "Livro aberto sobre uma mesa de madeira, com uma criança ao fundo",
     imagePosition: "40% center",
-    publishedAt: null,
+    publishedAt: PUBLISHED_AT,
     body: IRLEN_BODY,
   },
   {
@@ -395,7 +395,7 @@ const ARTICLES: readonly Article[] = [
     image: "/images/articles/familia-e-escola.jpg",
     imageAlt: "Mãos de um adulto e de uma criança movem as argolas coloridas de um ábaco",
     imagePosition: "35% center",
-    publishedAt: null,
+    publishedAt: PUBLISHED_AT,
     body: FAMILIA_ESCOLA_BODY,
   },
 ];
