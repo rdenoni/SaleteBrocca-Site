@@ -36,7 +36,6 @@ test.describe("Conteúdo — biblioteca", () => {
     await expect(page.getByRole("heading", { level: 2, name: /^PAC:/ })).toBeVisible();
     await expect(page.getByRole("heading", { level: 3, name: /^Disfagia:/ })).toBeVisible();
     await expect(page.getByRole("heading", { level: 3, name: /^Gagueira:/ })).toBeVisible();
-    await expect(page.getByText("Novos artigos em breve")).toBeVisible();
   });
 
   test("artigos publicados: sem aviso de exemplo e abertos aos buscadores", async ({ page }) => {
@@ -47,6 +46,23 @@ test.describe("Conteúdo — biblioteca", () => {
   test("destaque leva ao artigo", async ({ page }) => {
     await page.getByRole("link", { name: /^PAC:/ }).click();
     await expect(page).toHaveURL("/conteudo/pac-avaliacao-do-processamento-auditivo");
+  });
+
+  test("mais conteúdos: uma linha só, em carrossel com setas e pontos", async ({ page }) => {
+    const carousel = page.getByRole("region", { name: "Artigos", exact: true });
+    await carousel.scrollIntoViewIfNeeded();
+    const prev = carousel.getByRole("button", { name: "Artigos anteriores" });
+    const next = carousel.getByRole("button", { name: "Próximos artigos" });
+    const dots = carousel.getByRole("button", { name: /^Ir para a página/ });
+    await expect(page.getByText("Novos artigos em breve")).toHaveCount(0);
+    await expect(prev).toBeDisabled();
+    await expect(dots.first()).toHaveAttribute("aria-current", "true");
+    await next.click();
+    await expect(dots.nth(1)).toHaveAttribute("aria-current", "true");
+    await expect(prev).toBeEnabled();
+    await dots.last().click();
+    await expect(next).toBeDisabled();
+    await expectNoHorizontalScroll(page);
   });
 
   test("sem rolagem horizontal", async ({ page }) => {

@@ -1,0 +1,164 @@
+.root {
+  --per-view: 3;
+  --gap: var(--space-6);
+  /* Altura da faixa dos pontos: as setas centralizam na linha de cards, não no bloco inteiro. */
+  --dots-height: calc(48px + var(--space-4));
+  position: relative;
+}
+
+/* Rolagem nativa com encaixe por card. A folga vertical (padding e margem negativa iguais) evita que a entrada
+   (cards subindo) seja cortada: overflow-x auto força o corte também no eixo y. */
+.viewport {
+  margin-block: calc(-1 * var(--space-8));
+  padding-block: var(--space-8);
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - (var(--per-view) - 1) * var(--gap)) / var(--per-view));
+  gap: var(--gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.track > li {
+  display: flex;
+  scroll-snap-align: start;
+}
+
+.track > li > * {
+  flex: 1;
+}
+
+/* Mesmo ajuste da grade: o título de 26px estoura o painel nas colunas estreitas. */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .track h3 {
+    font-size: 22px;
+    line-height: 28px;
+  }
+}
+
+/* Setas redondas sobre as bordas da linha, como no Instagram. Na ponta, a seta daquele lado some. */
+.arrow {
+  position: absolute;
+  top: calc((100% - var(--dots-height)) / 2);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--navy);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition:
+    opacity var(--motion-quick) var(--ease-out),
+    box-shadow var(--motion-quick) var(--ease-out);
+}
+
+.arrow[data-side="prev"] {
+  left: -24px;
+}
+
+.arrow[data-side="next"] {
+  right: -24px;
+}
+
+.arrow svg {
+  width: 24px;
+  height: 24px;
+}
+
+.arrow:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.arrow:focus-visible {
+  outline: 3px solid var(--blue-strong);
+  outline-offset: 3px;
+}
+
+.arrow:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+
+/* Área de toque de 48px; o ponto visível é pequeno, como no Instagram. */
+.dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dot::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--light-gray);
+  box-shadow: inset 0 0 0 1px var(--text-muted);
+  transition:
+    background-color var(--motion-quick) var(--ease-out),
+    transform var(--motion-quick) var(--ease-out);
+}
+
+.dot[aria-current="true"]::before {
+  background: var(--blue-strong);
+  box-shadow: none;
+  transform: scale(1.25);
+}
+
+.dot:focus-visible {
+  outline: 3px solid var(--blue-strong);
+  outline-offset: -8px;
+  border-radius: var(--radius-pill);
+}
+
+@media (max-width: 1099px) {
+  .root {
+    --per-view: 2;
+  }
+}
+
+@media (max-width: 767px) {
+  .root {
+    --per-view: 1;
+  }
+
+  /* No celular a seta fica por dentro, sem sair da tela. */
+  .arrow[data-side="prev"] {
+    left: var(--space-2);
+  }
+
+  .arrow[data-side="next"] {
+    right: var(--space-2);
+  }
+}
