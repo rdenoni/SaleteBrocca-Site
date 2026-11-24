@@ -106,6 +106,27 @@ export const getStudentProgress = cache(async (): Promise<ProgressByCourse> => {
   return Object.fromEntries([...byCourse].map(([slug, completed]) => [slug, { completed }]));
 });
 
+/** Anotação do aluno numa aula: "" quando não há. null quando a leitura falha: a tela não deixa editar, porque o
+    salvamento automático gravaria o campo vazio por cima da anotação real. */
+export async function getLessonNote(courseSlug: string, lessonCode: string): Promise<string | null> {
+  if (isDemoMode()) return "";
+  const session = await getStudentSession();
+  if (!session) return null;
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("lesson_notes")
+    .select("body")
+    .eq("user_id", session.userId)
+    .eq("course_slug", courseSlug)
+    .eq("lesson_code", lessonCode)
+    .maybeSingle();
+  if (error) {
+    console.error(`Falha ao carregar a anotação: ${error.message}`);
+    return null;
+  }
+  return data?.body ?? "";
+}
+
 export function lessonSlug(code: string): string {
   return code.toLowerCase().replace(/_/g, "-");
 }

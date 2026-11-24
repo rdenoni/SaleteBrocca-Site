@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ChevronLeft, Download, FileText, Play } from "lucide-react";
 import { CompleteLessonButton } from "@/components/student/CompleteLessonButton";
+import { LessonNotes } from "@/components/student/LessonNotes";
 import { LessonVideo } from "@/components/student/LessonVideo";
 import { LessonTabs } from "@/components/student/LessonTabs";
 import { StudentModuleList } from "@/components/student/StudentModuleList";
@@ -14,6 +15,7 @@ import {
   findLesson,
   getEnrolledCourse,
   getLessonMaterials,
+  getLessonNote,
   getLessonRefs,
   getLessonStatus,
   getStudentProgress,
@@ -81,13 +83,15 @@ export async function generateMetadata({ params }: LessonPageProps): Promise<Met
 export default async function LessonPage({ params }: LessonPageProps) {
   const { slug, aula } = await params;
   const catalogCourse = getCourse(slug);
-  if (!catalogCourse || !findLesson(catalogCourse, aula)) notFound();
+  const catalogLesson = catalogCourse ? findLesson(catalogCourse, aula) : undefined;
+  if (!catalogCourse || !catalogLesson) notFound();
   await requireStudentSession(`/area-do-aluno/cursos/${slug}/aulas/${aula}`);
   /* Em paralelo: o vídeo confere a matrícula de novo (mesma consulta, em cache), então não espera a da página. */
-  const [course, progress, playback] = await Promise.all([
+  const [course, progress, playback, note] = await Promise.all([
     getEnrolledCourse(slug),
     getStudentProgress(),
     loadPlayback(slug, aula),
+    getLessonNote(slug, catalogLesson.lesson.code),
   ]);
   /* Sem matrícula ativa não há conteúdo de aula. */
   const location = course ? findLesson(course, aula) : undefined;
@@ -211,11 +215,18 @@ export default async function LessonPage({ params }: LessonPageProps) {
                   {
                     id: "anotacoes",
                     label: "Anotações",
-                    content: (
-                      <p>
-                        Espaço para as suas anotações durante a aula. <span className="pending">A confirmar</span>
-                      </p>
-                    ),
+                    content:
+                      note === null ? (
+                        <p>Não foi possível carregar a sua anotação desta aula. Recarregue a página para tentar de novo.</p>
+                      ) : (
+                        <LessonNotes
+                          key={lesson.code}
+                          courseSlug={course.slug}
+                          lessonCode={lesson.code}
+                          initialBody={note}
+                          persist={!isDemoMode()}
+                        />
+                      ),
                   },
                 ]}
               />
