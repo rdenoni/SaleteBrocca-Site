@@ -1,0 +1,984 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><link rel="icon" href="/brand/logo/icone-app.png"><title>Manual da Marca Salete Brocca</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martel:wght@300;400;700;800&family=Noto+Sans:wght@400;500;700;800;900&display=swap"></head><body>
+<style>
+/* Design System: página de referência interna. Mesma estrutura de faixas, tipografia e tokens das páginas Componentes e Ícones. */
+:root {
+  color-scheme: light;
+  --navy: #0f2438; --blue: #337eb5; --cyan: #18cfd5; --light-blue: #d9e1e2;
+  --light-gray: #e8e7ea; --charcoal: #24282b; --white: #ffffff;
+  --blue-strong: #2a6a9a; --text-muted: #5b6470; --on-navy-muted: #a9b8c6;
+  --navy-raised: #18324c; --photo-tint: rgba(51,126,181,.86);
+  --error: #b42318; --success: #1f6f4a;
+  --font-sans: "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Martel", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px;
+  --space-8: 32px; --space-12: 48px; --space-16: 64px; --space-24: 96px;
+  --radius-sm: 8px; --radius-md: 24px; --radius-lg: 32px; --radius-xl: 48px; --radius-pill: 999px;
+  --shadow-header: 0 12px 32px rgba(15,36,56,.14);
+  --shadow-card: 0 8px 24px rgba(15,36,56,.10);
+  --shadow-card-hover: 0 18px 40px rgba(15,36,56,.18);
+  --motion-instant: 120ms; --motion-quick: 200ms; --motion-base: 320ms; --motion-gentle: 560ms; --motion-slow: 900ms;
+  --ease-out: cubic-bezier(.22,1,.36,1); --ease-in-out: cubic-bezier(.65,0,.35,1);
+  --ease-in: cubic-bezier(.55,0,1,.45); --ease-stroke: cubic-bezier(.7,0,.2,1);
+  --press-scale: .97; --lift: -4px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--white); color: var(--charcoal); font: 400 16px/26px var(--font-sans); }
+h1, h2, h3, h4, p, ul, ol, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+img, svg { max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+code { font: 400 .875em var(--font-mono); background: rgba(15,36,56,.07); padding: 2px 6px; border-radius: 6px; overflow-wrap: anywhere; }
+.band--navy code { background: rgba(255,255,255,.12); }
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+:focus-visible { outline: 3px solid var(--blue-strong); outline-offset: 3px; }
+.navy :focus-visible { outline-color: var(--cyan); }
+.skip { position: absolute; left: 16px; top: -80px; z-index: 50; background: var(--navy); color: var(--white); padding: 12px 20px; border-radius: var(--radius-pill); font-weight: 700; text-decoration: none; }
+.skip:focus { top: max(16px, env(safe-area-inset-top, 0px)); }
+
+.band { padding-block: var(--space-16); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.band--lb { background: var(--light-blue); }
+.band--navy { background: var(--navy); color: var(--white); }
+.wrap { width: 100%; max-width: 1160px; margin-inline: auto; }
+section[id] { scroll-margin-top: 16px; }
+
+h1 { font: 800 clamp(40px, 6vw, 64px)/1.1 var(--font-serif); color: var(--navy); }
+h2 { font: 700 clamp(28px, 3.4vw, 38px)/1.2 var(--font-serif); color: var(--navy); }
+h3 { font: 700 22px/28px var(--font-sans); color: inherit; }
+.band--navy h2 { color: var(--white); }
+.eyebrow { font: 700 14px/22px var(--font-sans); letter-spacing: .08em; text-transform: uppercase; color: var(--blue-strong); margin-bottom: var(--space-2); }
+.band--navy .eyebrow { color: var(--cyan); }
+.sec-head { margin-bottom: var(--space-8); max-width: 760px; }
+.sec-head h2::after, .hero h1::after { content: ""; display: block; width: 56px; height: 4px; border-radius: 4px; background: var(--cyan); margin-top: var(--space-3); }
+.sec-head p { margin-top: var(--space-4); font-size: 18px; line-height: 28px; }
+.small { font-size: 14px; line-height: 22px; }
+.muted { color: var(--text-muted); }
+.band--navy .muted { color: var(--on-navy-muted); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: 48px; padding: 0 var(--space-6); border: 2px solid var(--navy); border-radius: var(--radius-pill); background: var(--navy); color: var(--white); cursor: pointer; text-decoration: none; font: 700 15px/20px var(--font-sans); letter-spacing: .04em; text-transform: uppercase; transition: transform var(--motion-quick) var(--ease-out), box-shadow var(--motion-quick) var(--ease-out); }
+.btn:hover { transform: translateY(var(--lift)); box-shadow: var(--shadow-card); }
+.btn:active { transform: scale(var(--press-scale)); transition-duration: var(--motion-instant); }
+.btn--cyan { background: var(--cyan); border-color: var(--cyan); color: var(--navy); }
+
+/* Abertura */
+.hero { position: relative; overflow: clip; padding-block: var(--space-12) var(--space-16); }
+.hero-logo { display: block; height: 44px; width: auto; margin-bottom: var(--space-12); }
+.hero h1 { margin-bottom: var(--space-4); }
+.hero p.lead { font-size: 18px; line-height: 30px; max-width: 62ch; }
+.stats { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); margin-top: var(--space-6); font: 700 14px/22px var(--font-sans); color: var(--navy); }
+.stats span { display: inline-flex; align-items: baseline; gap: 6px; }
+.stats b { font: 800 28px/1 var(--font-serif); }
+.toc { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-8); }
+.toc a { display: inline-flex; align-items: center; min-height: 48px; padding: 0 var(--space-4); border-radius: var(--radius-pill); background: var(--white); color: var(--navy); text-decoration: none; font: 700 14px/22px var(--font-sans); border: 2px solid transparent; transition: border-color var(--motion-quick) var(--ease-out), transform var(--motion-quick) var(--ease-out); }
+.toc a:hover { border-color: var(--blue-strong); transform: translateY(var(--lift)); }
+.hero-ghost { position: absolute; right: -2%; bottom: -14%; font: 800 clamp(200px, 34vw, 460px)/1 var(--font-serif); color: var(--navy); opacity: .05; pointer-events: none; user-select: none; }
+
+/* Controles */
+.controls { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-bottom: var(--space-6); align-items: center; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: var(--space-2); }
+.seg button { min-height: 48px; padding: 0 var(--space-4); border-radius: var(--radius-pill); border: 2px solid var(--navy); background: transparent; color: var(--navy); font: 700 14px/20px var(--font-sans); cursor: pointer; transition: background var(--motion-quick) var(--ease-out); }
+.seg button[aria-pressed="true"] { background: var(--navy); color: var(--white); }
+.navy .seg button { border-color: var(--white); color: var(--white); }
+.navy .seg button[aria-pressed="true"] { background: var(--cyan); border-color: var(--cyan); color: var(--navy); }
+.field { display: grid; gap: 6px; }
+.field label { font: 700 14px/20px var(--font-sans); }
+.field input[type="text"] { min-height: 48px; padding: 0 var(--space-4); border: 2px solid transparent; border-radius: var(--radius-sm); background: var(--light-gray); min-width: 260px; }
+.field input[type="text"]:focus { background: var(--white); border-color: var(--blue-strong); outline: none; box-shadow: 0 0 0 4px var(--light-blue); }
+.field input[type="range"] { width: min(100%, 460px); accent-color: var(--blue-strong); min-height: 48px; }
+.navy .field input[type="range"] { accent-color: var(--cyan); }
+
+/* Cores */
+.swatches { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.swatch { all: unset; box-sizing: border-box; cursor: pointer; background: var(--white); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-card); transition: transform var(--motion-quick) var(--ease-out), box-shadow var(--motion-quick) var(--ease-out); display: block; }
+.swatch:hover { transform: translateY(var(--lift)); box-shadow: var(--shadow-card-hover); }
+.swatch:focus-visible { outline: 3px solid var(--blue-strong); outline-offset: 3px; }
+.swatch .chip { height: 104px; border-bottom: 1px solid var(--light-gray); position: relative; }
+.swatch .chip i { position: absolute; right: 12px; bottom: 10px; font: 800 13px/1 var(--font-sans); font-style: normal; padding: 4px 8px; border-radius: var(--radius-pill); background: rgba(255,255,255,.92); color: var(--navy); opacity: 0; transition: opacity var(--motion-quick); }
+.swatch:hover .chip i, .swatch:focus-visible .chip i { opacity: 1; }
+.swatch .meta { padding: var(--space-4); }
+.swatch b { display: block; font: 700 17px/24px var(--font-sans); color: var(--navy); }
+.swatch .hex { color: var(--text-muted); font: 400 13px/20px var(--font-mono); }
+.swatch .use { display: block; margin-top: 6px; font-size: 14px; line-height: 22px; color: var(--charcoal); }
+
+.swatch .origin { display: inline-block; margin: 2px 0 4px; padding: 0 8px; border-radius: var(--radius-pill); background: var(--light-blue); color: var(--navy); font: 700 12px/20px var(--font-sans); letter-spacing: .04em; text-transform: uppercase; }
+
+/* Composição do grid */
+.grid-demo { position: relative; margin: var(--space-4) 0 var(--space-3); padding: var(--space-4); background: var(--white); border-radius: var(--radius-md); }
+.grid-cols { position: absolute; inset: var(--space-4); display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-2); pointer-events: none; }
+.grid-cols span { background: rgba(24,207,213,.16); border-radius: 4px; }
+.grid-row { position: relative; display: flex; gap: var(--space-4); min-height: 120px; }
+.grid-demo--gapless .grid-row { gap: 0; }
+.grid-cell { flex-grow: 0; flex-shrink: 1; display: grid; place-items: center; padding: var(--space-3); border-radius: var(--radius-sm); font: 700 14px/20px var(--font-sans); text-align: center; background: var(--navy); color: var(--white); transition: flex-basis var(--motion-base) var(--ease-out); }
+.grid-cell--1 { background: var(--blue-strong); }
+.grid-demo--gapless .grid-cell { border-radius: 0; background: var(--light-blue); color: var(--navy); }
+.grid-demo--gapless .grid-cell--1 { background: var(--blue-strong); color: var(--white); }
+
+/* Ritmo da página */
+.rhythm { display: grid; gap: 4px; margin-top: var(--space-4); max-width: 560px; counter-reset: r; }
+.rhythm > li { display: flex; min-height: 40px; align-items: center; padding: 0 var(--space-4); border-radius: var(--radius-sm); font: 700 14px/20px var(--font-sans); color: var(--navy); box-shadow: inset 0 0 0 1px rgba(15,36,56,.12); }
+.rhythm-split { padding: 0 !important; overflow: hidden; }
+.rhythm-split span { flex: 1; display: flex; align-items: center; min-height: 40px; padding: 0 var(--space-3); }
+
+/* Contraste */
+.contrast { display: grid; gap: var(--space-6); grid-template-columns: 1fr; align-items: stretch; }
+@media (min-width: 860px) { .contrast { grid-template-columns: 1fr 1fr; } }
+.pick { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.pick button { width: 48px; height: 48px; border-radius: 50%; border: 3px solid var(--white); box-shadow: 0 0 0 1px rgba(15,36,56,.25); cursor: pointer; }
+.pick button[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--blue-strong); }
+.navy .pick button[aria-pressed="true"] { box-shadow: 0 0 0 4px var(--cyan); }
+.pick-group + .pick-group { margin-top: var(--space-6); }
+.pick-group h3 { font-size: 17px; line-height: 24px; margin-bottom: var(--space-2); }
+.preview { border-radius: var(--radius-md); padding: var(--space-8); display: grid; align-content: center; gap: var(--space-3); min-height: 260px; box-shadow: var(--shadow-card); }
+.preview .big { font: 800 34px/42px var(--font-sans); }
+.preview .txt { font: 400 17px/28px var(--font-sans); }
+.ratio { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; margin-top: var(--space-2); }
+.ratio b { font: 800 34px/1 var(--font-serif); }
+.badge { display: inline-flex; align-items: center; min-height: 32px; padding: 0 12px; border-radius: var(--radius-pill); font: 700 13px/20px var(--font-sans); background: var(--white); color: var(--navy); border: 2px solid var(--white); }
+.badge[data-ok="true"] { background: #e6f3ec; color: var(--success); border-color: var(--success); }
+.badge[data-ok="false"] { background: #fdecea; color: var(--error); border-color: var(--error); }
+
+/* Tipografia */
+.types { display: grid; gap: var(--space-3); }
+.type { display: grid; gap: var(--space-3); padding: var(--space-6); background: var(--white); border-radius: var(--radius-md); }
+.type-sample { overflow-wrap: anywhere; color: var(--navy); }
+.type-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font-size: 14px; line-height: 22px; color: var(--text-muted); align-items: center; }
+.type-meta button { min-height: 48px; padding: 0 var(--space-3); border: 2px solid var(--light-gray); background: var(--white); border-radius: var(--radius-pill); cursor: pointer; font: 700 13px/20px var(--font-sans); }
+.type-meta button:hover { border-color: var(--blue-strong); }
+.type--dark { background: var(--navy); }
+.type--dark .type-sample { color: var(--white); }
+.type--dark .type-meta { color: var(--on-navy-muted); }
+
+/* Espaço, raios, sombras */
+.scale { display: grid; gap: var(--space-2); }
+.scale button { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 96px 1fr 64px; gap: var(--space-4); align-items: center; min-height: 48px; padding: 0 var(--space-3); border-radius: var(--radius-sm); }
+.scale button:hover { background: var(--white); }
+.scale button:focus-visible { outline: 3px solid var(--blue-strong); }
+.scale .bar { height: 20px; border-radius: 4px; background: var(--blue); transition: width var(--motion-base) var(--ease-out); }
+.scale .name { font: 700 14px/20px var(--font-mono); }
+.scale .px { font-size: 14px; color: var(--text-muted); text-align: right; }
+.tiles { display: flex; flex-wrap: wrap; gap: var(--space-6); }
+.tile { all: unset; box-sizing: border-box; cursor: pointer; width: 168px; min-height: 148px; padding: var(--space-4); display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; font: 700 14px/20px var(--font-sans); }
+.tile small { font: 400 13px/18px var(--font-sans); opacity: .85; }
+.tile:focus-visible { outline: 3px solid var(--blue-strong); outline-offset: 3px; }
+.tile--r { background: var(--blue-strong); color: var(--white); }
+.tile--s { background: var(--white); color: var(--navy); border-radius: var(--radius-md); transition: transform var(--motion-quick) var(--ease-out), box-shadow var(--motion-quick) var(--ease-out); }
+.tile--s:hover { transform: translateY(var(--lift)); }
+.sub { margin: var(--space-12) 0 var(--space-4); font: 700 24px/32px var(--font-sans); }
+
+/* Movimento */
+.motion { display: grid; gap: var(--space-4); }
+.lane { display: grid; grid-template-columns: 140px 1fr; gap: var(--space-4); align-items: center; }
+.lane > span { font: 700 14px/20px var(--font-mono); }
+.track { position: relative; height: 40px; border-radius: var(--radius-pill); background: rgba(255,255,255,.12); }
+.dot { position: absolute; left: 4px; top: 4px; width: 32px; height: 32px; border-radius: 50%; background: var(--cyan); }
+.mot-note { margin-top: var(--space-6); max-width: 70ch; }
+
+/* Breakpoints */
+.bp-frame { margin-top: var(--space-6); border: 2px solid var(--navy); border-radius: var(--radius-md); background: var(--white); padding: var(--space-4); overflow: hidden; }
+.bp-stage { margin-inline: auto; background: var(--light-blue); border-radius: var(--radius-sm); overflow: hidden; }
+.bp-bar { background: var(--navy); color: var(--white); font: 700 13px/20px var(--font-sans); padding: 8px 12px; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.bp-body { display: grid; gap: var(--space-4); }
+.bp-body div { background: var(--blue); color: var(--white); border-radius: var(--radius-sm); min-height: 56px; display: grid; place-items: center; font: 700 14px/20px var(--font-sans); }
+
+/* Regras */
+.rules { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.rule { background: var(--navy); border-radius: var(--radius-md); padding: var(--space-6); box-shadow: var(--shadow-card); }
+.rule h3 { font-size: 19px; line-height: 26px; color: var(--cyan); margin-bottom: var(--space-2); }
+.rule p { color: var(--on-navy-muted); font-size: 15px; line-height: 24px; }
+.rule code { background: rgba(255,255,255,.12); color: var(--white); }
+.foot-band img { height: 40px; width: auto; margin-bottom: var(--space-3); }
+
+#toast { position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 24px); background: var(--navy); color: var(--white); padding: 12px 20px; border-radius: var(--radius-pill); font: 700 14px/20px var(--font-sans); opacity: 0; pointer-events: none; transition: opacity var(--motion-quick), transform var(--motion-quick) var(--ease-out); z-index: 60; }
+#toast[data-on="1"] { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 767px) {
+  .band { padding-block: var(--space-12); }
+  .scale button { grid-template-columns: 76px 1fr 52px; gap: var(--space-2); }
+  .lane { grid-template-columns: 1fr; gap: var(--space-2); }
+  .preview { padding: var(--space-6); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+  :root { --lift: 0px; }
+}
+
+/* Manual da Marca: estilos próprios. A base (tokens, faixas, .seg, .pick, .field, .badge, #toast) vem de design-system.css. */
+
+/* Abertura */
+.mm-hero { padding-block: var(--space-12) var(--space-16); }
+.mm-hero h1 { color: var(--white); }
+.mm-hero h1::after { content: ""; display: block; width: 56px; height: 4px; border-radius: 4px; background: var(--cyan); margin-top: var(--space-3); }
+.mm-hero .lead { font-size: 18px; line-height: 30px; max-width: 58ch; margin-top: var(--space-4); }
+.mm-hero .lead.mm-lead-2 { color: var(--on-navy-muted); }
+.mm-hero-grid { display: grid; gap: var(--space-8); align-items: center; }
+.mm-cover { border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+.mm-cover img { display: block; width: 100%; height: auto; }
+@media (min-width: 960px) { .mm-hero-grid { grid-template-columns: 1.1fr 1fr; } }
+
+/* Índice lateral + conteúdo */
+.mm-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-8); padding-inline: max(16px, env(safe-area-inset-left, 0px)); }
+.mm-nav { position: sticky; top: 0; z-index: 5; background: var(--white); margin-inline: -16px; padding: var(--space-2) 16px; border-bottom: 1px solid var(--light-gray); }
+.mm-nav-title { display: none; }
+.mm-nav ol { display: flex; gap: var(--space-2); overflow-x: auto; scrollbar-width: none; padding-block: 4px; }
+.mm-nav ol::-webkit-scrollbar { display: none; }
+.mm-nav a { display: inline-flex; align-items: center; min-height: 48px; padding: 0 var(--space-4); border-radius: var(--radius-pill); white-space: nowrap; color: var(--navy); text-decoration: none; font: 700 14px/20px var(--font-sans); background: var(--light-gray); transition: background var(--motion-quick) var(--ease-out), color var(--motion-quick) var(--ease-out); }
+.mm-nav a:hover { background: var(--light-blue); }
+.mm-nav a[aria-current="true"] { background: var(--navy); color: var(--white); }
+.mm-main { min-width: 0; }
+@media (min-width: 1024px) {
+  .mm-layout { grid-template-columns: 220px minmax(0, 1fr); gap: var(--space-12); }
+  .mm-nav { top: var(--space-6); align-self: start; margin: var(--space-12) 0 0; padding: 0; border: 0; max-height: calc(100vh - 48px); overflow-y: auto; }
+  .mm-nav-title { display: block; font: 700 13px/20px var(--font-sans); letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: var(--space-2); }
+  .mm-nav ol { flex-direction: column; overflow: visible; gap: 2px; counter-reset: mm; }
+  .mm-nav li { counter-increment: mm; }
+  .mm-nav a { width: 100%; min-height: 48px; background: transparent; border-radius: var(--radius-sm); font-weight: 500; }
+  .mm-nav a::before { content: counter(mm, decimal-leading-zero); font: 700 12px/1 var(--font-mono); color: var(--blue-strong); margin-right: var(--space-3); }
+  .mm-nav a[aria-current="true"]::before { color: var(--cyan); }
+}
+
+/* Seções */
+.mm-sec { padding-block: var(--space-12); border-top: 1px solid var(--light-gray); scroll-margin-top: 72px; }
+.mm-sec:first-child { border-top: 0; }
+.mm-sec .sec-head p + p { margin-top: var(--space-3); }
+.mm-sec a { color: var(--blue-strong); font-weight: 700; }
+.mm-h3 { font: 700 17px/24px var(--font-sans); color: var(--navy); margin: var(--space-6) 0 var(--space-3); }
+.mm-note { margin-top: var(--space-4); max-width: 70ch; }
+.mm-hint { margin-bottom: var(--space-2); }
+@media (min-width: 1024px) { .mm-sec { scroll-margin-top: 24px; } }
+
+.mm-cols { display: grid; gap: var(--space-6); }
+@media (min-width: 860px) { .mm-cols { grid-template-columns: 1fr 1fr; gap: var(--space-8); } }
+.mm-prose p { font: 400 16px/28px var(--font-serif); }
+.mm-prose p + p { margin-top: var(--space-4); }
+.mm-quote { margin: var(--space-8) 0 0; padding: var(--space-8); border-radius: var(--radius-md); background: var(--navy); color: var(--white); }
+.mm-quote p { font: 800 clamp(22px, 2.6vw, 30px)/1.35 var(--font-sans); }
+.mm-quote footer { margin-top: var(--space-3); color: var(--cyan); font: 700 14px/20px var(--font-sans); }
+
+.mm-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-6); }
+.mm-chips li { padding: 8px 16px; border-radius: var(--radius-pill); background: var(--light-blue); color: var(--navy); font: 700 14px/22px var(--font-sans); }
+.mm-chips--keys { margin-top: 0; }
+.mm-chips--keys li:nth-child(3n+1) { background: var(--cyan); }
+.mm-chips--keys li:nth-child(3n+2) { background: var(--blue-strong); color: var(--white); }
+.mm-chips--keys li:nth-child(3n) { background: var(--navy); color: var(--white); }
+
+/* Figuras */
+.mm-fig { margin-top: var(--space-6); border-radius: var(--radius-md); overflow: hidden; background: var(--light-gray); }
+.mm-fig img { display: block; width: 100%; height: auto; }
+.mm-fig figcaption { padding: var(--space-3) var(--space-4); font-size: 14px; line-height: 22px; color: var(--text-muted); background: var(--white); }
+.mm-fig--plain { background: var(--white); box-shadow: inset 0 0 0 1px var(--light-gray); }
+.mm-fig--narrow { max-width: 560px; }
+
+/* Visualizadores com alternância */
+.mm-viewer { margin-top: var(--space-6); }
+.mm-stage { margin-top: var(--space-4); display: grid; place-items: center; min-height: 300px; padding: var(--space-8); border-radius: var(--radius-md); background: var(--light-blue); overflow: hidden; transition: background var(--motion-base) var(--ease-out); }
+.mm-stage img { display: block; max-width: 100%; height: auto; max-height: 420px; width: auto; }
+.mm-stage img[data-panel="simbolo"] { width: 200px; }
+.mm-stage img[data-panel="logo"] { width: min(360px, 100%); }
+.mm-stage img[data-panel="construcao"], .mm-stage img[data-panel="grid"] { background: var(--white); border-radius: var(--radius-sm); }
+.mm-stage--square { min-height: 360px; }
+.mm-specs { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-top: var(--space-4); }
+.mm-specs div { padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); box-shadow: inset 0 0 0 1px var(--light-gray); }
+.mm-specs dt { font: 700 12px/18px var(--font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+.mm-specs dd { margin: 2px 0 0; font: 700 16px/24px var(--font-sans); color: var(--navy); }
+
+/* Cores: barra de atributos */
+.mm-attr { display: grid; grid-template-columns: 1fr; border-radius: var(--radius-md); overflow: hidden; margin-top: var(--space-2); }
+.mm-attr li { min-height: 120px; display: flex; align-items: flex-end; padding: var(--space-4) var(--space-6); font: 800 20px/28px var(--font-sans); letter-spacing: .06em; text-transform: uppercase; }
+.mm-attr-cyan { background: var(--cyan); color: var(--navy); }
+.mm-attr-blue { background: var(--blue); color: var(--white); }
+.mm-attr-navy { background: var(--navy); color: var(--white); }
+@media (min-width: 720px) { .mm-attr { grid-template-columns: 1fr 1fr 1fr; } .mm-attr li { min-height: 180px; } }
+
+/* Logotipo */
+.mm-wordmark { display: grid; justify-items: center; padding: var(--space-12) var(--space-6); border-radius: var(--radius-md); background: var(--light-blue); color: var(--navy); }
+.mm-wm-name { font: 900 clamp(40px, 8vw, 88px)/1 var(--font-sans); letter-spacing: -.01em; }
+.mm-wm-tag { font: 700 clamp(18px, 3vw, 32px)/1.3 var(--font-sans); margin-top: var(--space-2); }
+
+/* Paleta */
+.mm-palette { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.mm-color { border-radius: var(--radius-md); overflow: hidden; background: var(--white); box-shadow: var(--shadow-card); }
+.mm-color-chip { height: 120px; display: flex; align-items: flex-end; padding: var(--space-3) var(--space-4); font: 800 20px/26px var(--font-sans); }
+.mm-color-vals { display: grid; padding: var(--space-2); }
+.mm-color-vals button { all: unset; box-sizing: border-box; cursor: pointer; display: flex; justify-content: space-between; gap: var(--space-3); min-height: 48px; align-items: center; padding: 0 var(--space-3); border-radius: var(--radius-sm); font: 400 14px/20px var(--font-mono); color: var(--charcoal); }
+.mm-color-vals button span { font: 700 12px/18px var(--font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+.mm-color-vals button:hover { background: var(--light-blue); }
+.mm-color-vals button:focus-visible { outline: 3px solid var(--blue-strong); outline-offset: -3px; }
+
+/* Tipografia */
+.mm-type-pair { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: var(--space-2); }
+.mm-type-pair > div { display: grid; padding: var(--space-6); border-radius: var(--radius-md); background: var(--light-blue); color: var(--navy); }
+.mm-type-pair b { font: 700 18px/26px var(--font-sans); }
+.mm-aa { font-size: 96px; line-height: 1.1; }
+.mm-aa--sans { font-family: var(--font-sans); font-weight: 700; }
+.mm-aa--serif { font-family: var(--font-serif); font-weight: 400; }
+.mm-tester { margin-top: var(--space-8); }
+.mm-tester select { min-height: 48px; padding: 0 var(--space-3); border: 2px solid var(--light-gray); border-radius: var(--radius-sm); background: var(--white); }
+.mm-tester select:focus { border-color: var(--blue-strong); outline: none; }
+.mm-type-live { display: block; width: 100%; min-height: 120px; padding: var(--space-4); border: 2px dashed var(--light-blue); border-radius: var(--radius-md); background: var(--white); color: var(--navy); resize: vertical; font-family: var(--font-sans); font-weight: 700; font-size: 40px; line-height: 1.2; }
+.mm-type-live:focus { border-color: var(--blue-strong); border-style: solid; outline: none; }
+#mm-type-note { margin-top: var(--space-2); min-height: 22px; }
+.mm-specimen { margin-top: var(--space-6); padding: var(--space-8); border-radius: var(--radius-md); box-shadow: inset 0 0 0 1px var(--light-gray); max-width: 760px; }
+.mm-spec-title { font: 700 44px/1.15 var(--font-sans); color: var(--navy); margin-bottom: var(--space-3); }
+.mm-spec-kicker { font: 700 16px/24px var(--font-sans); letter-spacing: .08em; text-transform: uppercase; color: var(--navy); margin-top: var(--space-6); margin-bottom: var(--space-2); }
+.mm-spec-body { font: 400 16px/28px var(--font-serif); }
+
+/* Versões */
+#mm-versions { margin-top: var(--space-2); }
+.mm-stage--version { min-height: 380px; }
+.mm-stage--version img { max-height: 320px; }
+.mm-v-note { margin-top: var(--space-3); max-width: 70ch; }
+
+/* Redução */
+.mm-stage--reduce { min-height: 260px; background: var(--white); box-shadow: inset 0 0 0 1px var(--light-gray); }
+.mm-stage--reduce img { max-height: none; max-width: none; }
+.mm-red-msg { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; margin-top: var(--space-3); }
+.mm-steps { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-top: var(--space-6); }
+.mm-steps li { padding: var(--space-4); border-radius: var(--radius-sm); background: var(--light-blue); font-size: 14px; line-height: 22px; color: var(--navy); }
+.mm-steps b { display: block; font: 700 16px/24px var(--font-sans); }
+
+/* Fundos */
+#mm-bg-pick { margin-top: var(--space-2); }
+.mm-stage--bg { min-height: 320px; }
+.mm-stage--bg img { width: min(320px, 100%); }
+#mm-bg-note { margin-top: var(--space-3); }
+
+/* Proibições */
+.mm-donts { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.mm-dont { all: unset; box-sizing: border-box; cursor: pointer; display: grid; width: 100%; border-radius: var(--radius-md); overflow: hidden; background: var(--white); box-shadow: var(--shadow-card); transition: transform var(--motion-quick) var(--ease-out), box-shadow var(--motion-quick) var(--ease-out); }
+.mm-dont:hover { transform: translateY(var(--lift)); box-shadow: var(--shadow-card-hover); }
+.mm-dont:focus-visible { outline: 3px solid var(--blue-strong); outline-offset: 3px; }
+.mm-dont-img { position: relative; aspect-ratio: 501 / 367; display: grid; place-items: center; background: var(--white); border-bottom: 1px solid var(--light-gray); }
+.mm-dont-img img { width: 100%; height: 100%; object-fit: contain; }
+.mm-dont-img img.mm-ok { width: 62%; height: auto; }
+.mm-dont-flag { position: absolute; top: 10px; right: 10px; padding: 4px 12px; border-radius: var(--radius-pill); font: 800 12px/20px var(--font-sans); letter-spacing: .06em; text-transform: uppercase; background: #fdecea; color: var(--error); }
+.mm-dont[aria-pressed="true"] .mm-dont-flag { background: #e6f3ec; color: var(--success); }
+.mm-dont-text { padding: var(--space-4); font: 700 15px/22px var(--font-sans); color: var(--navy); }
+.mm-dont-text small { display: block; margin-top: 2px; font-weight: 400; font-size: 13px; color: var(--text-muted); }
+
+/* Pattern */
+.mm-pattern-grid { display: grid; gap: var(--space-6); }
+@media (min-width: 860px) { .mm-pattern-grid { grid-template-columns: 280px 1fr; } }
+.mm-pattern-grid .mm-h3:first-child { margin-top: 0; }
+.mm-pt-scale { margin-top: var(--space-6); }
+.mm-pattern { position: relative; min-height: 380px; border-radius: var(--radius-md); overflow: hidden; box-shadow: inset 0 0 0 1px var(--light-gray); transition: background var(--motion-base) var(--ease-out); }
+.mm-pattern span { position: absolute; inset: 0; -webkit-mask: url("/brand/patterns/padrao-modulo.png") repeat 0 0 / var(--pt, 72px); mask: url("/brand/patterns/padrao-modulo.png") repeat 0 0 / var(--pt, 72px); }
+.mm-pattern.is-original span { -webkit-mask: none; mask: none; background: url("/brand/patterns/padrao-modulo.png") repeat 0 0 / var(--pt, 72px) !important; }
+.mm-module { display: inline-grid; justify-items: center; gap: 6px; margin-top: var(--space-6); padding: var(--space-4); border-radius: var(--radius-sm); box-shadow: inset 0 0 0 1px var(--light-gray); font-size: 13px; color: var(--text-muted); }
+.mm-module img { width: 96px; height: 96px; }
+.pick button.mm-pick-original { background: conic-gradient(var(--cyan) 0 50%, var(--blue) 0 100%); }
+
+/* Galeria + lightbox */
+.mm-gallery { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.mm-gallery button { all: unset; box-sizing: border-box; cursor: zoom-in; display: block; width: 100%; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-card); transition: transform var(--motion-quick) var(--ease-out), box-shadow var(--motion-quick) var(--ease-out); }
+.mm-gallery button:hover { transform: translateY(var(--lift)); box-shadow: var(--shadow-card-hover); }
+.mm-gallery button:focus-visible { outline: 3px solid var(--blue-strong); outline-offset: 3px; }
+.mm-gallery img { display: block; width: 100%; height: auto; aspect-ratio: 1600 / 1132; object-fit: cover; }
+.mm-gallery span { display: block; padding: var(--space-3) var(--space-4); font: 700 14px/20px var(--font-sans); color: var(--navy); background: var(--white); }
+.mm-lightbox { width: min(1200px, 100vw - 32px); max-width: none; max-height: calc(100vh - 32px); padding: 0; border: 0; border-radius: var(--radius-md); background: var(--navy); color: var(--white); overflow: visible; }
+.mm-lightbox::backdrop { background: rgba(15,36,56,.86); }
+.mm-lightbox figure { margin: 0; }
+.mm-lightbox img { display: block; width: 100%; height: auto; max-height: calc(100vh - 100px); object-fit: contain; border-radius: var(--radius-md) var(--radius-md) 0 0; background: var(--light-gray); }
+.mm-lightbox figcaption { padding: var(--space-3) var(--space-6); font: 700 15px/22px var(--font-sans); }
+.mm-lb-btn { position: absolute; width: 48px; height: 48px; border: 0; border-radius: 50%; background: var(--white); color: var(--navy); font: 700 28px/1 var(--font-sans); cursor: pointer; box-shadow: var(--shadow-card); display: grid; place-items: center; }
+.mm-lb-btn:hover { background: var(--cyan); }
+.mm-lb-prev { left: 8px; top: 50%; transform: translateY(-50%); }
+.mm-lb-next { right: 8px; top: 50%; transform: translateY(-50%); }
+.mm-lb-close { right: 8px; top: 8px; }
+
+/* Rodapé */
+.mm-foot h2 { color: var(--white); margin: var(--space-3) 0; }
+.mm-foot p { max-width: 62ch; }
+.mm-foot p + p { margin-top: var(--space-3); }
+.mm-foot a { color: var(--cyan); font-weight: 700; }
+.mm-foot-links { margin-top: var(--space-6) !important; }
+</style>
+<a class="skip" href="#historia">Pular para o manual</a>
+
+<header class="band band--navy mm-hero" id="topo">
+  <div class="wrap mm-hero-grid">
+    <div>
+      <img class="hero-logo" src="/brand/logo/logo-lateral-branco.png" alt="Salete Brocca fonoaudióloga" width="180" height="55">
+      <p class="eyebrow">Manual da Marca · 2021</p>
+      <h1>Manual da Marca</h1>
+      <p class="lead">A versão digital do manual de identidade visual de Maria Salete Brocca. Ele reúne história, conceito, símbolo, cores, tipografia, versões do logo, usos corretos e proibidos, pattern, ícones, grafismos e aplicações.</p>
+      <p class="lead mm-lead-2">Explore: copie as cores, teste a tipografia, reduza o logo até o tamanho mínimo, troque o fundo e compare cada proibição com o uso correto.</p>
+    </div>
+    <figure class="mm-cover"><img src="manual-da-marca/capa.webp" alt="Capa do Manual da Marca Salete Brocca 2021, logo em fundo navy" width="1600" height="1132"></figure>
+  </div>
+</header>
+
+<div class="wrap mm-layout">
+  <nav class="mm-nav" aria-label="Índice do manual">
+    <p class="mm-nav-title">Índice</p>
+    <ol id="mm-toc">
+      <li><a href="#historia">História e voz</a></li>
+      <li><a href="#conceito">Conceito</a></li>
+      <li><a href="#simbolo">Símbolo</a></li>
+      <li><a href="#cores">Cores</a></li>
+      <li><a href="#logotipo">Logotipo e tag</a></li>
+      <li><a href="#logomarca">Logomarca</a></li>
+      <li><a href="#paleta">Paleta de cores</a></li>
+      <li><a href="#tipografia">Tipografia</a></li>
+      <li><a href="#versoes">Versões</a></li>
+      <li><a href="#margem">Margem de segurança</a></li>
+      <li><a href="#reducao">Redução</a></li>
+      <li><a href="#positivo-negativo">Positivo/negativo</a></li>
+      <li><a href="#fundos">Aplicação em fundos</a></li>
+      <li><a href="#proibicoes">Proibições</a></li>
+      <li><a href="#pattern">Pattern</a></li>
+      <li><a href="#iconografia">Iconografia</a></li>
+      <li><a href="#grafismos">Grafismos</a></li>
+      <li><a href="#aplicacoes">Aplicações</a></li>
+    </ol>
+  </nav>
+
+<main class="mm-main">
+
+  <section class="mm-sec" id="historia" aria-labelledby="h-historia">
+    <div class="sec-head"><p class="eyebrow">01</p><h2 id="h-historia">História, valores e voz</h2></div>
+    <div class="mm-cols">
+      <div class="mm-prose">
+        <p>Maria Salete Brocca é professora e fonoaudióloga clínica. Iniciou sua carreira aos 16 anos, em 1960, em uma escola multisseriada, onde alcançou o cargo de direção e, posteriormente, tornou-se fonoaudióloga.</p>
+        <p>Atualmente atende em consultório particular, tratando exclusivamente crianças com dificuldade na aprendizagem, mais especificamente dislexia, e atende também na APAE de Cocal do Sul, tratando crianças com deficiência intelectual e outras comorbidades e síndromes raras.</p>
+        <p>Ministra cursos presenciais e online para professores e profissionais da área. Frequentemente desenvolve projetos paralelos, como jogos e softwares que auxiliam a criança no processo de alfabetização.</p>
+      </div>
+      <div class="mm-prose">
+        <p>Sua história e seus valores motivaram a criação desta marca. Sua relação com os alunos e o modo com que enfrenta cada caso específico como um desafio a ser superado nos levam a entender que a voz dessa marca é <strong>simples, dinâmica e otimista</strong>.</p>
+        <p>Sua abordagem nas campanhas se mostra <strong>inclusiva e minimalista</strong>, e o nível de proximidade com o público é <strong>intimista e atencioso</strong>. A linguagem, apesar de muitas vezes parecer técnica e científica, é simples e didática na escrita e na fala.</p>
+        <p>A Salete Brocca é entusiasmada e otimista e está sempre pronta para ajudar na evolução das pessoas e da sociedade.</p>
+      </div>
+    </div>
+    <blockquote class="mm-quote"><p>“Que toda criança, independente da dificuldade, tem a capacidade de ler e escrever.”</p><footer>O pensamento que guia a marca</footer></blockquote>
+    <ul class="mm-chips" aria-label="Traços da voz">
+      <li>Simples</li><li>Dinâmica</li><li>Otimista</li><li>Inclusiva</li><li>Minimalista</li><li>Intimista</li><li>Atenciosa</li><li>Didática</li>
+    </ul>
+  </section>
+
+  <section class="mm-sec" id="conceito" aria-labelledby="h-conceito">
+    <div class="sec-head"><p class="eyebrow">02</p><h2 id="h-conceito">Conceito</h2>
+      <p>O cérebro humano é um grande quebra-cabeça: são peças que se comunicam entre si e, juntas, trabalham para alcançar um determinado objetivo. Para ajudar a alcançar esse objetivo, precisamos de profissionais como Maria Salete, que auxilia nessa jornada, direcionando esses pensamentos por um caminho mais rápido e eficiente.</p></div>
+    <figure class="mm-fig"><img src="manual-da-marca/conceito-moodboard.webp" alt="Painel de referências: parede em camadas azuis, letras de madeira, quebra-cabeça de madeira, cabeça com labirinto e camadas coloridas" width="1401" height="725" loading="lazy"></figure>
+    <h3 class="mm-h3">Palavras-chave</h3>
+    <ul class="mm-chips mm-chips--keys" id="mm-keys" aria-label="Palavras-chave da marca">
+      <li>Neurociência</li><li>Alfabeto</li><li>Voz</li><li>Segurança</li><li>Amigável</li><li>Humana</li><li>Esperança</li><li>Atenciosa</li><li>Dinâmica</li><li>Otimista</li><li>Simples</li><li>Acessível</li><li>Confiável</li>
+    </ul>
+  </section>
+
+  <section class="mm-sec" id="simbolo" aria-labelledby="h-simbolo">
+    <div class="sec-head"><p class="eyebrow">03</p><h2 id="h-simbolo">Símbolo</h2>
+      <p>Foi desenvolvido na proporção de 1,6, o número áureo aproximado. Apresenta duas formas simétricas, porém distintas na sua orientação. Elas estão direcionadas para o centro, demonstrando que podem ser encaixadas. Utilizando-se da lei do fechamento, encontramos a inicial da profissional, a letra “S”, que se torna a peça central e mais importante.</p>
+      <p>Os terminais foram arredondados para trazer conforto a quem observa, e a espessura grossa garante confiabilidade e simpatia.</p></div>
+    <figure class="mm-fig mm-fig--plain"><img src="manual-da-marca/simbolo-origem.webp" alt="Letra S mais labirinto mais encaixe formam o símbolo" width="901" height="297" loading="lazy"><figcaption>Letra + Labirinto + Encaixe = Símbolo</figcaption></figure>
+    <div class="mm-viewer">
+      <div class="seg" role="group" aria-label="Visualização do símbolo">
+        <button type="button" aria-pressed="true" data-view="simbolo">Símbolo</button>
+        <button type="button" aria-pressed="false" data-view="construcao">Construção</button>
+      </div>
+      <div class="mm-stage">
+        <img data-panel="simbolo" src="/brand/logo/simbolo-cor.png" alt="Símbolo Salete Brocca" width="260" height="260">
+        <img data-panel="construcao" hidden src="manual-da-marca/simbolo-construcao.webp" alt="Diagrama de construção do símbolo: módulos de 39, 169, 271 e 434 pixels, terminais arredondados, espessura e orientação" width="1401" height="736" loading="lazy">
+      </div>
+      <dl class="mm-specs">
+        <div><dt>Módulos</dt><dd>39 · 169 · 271 · 434 px</dd></div>
+        <div><dt>Proporção</dt><dd>1,61 (434 ÷ 271 ≈ 271 ÷ 169)</dd></div>
+        <div><dt>Terminais</dt><dd>Arredondados, círculo de 39 px</dd></div>
+        <div><dt>Leitura</dt><dd>Letra “S” no encaixe central</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="mm-sec" id="cores" aria-labelledby="h-cores">
+    <div class="sec-head"><p class="eyebrow">04</p><h2 id="h-cores">Cores</h2>
+      <p>As cores frias e análogas transmitem os principais atributos da marca, e os altos valores entre elas agradam o público infantil e trazem dinâmica e alegria para a marca. Garantem também um ótimo contraste para todo tipo de composição.</p></div>
+    <ul class="mm-attr">
+      <li class="mm-attr-cyan">Dinâmica · Otimista</li>
+      <li class="mm-attr-blue">Acessível · Amigável</li>
+      <li class="mm-attr-navy">Confiança · Segurança</li>
+    </ul>
+  </section>
+
+  <section class="mm-sec" id="logotipo" aria-labelledby="h-logotipo">
+    <div class="sec-head"><p class="eyebrow">05</p><h2 id="h-logotipo">Logotipo e tag</h2>
+      <p>A tipografia sem serifa e humanista reforça as características da marca: <strong>acessível, amigável e humana</strong>.</p></div>
+    <div class="mm-wordmark" aria-hidden="true">
+      <span class="mm-wm-name">SaleteBrocca</span>
+      <span class="mm-wm-tag">fonoaudióloga</span>
+    </div>
+    <dl class="mm-specs">
+      <div><dt>Nome</dt><dd>Noto Sans Black</dd></div>
+      <div><dt>Tag</dt><dd>Noto Sans Bold</dd></div>
+    </dl>
+    <p class="small muted mm-note">Recriação em fonte para mostrar as famílias. Nas peças, use sempre os arquivos oficiais do logo, nunca o nome digitado.</p>
+  </section>
+
+  <section class="mm-sec" id="logomarca" aria-labelledby="h-logomarca">
+    <div class="sec-head"><p class="eyebrow">06</p><h2 id="h-logomarca">Logomarca</h2>
+      <p>A logomarca é montada sobre o grid 1-3: o símbolo ocupa 1 módulo, o nome 2/3 de módulo e a tag 1/3 de módulo.</p></div>
+    <div class="mm-viewer">
+      <div class="seg" role="group" aria-label="Visualização da logomarca">
+        <button type="button" aria-pressed="true" data-view="logo">Logomarca</button>
+        <button type="button" aria-pressed="false" data-view="grid">Grid 1-3</button>
+      </div>
+      <div class="mm-stage mm-stage--square">
+        <img data-panel="logo" src="/brand/logo/logo-empilhado-cor.png" alt="Logomarca vertical Salete Brocca fonoaudióloga" width="500" height="324">
+        <img data-panel="grid" hidden src="manual-da-marca/logomarca-grid.webp" alt="Logomarca sobre o grid: símbolo 1 módulo, nome 2/3 de módulo, tag 1/3 de módulo" width="1001" height="1001" loading="lazy">
+      </div>
+      <dl class="mm-specs">
+        <div><dt>Símbolo</dt><dd>1 módulo</dd></div>
+        <div><dt>SaleteBrocca</dt><dd>2/3 de módulo</dd></div>
+        <div><dt>fonoaudióloga</dt><dd>1/3 de módulo</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="mm-sec" id="paleta" aria-labelledby="h-paleta">
+    <div class="sec-head"><p class="eyebrow">07</p><h2 id="h-paleta">Paleta de cores</h2>
+      <p>As primárias são cores de reconhecimento, que ajudam a criar uma distinção maior das outras marcas do segmento. As de apoio são cores de suporte, com um papel mais funcional, ainda que importante para criar harmonia com as primárias. Sempre que possível, a logomarca deve ser usada nas versões preferenciais de cor.</p></div>
+    <p class="small muted mm-hint">Clique em um valor para copiar.</p>
+    <h3 class="mm-h3">Versão preferencial</h3>
+    <div class="mm-palette" id="mm-pal-primary"></div>
+    <h3 class="mm-h3">Cores de apoio</h3>
+    <div class="mm-palette" id="mm-pal-support"></div>
+    <p class="small muted mm-note">O HEX é a referência (é o mesmo token do site). O RGB foi calculado a partir dele; Pantone e CMYK estão como no manual impresso.</p>
+  </section>
+
+  <section class="mm-sec" id="tipografia" aria-labelledby="h-tipografia">
+    <div class="sec-head"><p class="eyebrow">08</p><h2 id="h-tipografia">Tipografia</h2>
+      <p>A tipografia institucional identifica e uniformiza os textos das peças de comunicação institucionais e promocionais. A família principal é a <strong>Noto Sans</strong>, desenvolvida pelo Google para tornar a web mais bonita em todas as plataformas e idiomas. A família de apoio é a <strong>Martel</strong>, serifada, que ajuda na leiturabilidade dos textos.</p>
+      <p>O uso combinado das duas traz personalidade e conforto visual. A Martel é indicada para textos de leitura extensa; títulos e destaques devem ser compostos em Noto Sans.</p></div>
+    <div class="mm-type-pair">
+      <div><span class="mm-aa mm-aa--sans">Aa</span><b>Noto Sans</b><span class="small muted">Títulos e destaques</span></div>
+      <div><span class="mm-aa mm-aa--serif">Aa</span><b>Martel</b><span class="small muted">Textos de leitura extensa</span></div>
+    </div>
+    <div class="mm-tester">
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Família">
+          <button type="button" aria-pressed="true" data-font="sans">Noto Sans</button>
+          <button type="button" aria-pressed="false" data-font="serif">Martel</button>
+        </div>
+        <div class="field"><label for="mm-weight">Peso</label>
+          <select id="mm-weight"><option value="400">Regular 400</option><option value="700" selected>Bold 700</option><option value="800">ExtraBold 800</option><option value="900">Black 900</option></select></div>
+        <div class="field"><label for="mm-size">Tamanho: <span id="mm-size-val">40</span>px</label>
+          <input type="range" id="mm-size" min="14" max="96" step="1" value="40"></div>
+      </div>
+      <label class="sr" for="mm-text">Texto de teste</label>
+      <textarea id="mm-text" class="mm-type-live" rows="2" spellcheck="false">Toda criança pode aprender a ler e escrever.</textarea>
+      <p class="small muted" id="mm-type-note"></p>
+    </div>
+    <article class="mm-specimen">
+      <p class="mm-spec-title">Título</p>
+      <p class="mm-spec-body">Texto corrido em Martel: confortável para leituras longas, como artigos, materiais de curso e textos de apoio. A combinação com títulos em Noto Sans mantém a marca próxima e clara.</p>
+      <p class="mm-spec-kicker">Destaque</p>
+      <p class="mm-spec-body">Destaques curtos em Noto Sans Bold, em caixa alta, chamam a atenção sem pesar a página.</p>
+    </article>
+  </section>
+
+  <section class="mm-sec" id="versoes" aria-labelledby="h-versoes">
+    <div class="sec-head"><p class="eyebrow">09</p><h2 id="h-versoes">Versões</h2>
+      <p>A logomarca possui 4 versões: vertical padrão, de uso preferencial, vertical especial, horizontal e responsiva. As versões horizontal, vertical especial e responsiva são indicadas somente quando a vertical padrão apresentar dificuldades.</p></div>
+    <div class="seg" role="group" aria-label="Versões da logomarca" id="mm-versions">
+      <button type="button" aria-pressed="true" data-v="0">Vertical padrão</button>
+      <button type="button" aria-pressed="false" data-v="1">Horizontal</button>
+      <button type="button" aria-pressed="false" data-v="2">Vertical especial</button>
+      <button type="button" aria-pressed="false" data-v="3">Responsiva</button>
+    </div>
+    <div class="mm-stage mm-stage--version">
+      <img id="mm-v-img" src="/brand/logo/logo-empilhado-cor.png" alt="Versão vertical padrão" width="500" height="324">
+    </div>
+    <p id="mm-v-note" class="mm-v-note" aria-live="polite"></p>
+  </section>
+
+  <section class="mm-sec" id="margem" aria-labelledby="h-margem">
+    <div class="sec-head"><p class="eyebrow">10</p><h2 id="h-margem">Margem de segurança</h2>
+      <p>Para aumentar a percepção da marca, é necessário respeitar uma área em toda a sua volta, livre de qualquer interferência. Essa área é medida pelo valor de X, que pode ser encontrado na própria marca, como mostra o exemplo.</p></div>
+    <figure class="mm-fig mm-fig--plain"><img src="manual-da-marca/margem-seguranca.webp" alt="Logomarca com a medida X marcada acima do símbolo e à esquerda do nome" width="1001" height="477" loading="lazy"><figcaption>Nenhum texto, imagem ou borda entra na área X ao redor da marca.</figcaption></figure>
+  </section>
+
+  <section class="mm-sec" id="reducao" aria-labelledby="h-reducao">
+    <div class="sec-head"><p class="eyebrow">11</p><h2 id="h-reducao">Redução</h2>
+      <p>Respeitar o tamanho mínimo da logomarca preserva a legibilidade e garante a experiência correta com a marca. Em sistemas digitais as reduções estão em pixels; na impressão, em centímetros, considerando 300 DPI.</p></div>
+    <div class="field"><label for="mm-red">Altura da marca: <b id="mm-red-px">160</b>px · <span id="mm-red-cm">1,35</span>cm na impressão</label>
+      <input type="range" id="mm-red" min="40" max="200" step="1" value="160"></div>
+    <div class="mm-stage mm-stage--reduce"><img id="mm-red-img" src="/brand/logo/logo-empilhado-cor.png" alt="Logomarca completa com tag"></div>
+    <p class="mm-red-msg"><span class="badge" id="mm-red-badge" data-ok="true">Com tag</span> <span id="mm-red-msg"></span></p>
+    <ol class="mm-steps">
+      <li><b>Com tag</b>Digital 130px · Print 1,10cm</li>
+      <li><b>Sem tag</b>Digital 97px · Print 0,82cm</li>
+      <li><b>Só o símbolo</b>Abaixo de 97px · abaixo de 0,82cm</li>
+    </ol>
+  </section>
+
+  <section class="mm-sec" id="positivo-negativo" aria-labelledby="h-posneg">
+    <div class="sec-head"><p class="eyebrow">12</p><h2 id="h-posneg">Positivo/negativo</h2>
+      <p>A logomarca em positivo e negativo deve ser usada apenas quando existe uma limitação técnica, como ausência de cores, que prejudique a aplicação da versão preferencial.</p></div>
+    <figure class="mm-fig"><img src="manual-da-marca/positivo-negativo.webp" alt="Logomarca branca sobre azul, sobre ciano e sobre duas fotografias coloridas" width="1200" height="648" loading="lazy"></figure>
+  </section>
+
+  <section class="mm-sec" id="fundos" aria-labelledby="h-fundos">
+    <div class="sec-head"><p class="eyebrow">13</p><h2 id="h-fundos">Aplicação em fundos</h2>
+      <p>Escolha um fundo da paleta: a página mostra a versão da marca que mantém o contraste.</p></div>
+    <div class="pick" id="mm-bg-pick" role="group" aria-label="Cor de fundo"></div>
+    <div class="mm-stage mm-stage--bg" id="mm-bg-stage"><img id="mm-bg-img" src="/brand/logo/logo-empilhado-cor.png" alt="Logomarca colorida" width="500" height="324"></div>
+    <p class="small muted" id="mm-bg-note" aria-live="polite"></p>
+    <figure class="mm-fig"><img src="manual-da-marca/aplicacao-fundos.webp" alt="Referência do manual: logomarca em fundos cinza, grafite e claros" width="1201" height="951" loading="lazy"><figcaption>Referência do manual impresso: fundos neutros.</figcaption></figure>
+  </section>
+
+  <section class="mm-sec" id="proibicoes" aria-labelledby="h-proibicoes">
+    <div class="sec-head"><p class="eyebrow">14</p><h2 id="h-proibicoes">Proibições</h2>
+      <p>É importante respeitar todos os elementos que constituem a logomarca. Estes são exemplos de usos que devem ser evitados. Toque em um card para comparar com o uso correto.</p></div>
+    <ul class="mm-donts" id="mm-donts"></ul>
+  </section>
+
+  <section class="mm-sec" id="pattern" aria-labelledby="h-pattern">
+    <div class="sec-head"><p class="eyebrow">15</p><h2 id="h-pattern">Pattern</h2>
+      <p>O pattern se aplica em diversas composições e pode ter suas cores alteradas, desde que sejam as cores institucionais. Ele nasce da repetição de um módulo.</p></div>
+    <div class="mm-pattern-grid">
+      <div>
+        <h3 class="mm-h3">Cor das linhas</h3>
+        <div class="pick" id="mm-pt-line" role="group" aria-label="Cor das linhas"></div>
+        <h3 class="mm-h3">Cor do fundo</h3>
+        <div class="pick" id="mm-pt-bg" role="group" aria-label="Cor do fundo"></div>
+        <div class="field mm-pt-scale"><label for="mm-pt-size">Módulo: <span id="mm-pt-size-val">72</span>px</label>
+          <input type="range" id="mm-pt-size" min="32" max="160" step="2" value="72"></div>
+        <p class="small muted" id="mm-pt-note" aria-live="polite"></p>
+        <figure class="mm-module"><img src="/brand/patterns/padrao-modulo.png" alt="Módulo repetidor do pattern" width="142" height="142"><figcaption>Módulo repetidor</figcaption></figure>
+      </div>
+      <div class="mm-pattern" id="mm-pattern" role="img" aria-label="Pattern da marca repetido"><span></span></div>
+    </div>
+  </section>
+
+  <section class="mm-sec" id="iconografia" aria-labelledby="h-icones">
+    <div class="sec-head"><p class="eyebrow">16</p><h2 id="h-icones">Iconografia</h2>
+      <p>Ícones de traço com terminais arredondados, como o símbolo, em navy com detalhes em ciano. A versão completa e pesquisável está na página <a href="/biblioteca/icones.html">Ícones</a>.</p></div>
+    <figure class="mm-fig mm-fig--plain mm-fig--narrow"><img src="manual-da-marca/iconografia.webp" alt="Grade de 25 ícones de traço: lupa, ouvido, cérebro, olho, livro, óculos, cadeado e outros" width="1000" height="1022" loading="lazy"></figure>
+  </section>
+
+  <section class="mm-sec" id="grafismos" aria-labelledby="h-grafismos">
+    <div class="sec-head"><p class="eyebrow">17</p><h2 id="h-grafismos">Grafismos</h2>
+      <p>Os grafismos derivam diretamente do conceito da marca e podem apoiar composições ou aparecer em destaque, porém a marca deve estar sempre presente em alguma de suas versões. Os grafismos em uso no site estão no <a href="/biblioteca/design-system.html#grafismos">Design System</a>.</p></div>
+    <figure class="mm-fig"><img src="manual-da-marca/grafismo.webp" alt="Letras S, A, L, E, T, E espaçadas sobre fundo claro, com barras nas cores da marca e o nome SaleteBrocca" width="1401" height="977" loading="lazy"></figure>
+  </section>
+
+  <section class="mm-sec" id="aplicacoes" aria-labelledby="h-aplicacoes">
+    <div class="sec-head"><p class="eyebrow">18</p><h2 id="h-aplicacoes">Aplicações</h2>
+      <p>As aplicações se dividem em impressas e digitais: papelaria, máscara, canecas, jogos didáticos, cursos online, mídia social e websites. Toque em uma imagem para ampliar.</p></div>
+    <ul class="mm-gallery" id="mm-gallery"></ul>
+  </section>
+
+</main>
+</div>
+
+<footer class="band band--navy mm-foot">
+  <div class="wrap">
+    <img src="/brand/logo/simbolo-claro.png" alt="" width="56" height="56">
+    <h2>Obrigado!</h2>
+    <p>Em caso de dúvida sobre como aplicar a marca, ou se algo neste guia não estiver claro, fale com o autor do manual.</p>
+    <p class="small muted">Manual da Marca Salete Brocca, 2021 · Identidade visual de Rafael Denoni (<a href="https://www.denomotion.com" rel="noopener">denomotion.com</a> · <a href="https://www.behance.net/denomotion" rel="noopener">behance.net/denomotion</a>).</p>
+    <p class="small mm-foot-links"><a href="/biblioteca">← Biblioteca</a> · <a href="/biblioteca/design-system.html">Design System</a> · <a href="/biblioteca/icones.html">Ícones</a> · <a href="/biblioteca/componentes.html">Componentes</a></p>
+  </div>
+</footer>
+
+<dialog class="mm-lightbox" id="mm-lightbox" aria-label="Aplicação ampliada">
+  <figure><img id="mm-lb-img" src="manual-da-marca/aplicacao-01.webp" alt="" width="1600" height="1132" loading="lazy"><figcaption id="mm-lb-cap"></figcaption></figure>
+  <button type="button" class="mm-lb-btn mm-lb-prev" id="mm-lb-prev" aria-label="Imagem anterior">‹</button>
+  <button type="button" class="mm-lb-btn mm-lb-next" id="mm-lb-next" aria-label="Próxima imagem">›</button>
+  <button type="button" class="mm-lb-btn mm-lb-close" id="mm-lb-close" aria-label="Fechar">×</button>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+/* Manual da Marca: interações. Valores lidos do PDF "TCC - Rafael Denoni_Manual da marca - SB" (2021). */
+const LOGO = "/brand/logo/";
+const FIG = "manual-da-marca/";
+const TOAST_MS = 1600;
+const DPI = 300;
+const MIN_FULL = 130; // altura mínima com tag (manual, p. 21)
+const MIN_NO_TAG = 97; // abaixo disso, só o símbolo
+
+/* HEX é a referência (igual aos tokens do site). O manual imprime 3 RGB que não batem com o próprio HEX;
+   aqui o RGB é sempre derivado do HEX para que os valores copiados não se contradigam. */
+const PALETTE = {
+  primary: [
+    { name: "Azul", hex: "#337EB5", pantone: "2383 C", cmyk: "83 43 0 2", text: "#ffffff" },
+    { name: "Ciano", hex: "#18CFD5", pantone: "319 C", cmyk: "60 0 16 0", text: "#0f2438" },
+  ],
+  support: [
+    { name: "Navy", hex: "#0F2438", pantone: "289 C", cmyk: "100 66 0 76", text: "#ffffff" },
+    { name: "Cinza claro", hex: "#E8E7EA", pantone: "663 XGC", cmyk: "2 5 0 0", text: "#0f2438" },
+    { name: "Azul claro", hex: "#D9E1E2", pantone: "7541 C", cmyk: "10 3 0 0", text: "#0f2438" },
+    { name: "Grafite", hex: "#24282B", pantone: "426 XGC", cmyk: "34 0 0 97", text: "#ffffff" },
+  ],
+};
+
+const VERSIONS = [
+  { src: LOGO + "logo-empilhado-cor.png", w: 500, h: 324, alt: "Versão vertical padrão", note: "Vertical padrão: a versão preferencial. Use sempre que houver espaço." },
+  { src: LOGO + "logo-lateral-cor.png", w: 500, h: 155, alt: "Versão horizontal", note: "Horizontal: para espaços baixos e largos, como cabeçalhos e faixas." },
+  { src: FIG + "versao-vertical-especial.webp", w: 301, h: 787, alt: "Versão vertical especial, com o nome girado", note: "Vertical especial: o nome gira 90° para espaços altos e estreitos, como lombadas e laterais." },
+  { src: LOGO + "simbolo-cor.png", w: 501, h: 501, alt: "Versão responsiva, só o símbolo", note: "Responsiva: só o símbolo, para ícones de app, avatares e tamanhos abaixo de 97px." },
+];
+
+const BACKGROUNDS = [
+  { id: "white", label: "Branco", hex: "#ffffff", logo: "cor" },
+  { id: "light-gray", label: "Cinza claro", hex: "#E8E7EA", logo: "cor" },
+  { id: "light-blue", label: "Azul claro", hex: "#D9E1E2", logo: "cor" },
+  { id: "blue", label: "Azul", hex: "#337EB5", logo: "branco" },
+  { id: "cyan", label: "Ciano", hex: "#18CFD5", logo: "branco", warn: "No ciano o branco perde contraste: use só em tamanhos grandes e quando não houver alternativa." },
+  { id: "navy", label: "Navy", hex: "#0F2438", logo: "branco" },
+  { id: "charcoal", label: "Grafite", hex: "#24282B", logo: "branco" },
+];
+
+const DONTS = [
+  ["Não distorcer a marca", "Redimensione sempre na proporção original."],
+  ["Não rotacionar ou inclinar a marca", "A marca fica sempre na horizontal."],
+  ["Não rediagramar o logotipo", "Não troque espaçamentos nem a fonte do nome."],
+  ["Não alterar as cores", "Só as versões da paleta oficial."],
+  ["Não aplicar em fundo sem contraste", "Veja “Aplicação em fundos”."],
+  ["Não aplicar outline na marca", "Nada de contornos ou versões vazadas."],
+  ["Não aplicar qualquer tipo de efeito", "Sem sombras, brilhos, relevos ou degradês."],
+  ["Não reposicionar os elementos", "Símbolo, nome e tag ficam onde estão."],
+  ["Não cortar qualquer parte da marca", "Respeite a margem de segurança."],
+];
+
+const GALLERY = [
+  "Cartão de visita", "Máscara", "Xícara", "Carimbo e papel timbrado", "Jogos didáticos",
+  "Papelaria", "Caderno 2021", "Mídia social", "Website responsivo",
+];
+
+const PATTERN_LINES = [
+  { id: "original", label: "Original (ciano e azul)", hex: null },
+  { id: "cyan", label: "Ciano", hex: "#18CFD5" },
+  { id: "blue", label: "Azul", hex: "#337EB5" },
+  { id: "navy", label: "Navy", hex: "#0F2438" },
+  { id: "white", label: "Branco", hex: "#ffffff" },
+];
+const PATTERN_BGS = BACKGROUNDS.filter((b) => b.id !== "charcoal");
+
+const $ = (id) => document.getElementById(id);
+function el(tag, attrs, kids) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (k === "text") n.textContent = v;
+    else if (k === "style") n.style.cssText = v;
+    else n.setAttribute(k, v);
+  }
+  for (const kid of [].concat(kids || [])) n.append(kid);
+  return n;
+}
+const rgbOf = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(" ");
+const cm = (px) => (px / DPI * 2.54).toFixed(2).replace(".", ",");
+
+let toastTimer = 0;
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.dataset.on = "1";
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.dataset.on = "0"; }, TOAST_MS);
+}
+async function copy(value, label) {
+  try {
+    await navigator.clipboard.writeText(value);
+    toast(label + " copiado: " + value);
+  } catch {
+    toast("Não foi possível copiar. Valor: " + value);
+  }
+}
+
+/* Grupo de botões com aria-pressed: chama onPick(botão) e marca o escolhido. */
+function segmented(group, onPick) {
+  group.addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b || !group.contains(b)) return;
+    for (const o of group.querySelectorAll("button")) o.setAttribute("aria-pressed", String(o === b));
+    onPick(b);
+  });
+}
+function swatchPicker(group, items, current, onPick) {
+  for (const it of items) {
+    const b = el("button", { type: "button", "aria-pressed": String(it.id === current), "aria-label": it.label, title: it.label, "data-id": it.id });
+    if (it.hex) b.style.background = it.hex; else b.className = "mm-pick-original";
+    group.append(b);
+  }
+  segmented(group, (b) => onPick(items.find((i) => i.id === b.dataset.id)));
+}
+
+/* Símbolo e logomarca: alternar entre arte e diagrama */
+for (const viewer of document.querySelectorAll(".mm-viewer")) {
+  segmented(viewer.querySelector(".seg"), (b) => {
+    for (const img of viewer.querySelectorAll("[data-panel]")) img.hidden = img.dataset.panel !== b.dataset.view;
+  });
+}
+
+/* Paleta */
+function renderPalette(target, colors) {
+  for (const c of colors) {
+    const vals = [["HEX", c.hex], ["RGB", rgbOf(c.hex)], ["CMYK", c.cmyk], ["Pantone", c.pantone]];
+    const list = el("div", { class: "mm-color-vals" }, vals.map(([k, v]) => {
+      const b = el("button", { type: "button", "aria-label": "Copiar " + k + " de " + c.name + ": " + v }, [el("span", { text: k }), v]);
+      b.addEventListener("click", () => copy(v, k + " " + c.name));
+      return b;
+    }));
+    const chip = el("div", { class: "mm-color-chip", style: "background:" + c.hex + ";color:" + c.text + ";box-shadow:inset 0 -1px 0 rgba(15,36,56,.08)" }, c.name);
+    target.append(el("article", { class: "mm-color" }, [chip, list]));
+  }
+}
+renderPalette($("mm-pal-primary"), PALETTE.primary);
+renderPalette($("mm-pal-support"), PALETTE.support);
+
+/* Tipografia */
+const typeState = { font: "sans" };
+function renderType() {
+  const area = $("mm-text");
+  const size = $("mm-size").value;
+  const wanted = Number($("mm-weight").value);
+  const serif = typeState.font === "serif";
+  area.style.fontFamily = serif ? "var(--font-serif)" : "var(--font-sans)";
+  area.style.fontWeight = String(serif ? Math.min(wanted, 800) : wanted);
+  area.style.fontSize = size + "px";
+  $("mm-size-val").textContent = size;
+  $("mm-type-note").textContent = serif && wanted > 800
+    ? "A Martel vai até o peso 800; o Black 900 é só da Noto Sans (o nome do logotipo)."
+    : (serif ? "Martel: textos de leitura extensa." : "Noto Sans: títulos e destaques.");
+}
+segmented(document.querySelector(".mm-tester .seg"), (b) => { typeState.font = b.dataset.font; renderType(); });
+$("mm-weight").addEventListener("change", renderType);
+$("mm-size").addEventListener("input", renderType);
+renderType();
+
+/* Versões */
+function showVersion(i) {
+  const v = VERSIONS[i];
+  const img = $("mm-v-img");
+  img.src = v.src; img.width = v.w; img.height = v.h; img.alt = v.alt;
+  $("mm-v-note").textContent = v.note;
+}
+segmented($("mm-versions"), (b) => showVersion(Number(b.dataset.v)));
+showVersion(0);
+
+/* Redução */
+const RED_STATES = {
+  full: { ok: true, badge: "Com tag", src: LOGO + "logo-empilhado-cor.png", alt: "Logomarca completa com tag", msg: "130px (1,10cm) ou mais: logomarca completa com a tag." },
+  noTag: { ok: true, badge: "Sem tag", src: FIG + "logo-sem-tag.png", alt: "Logomarca sem a tag fonoaudióloga", msg: "Entre 97px e 129px a tag fica ilegível: use a marca sem “fonoaudióloga”." },
+  symbol: { ok: true, badge: "Só o símbolo", src: LOGO + "simbolo-cor.png", alt: "Símbolo Salete Brocca", msg: "Abaixo de 97px (0,82cm) o nome não se lê: use apenas o símbolo." },
+};
+function renderReduce() {
+  const h = Number($("mm-red").value);
+  const st = RED_STATES[h >= MIN_FULL ? "full" : h >= MIN_NO_TAG ? "noTag" : "symbol"];
+  const img = $("mm-red-img");
+  if (img.getAttribute("src") !== st.src) { img.src = st.src; img.alt = st.alt; }
+  img.style.height = h + "px";
+  img.style.width = "auto";
+  $("mm-red-px").textContent = h;
+  $("mm-red-cm").textContent = cm(h);
+  const badge = $("mm-red-badge");
+  badge.textContent = st.badge;
+  badge.dataset.ok = String(st.ok);
+  $("mm-red-msg").textContent = st.msg;
+}
+$("mm-red").addEventListener("input", renderReduce);
+renderReduce();
+
+/* Aplicação em fundos */
+function renderBg(bg) {
+  const stage = $("mm-bg-stage");
+  stage.style.background = bg.hex;
+  stage.style.boxShadow = bg.id === "white" ? "inset 0 0 0 1px var(--light-gray)" : "";
+  const img = $("mm-bg-img");
+  img.src = LOGO + "logo-empilhado-" + bg.logo + ".png";
+  img.alt = "Logomarca " + (bg.logo === "cor" ? "colorida" : "branca") + " sobre " + bg.label.toLowerCase();
+  $("mm-bg-note").textContent = (bg.logo === "cor" ? "Fundo claro: versão colorida (preferencial)." : "Fundo escuro ou saturado: versão branca (negativo).") + (bg.warn ? " " + bg.warn : "");
+}
+swatchPicker($("mm-bg-pick"), BACKGROUNDS, "white", renderBg);
+renderBg(BACKGROUNDS[0]);
+
+/* Proibições: cada card alterna entre o erro e o uso correto */
+DONTS.forEach(([rule, fix], i) => {
+  const n = String(i + 1).padStart(2, "0");
+  const wrong = FIG + "proibicao-" + n + ".webp";
+  const img = el("img", { src: wrong, alt: "Exemplo errado: " + rule, width: "501", height: "367", loading: "lazy" });
+  const flag = el("span", { class: "mm-dont-flag", text: "Errado" });
+  const b = el("button", { type: "button", class: "mm-dont", "aria-pressed": "false" }, [
+    el("span", { class: "mm-dont-img" }, [img, flag]),
+    el("span", { class: "mm-dont-text" }, [n + ". " + rule, el("small", { text: fix })]),
+  ]);
+  b.addEventListener("click", () => {
+    const ok = b.getAttribute("aria-pressed") !== "true";
+    b.setAttribute("aria-pressed", String(ok));
+    img.src = ok ? LOGO + "logo-empilhado-cor.png" : wrong;
+    img.alt = ok ? "Uso correto: logomarca original" : "Exemplo errado: " + rule;
+    img.classList.toggle("mm-ok", ok);
+    flag.textContent = ok ? "Correto" : "Errado";
+  });
+  $("mm-donts").append(el("li", {}, b));
+});
+
+/* Pattern */
+const pt = { line: PATTERN_LINES[0], bg: PATTERN_BGS[0] };
+function renderPattern() {
+  const box = $("mm-pattern");
+  box.style.background = pt.bg.hex;
+  box.classList.toggle("is-original", !pt.line.hex);
+  box.querySelector("span").style.background = pt.line.hex || "";
+  const same = pt.line.hex && pt.line.hex.toLowerCase() === pt.bg.hex.toLowerCase();
+  $("mm-pt-note").textContent = same ? "Linhas e fundo na mesma cor: o pattern desaparece. Escolha cores diferentes." : "Linhas " + pt.line.label.toLowerCase() + " sobre " + pt.bg.label.toLowerCase() + ".";
+}
+swatchPicker($("mm-pt-line"), PATTERN_LINES, "original", (l) => { pt.line = l; renderPattern(); });
+swatchPicker($("mm-pt-bg"), PATTERN_BGS, "white", (b) => { pt.bg = b; renderPattern(); });
+$("mm-pt-size").addEventListener("input", (e) => {
+  $("mm-pattern").style.setProperty("--pt", e.target.value + "px");
+  $("mm-pt-size-val").textContent = e.target.value;
+});
+renderPattern();
+
+/* Aplicações: galeria + lightbox (setas, Esc, clique fora) */
+const lb = $("mm-lightbox");
+let lbIndex = 0;
+const galleryButtons = [];
+function showLb(i) {
+  lbIndex = (i + GALLERY.length) % GALLERY.length;
+  const img = $("mm-lb-img");
+  img.src = FIG + "aplicacao-" + String(lbIndex + 1).padStart(2, "0") + ".webp";
+  img.alt = "Aplicação da marca: " + GALLERY[lbIndex];
+  $("mm-lb-cap").textContent = (lbIndex + 1) + "/" + GALLERY.length + " · " + GALLERY[lbIndex];
+}
+GALLERY.forEach((label, i) => {
+  const n = String(i + 1).padStart(2, "0");
+  const b = el("button", { type: "button", "aria-label": "Ampliar: " + label }, [
+    el("img", { src: FIG + "aplicacao-" + n + ".webp", alt: "", width: "1600", height: "1132", loading: "lazy" }),
+    el("span", { text: label }),
+  ]);
+  b.addEventListener("click", () => { showLb(i); lb.showModal(); });
+  galleryButtons.push(b);
+  $("mm-gallery").append(el("li", {}, b));
+});
+$("mm-lb-prev").addEventListener("click", () => showLb(lbIndex - 1));
+$("mm-lb-next").addEventListener("click", () => showLb(lbIndex + 1));
+$("mm-lb-close").addEventListener("click", () => lb.close());
+lb.addEventListener("click", (e) => { if (e.target === lb) lb.close(); });
+lb.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft") showLb(lbIndex - 1);
+  else if (e.key === "ArrowRight") showLb(lbIndex + 1);
+});
+lb.addEventListener("close", () => galleryButtons[lbIndex].focus());
+
+/* Índice: destaca a seção visível */
+const links = new Map([...document.querySelectorAll("#mm-toc a")].map((a) => [a.hash.slice(1), a]));
+const tocList = $("mm-toc");
+const spy = new IntersectionObserver((entries) => {
+  for (const en of entries) {
+    if (!en.isIntersecting) continue;
+    const a = links.get(en.target.id);
+    if (!a) continue;
+    for (const l of links.values()) l.removeAttribute("aria-current");
+    a.setAttribute("aria-current", "true");
+    if (tocList.scrollWidth > tocList.clientWidth) tocList.scrollTo({ left: a.getBoundingClientRect().left - tocList.getBoundingClientRect().left + tocList.scrollLeft - 16, behavior: "smooth" });
+  }
+}, { rootMargin: "-30% 0px -60% 0px" });
+for (const id of links.keys()) { const s = $(id); if (s) spy.observe(s); }
+</script>
+</body></html>
