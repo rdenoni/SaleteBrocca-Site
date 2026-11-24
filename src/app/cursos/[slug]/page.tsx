@@ -13,6 +13,7 @@ import { StickyActionBar } from "@/components/ui/StickyActionBar";
 import { countLessons, getCourse, getCourses } from "@/lib/content/courses";
 import { FAQ_SECTION_ID, FAQ_TITLE, getCourseFaq } from "@/lib/content/faq";
 import styles from "./curso.module.css";
+import { Reveal } from "@/motion/Reveal";
 
 interface CoursePageProps {
   params: Promise<{ slug: string }>;
@@ -122,7 +123,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
           </section>
 
           <section className={styles.teacher} aria-labelledby="professora">
-            <div className={styles.teacherFigure}>
+            <Reveal variant="mask" className={styles.teacherFigure}>
               <Image
                 src="/images/about/salete-avatar.jpg"
                 alt=""
@@ -131,7 +132,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
                 sizes="120px"
                 className={styles.teacherPhoto}
               />
-            </div>
+            </Reveal>
             <div>
               <p className="eyebrow">Professora</p>
               <h2 id="professora" className={styles.teacherName}>

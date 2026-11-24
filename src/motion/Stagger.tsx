@@ -19,8 +19,12 @@ interface StaggerProps {
   once?: boolean;
   className?: string;
   "aria-label"?: string;
-  /** "inView" (padrão): ao entrar na tela. "mount": ao montar (topo da página), depois do cabeçalho e da cortina. */
-  trigger?: "inView" | "mount";
+  /** "inView" (padrão): ao entrar na tela. "mount": ao montar (topo da página), depois do cabeçalho e da cortina.
+      "parent": segue o bloco de fora (que já é Reveal/Stagger por viewport);
+      para o que fica dentro de um recorte (wipe/mask), que esconderia o próprio bloco do observador de viewport. */
+  trigger?: "inView" | "mount" | "parent";
+  /** Só com "mount": false = a cascata não segura as entradas por viewport (o que vem depois tem tempo próprio). */
+  holdsInView?: boolean;
 }
 
 /* Orquestra a entrada dos filhos <StaggerItem> em sequência, quando o grupo entra na tela (ou ao montar).
@@ -33,6 +37,7 @@ export function Stagger({
   once = true,
   className,
   trigger = "inView",
+  holdsInView = true,
   ...aria
 }: StaggerProps) {
   const t = useEntranceTokens();
@@ -51,11 +56,13 @@ export function Stagger({
   };
   /* Ao montar, a cascata faz parte do topo: o que vem abaixo espera o último item já subindo. */
   const lastItem = Math.max(0, Children.count(children) - 1);
-  useHoldInView(mount && !t.reduced ? delay + (lastItem * gap + t.duration.base) / t.pace : 0, ready);
+  useHoldInView(mount && holdsInView && !t.reduced ? delay + (lastItem * gap + t.duration.base) / t.pace : 0, ready);
 
   const play = mount
     ? { animate: ready ? "visible" : "hidden" }
-    : {
+    : trigger === "parent"
+      ? {}
+      : {
         whileInView: "visible",
         /* Movimento reduzido: nada volta a se esconder ao sair da tela (once forçado), como no Reveal. */
         viewport: { ...t.viewport, once: once || t.reduced },
@@ -66,7 +73,7 @@ export function Stagger({
       /* Como no Reveal: com once=false, remonta ao mudar o modo para o "once forçado" do reduzido valer. */
       key={once ? undefined : t.reduced ? "reduced" : "full"}
       className={className}
-      initial="hidden"
+      initial={trigger === "parent" ? undefined : "hidden"}
       variants={variants}
       {...play}
       {...aria}

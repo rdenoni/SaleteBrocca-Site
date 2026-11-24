@@ -13,6 +13,7 @@ import { HOME_COURSES } from "@/lib/content/home";
 import type { Course } from "@/types/content";
 import { CountUp } from "./CountUp";
 import styles from "./CourseCard.module.css";
+import { Reveal } from "@/motion/Reveal";
 
 /* No hover o card sobe poucos pixels (a foto aproxima 1,04 em CSS, dentro da moldura). */
 const HOVER_LIFT = -4;
@@ -54,7 +55,8 @@ export function CourseCard({ course }: CourseCardProps) {
             <TransitionLink href={courseHref} className={styles.cardLink} tabIndex={-1} aria-hidden="true" />
           )}
           <div className={styles.media}>
-            <div className={styles.zoom}>
+            {/* A base azul com a foto desvela de cima para baixo (o zoom do hover continua no CSS). */}
+            <Reveal variant="mask" className={styles.zoom}>
               <div className={styles.imageLayer}>
                 <Image
                   src={course.image}
@@ -64,7 +66,7 @@ export function CourseCard({ course }: CourseCardProps) {
                   className={styles.image}
                 />
               </div>
-            </div>
+            </Reveal>
             <span className={styles.badge}>{available ? HOME_COURSES.badge : HOME_COURSES.soonBadge}</span>
           </div>
           <div className={styles.body}>

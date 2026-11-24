@@ -3,6 +3,12 @@ import Link from "next/link";
 import type { Product } from "@/types/content";
 import { ProductMedia } from "./ProductMedia";
 import styles from "./ProductCard.module.css";
+import { Reveal } from "@/motion/Reveal";
+import { overlapAfter } from "@/motion/timeline";
+import { duration } from "@/motion/tokens";
+
+/* A foto do card se desvela (de cima para baixo) com o card 30% formado. */
+const CARD_PHOTO_DELAY = overlapAfter(duration.gentle);
 
 interface ProductCardProps {
   product: Product;
@@ -14,10 +20,10 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <article className={styles.card} data-status={product.status} data-linked="true">
-      <div className={styles.media}>
+      <Reveal variant="mask" delay={CARD_PHOTO_DELAY} className={styles.media}>
         <ProductMedia product={product} sizes="(max-width: 767px) 100vw, 400px" />
         {comingSoon && <span className={styles.statusBadge}>Em breve</span>}
-      </div>
+      </Reveal>
       <div className={styles.body}>
         <span className={styles.chip}>{product.kind}</span>
         <h3 className={styles.title}>

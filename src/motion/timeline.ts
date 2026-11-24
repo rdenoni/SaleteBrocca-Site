@@ -45,9 +45,21 @@ export function heroTimeline(t: TimingTokens, wordCount = 3): HeroTimelineStep[]
 
 /** Quando o primeiro bloco depois do banner (PageBanner) pode começar: com o subtítulo (ou o extra) já subindo. */
 export function afterBanner(t: TimingTokens, title: string, hasExtra = false): number {
+  return bannerTextStart(t, title, hasExtra) + t.duration.base;
+}
+
+/** Quando o subtítulo (ou o extra) do banner começa a subir. */
+export function bannerTextStart(t: TimingTokens, title: string, hasExtra = false): number {
   const steps = heroTimeline(t, countWords(title));
-  const last = steps.find((step) => step.id === (hasExtra ? "cta" : "text"));
-  return (last?.start ?? 0) + t.duration.base;
+  return steps.find((step) => step.id === (hasExtra ? "cta" : "text"))?.start ?? 0;
+}
+
+/* Telas de ritmo curto (Loja, Conteúdo, Área do Aluno): o conjunto seguinte entra com o anterior 30% formado. */
+export const OVERLAP = 0.3;
+
+/** Quanto depois do início de um movimento (de `duration` s) ele está 30% formado. */
+export function overlapAfter(duration: number): number {
+  return OVERLAP * duration;
 }
 
 /** Atraso do conteúdo de uma seção em relação ao título dela (TextReveal sem atraso): a última palavra já subindo. */

@@ -4,6 +4,7 @@ import { LinkArrow } from "@/components/ui/LinkArrow";
 import { ARTICLE_AUTHOR, getArticleCategory } from "@/lib/content/articles";
 import { Reveal } from "@/motion/Reveal";
 import { Stagger, StaggerItem } from "@/motion/Stagger";
+import { overlapAfter } from "@/motion/timeline";
 import { motionTokens } from "@/motion/tokens";
 import type { Article } from "@/types/content";
 import styles from "./FeaturedArticle.module.css";
@@ -16,15 +17,14 @@ interface FeaturedArticleProps {
 }
 
 const { duration, stagger } = motionTokens;
-/* A base navy se desvela primeiro; o texto começa com ela já subindo. */
-const BODY_DELAY = duration.base;
-/* Itens do bloco de texto (selo, título, autora, link): a foto entra quando o último já está subindo. */
-const BODY_ITEMS = 4;
-const PHOTO_DELAY = BODY_DELAY + (BODY_ITEMS - 1) * stagger.items + duration.base;
+/* A base navy se desvela de cima para baixo; o texto começa com ela 30% formada. */
+const BODY_DELAY = overlapAfter(duration.slow);
+/* Bloco de texto (selo, título, autora, link): a foto entra com o título (2º item) já subindo. */
+const PHOTO_DELAY = BODY_DELAY + stagger.items + duration.base;
 
 /* Destaque da biblioteca: foto grande e bloco navy com o título "Palavra-chave: título".
    Dois links de verdade (o título e "Leia o artigo"), cada um com o próprio hover e foco; o card não é um botão.
-   Entrada: a base navy se desvela → selo → título → autora → "Leia o artigo" → a foto se desvela
+   Entrada: a base navy se desvela (de cima para baixo) → selo → título → autora → "Leia o artigo", com a foto se desvelando depois do título
    (ao montar, com entranceDelay). A foto nunca aparece antes do texto que a apresenta (ordem de leitura). */
 export function FeaturedArticle({ article, entranceDelay }: FeaturedArticleProps) {
   const trigger = entranceDelay === undefined ? "inView" : "mount";

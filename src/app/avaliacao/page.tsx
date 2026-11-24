@@ -43,7 +43,7 @@ const institution = PROFILE_ACTIVITIES.find((activity) => activity.icon === "ins
 const realTestimonial = getTestimonials().filter((testimonial) => !testimonial.simulated)[0];
 
 /* Movimento (MOTION-SYSTEM), por hierarquia: banner (título → subtítulo) → título do formulário → cartão e campos,
-   um a um → retrato (se desvela de baixo para cima; a ousadia desta tela). Daqui para baixo, cada seção entra ao
+   um a um → retrato (se desvela de cima para baixo; a ousadia desta tela). Daqui para baixo, cada seção entra ao
    chegar à tela, o título primeiro (afterTitle) e o resto em seguida. O depoimento usa a leitura guiada. */
 const { stagger } = motionTokens;
 const FORM_START = afterBanner(motionTokens, EVALUATION_PAGE.title);
@@ -171,7 +171,7 @@ export default function EvaluationPage() {
             >
               {/* A foto tem entrada própria, um passo depois do cartão (nunca antes do texto dele). */}
               {realTestimonial.photo && (
-                <Reveal variant="scale" delay={motionTokens.duration.base} className={styles.quotePhoto}>
+                <Reveal variant="mask" delay={motionTokens.duration.base} className={styles.quotePhoto}>
                   <Image src={realTestimonial.photo} alt="" width={128} height={128} />
                 </Reveal>
               )}

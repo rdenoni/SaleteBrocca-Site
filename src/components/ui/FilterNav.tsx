@@ -22,16 +22,26 @@ interface FilterNavProps {
   keepScroll?: boolean;
   /** Com valor (s), as pílulas entram em cascata ao montar, a partir desse atraso. Sem valor, ficam estáticas. */
   entranceDelay?: number;
+  /** false: a cascata das pílulas não segura as entradas por viewport (ex.: lateral da Loja, ao lado do conteúdo). */
+  entranceHolds?: boolean;
   /** "vertical": coluna de pílulas a partir de 1100px (barra lateral); abaixo disso, igual ao padrão. */
   orientation?: "horizontal" | "vertical";
 }
 
 /* Filtros em pílula; o atual vira ciano (texto navy) e recebe aria-current. */
-export function FilterNav({ label, items, id, keepScroll = false, entranceDelay, orientation = "horizontal" }: FilterNavProps) {
+export function FilterNav({
+  label,
+  items,
+  id,
+  keepScroll = false,
+  entranceDelay,
+  entranceHolds = true,
+  orientation = "horizontal",
+}: FilterNavProps) {
   const animated = entranceDelay !== undefined;
   const List = animated ? Stagger : "ul";
   const Item = animated ? StaggerItem : "li";
-  const listProps = animated ? { as: "ul" as const, trigger: "mount" as const, delay: entranceDelay } : {};
+  const listProps = animated ? { as: "ul" as const, trigger: "mount" as const, delay: entranceDelay, holdsInView: entranceHolds } : {};
   const itemProps = animated ? { as: "li" as const } : {};
 
   return (

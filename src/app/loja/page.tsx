@@ -23,24 +23,26 @@ import {
 import { Reveal } from "@/motion/Reveal";
 import { Stagger, StaggerItem } from "@/motion/Stagger";
 import { TextReveal } from "@/motion/TextReveal";
-import { afterBanner, afterTitle } from "@/motion/timeline";
+import { afterTitle, bannerTextStart, overlapAfter } from "@/motion/timeline";
 import { motionTokens } from "@/motion/tokens";
 import type { Product } from "@/types/content";
 import styles from "./loja.module.css";
 
 const BANNER_TITLE = "Loja";
 const { duration, stagger } = motionTokens;
-/* Movimento (ordem por hierarquia): banner → título do catálogo → total → categorias (lateral) → destaque (o cartão
-   se desvela, o texto sobe item a item e só então a foto) — tudo ao montar. Daqui para baixo, ao chegar à tela:
-   a grade em cascata, a faixa "Sobre a compra" e a ponte para os cursos. */
-const TOP_START = afterBanner(motionTokens, BANNER_TITLE);
+/* Movimento (ordem de leitura, em sobreposição): banner → categorias (lateral) com o subtítulo 30% formado → título
+   do catálogo quando a pílula Aplicativos termina → total → destaque (a base se desvela de cima para baixo e, com ela
+   30% formada, o texto sobe item a item; a foto depois do título) — o topo ao montar. Daqui para baixo, ao chegar à
+   tela: a grade em cascata, a faixa "Sobre a compra" e a ponte para os cursos. */
 const ALL_TITLE = "Todos os produtos";
-/* Tempos do topo (ao montar): título → total → rótulo "Categorias" → pílulas. Fixos pelo título "Todos": se
-   variassem com a categoria, trocar o filtro re-registraria a espera do topo e a grade nova esperaria segundos. */
-const TOTAL_START = TOP_START + afterTitle(motionTokens, ALL_TITLE);
-const SIDEBAR_START = TOTAL_START + stagger.items;
-/* Itens do texto do destaque: selo, tipo, título, resumo, preço, pagamento e botões. */
-const FEATURED_TEXT_ITEMS = 7;
+/* Tempos do topo (ao montar). Não variam com a categoria: se variassem, trocar o filtro re-registraria a espera do
+   topo e a grade nova esperaria segundos. */
+const SIDEBAR_START = bannerTextStart(motionTokens, BANNER_TITLE) + overlapAfter(duration.gentle);
+const PILLS_START = SIDEBAR_START + stagger.items;
+/* Pílula "Aplicativos" (depois de "Todos"): o título entra quando ela termina de subir. */
+const APPS_PILL = 1 + PRODUCT_CATEGORIES.findIndex((category) => category.id === "aplicativos");
+const TOP_START = PILLS_START + APPS_PILL * stagger.items + duration.base;
+const TOTAL_START = TOP_START + overlapAfter(duration.slow);
 const BRIDGE_TITLE = "Procurando os cursos?";
 
 const SUBTITLE =
@@ -72,19 +74,19 @@ function EntryCard({ entry }: { entry: ShopEntry }) {
   return entry.type === "course" ? <ShopCourseCard course={entry.course} /> : <ProductCard product={entry.product} />;
 }
 
-/* O texto começa com o cartão já se abrindo; a foto nunca antes do texto que a apresenta (último item já subindo). */
-const FEATURED_TEXT_START = duration.base;
-const FEATURED_MEDIA_START = FEATURED_TEXT_START + (FEATURED_TEXT_ITEMS - 1) * stagger.items + duration.base;
+/* O texto começa com a base 30% desvelada; a foto nunca antes do texto que a apresenta (o título, 3º item, já subindo). */
+const FEATURED_TEXT_START = overlapAfter(duration.slow);
+const FEATURED_MEDIA_START = FEATURED_TEXT_START + 2 * stagger.items + duration.base;
 
-/* Por viewport, não ao montar: na primeira carga espera o topo (pílulas) pela ordem de leitura; ao voltar para
+/* Por viewport, não ao montar: na primeira carga espera o topo (até o total) pela ordem de leitura; ao voltar para
    "Todos" pelo filtro (mesma página, sem banner), entra logo em vez de esperar os tempos do topo. */
 function FeaturedProduct({ product }: { product: Product }) {
   return (
     <Reveal as="section" variant="mask" className={styles.featured} aria-labelledby="destaque-titulo">
-      <Reveal variant="mask" delay={FEATURED_MEDIA_START} className={styles.featuredMedia}>
+      <Reveal variant="mask" trigger="parent" delay={FEATURED_MEDIA_START} className={styles.featuredMedia}>
         <ProductMedia product={product} sizes="(max-width: 767px) 100vw, 480px" />
       </Reveal>
-      <Stagger className={styles.featuredText} delay={FEATURED_TEXT_START}>
+      <Stagger className={styles.featuredText} trigger="parent" delay={FEATURED_TEXT_START}>
         <StaggerItem>
           <span className={styles.featuredFlag}>Destaque</span>
         </StaggerItem>
@@ -242,7 +244,9 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
               items={filters}
               keepScroll
               orientation="vertical"
-              entranceDelay={SIDEBAR_START + stagger.items}
+              entranceDelay={PILLS_START}
+              /* A lateral corre ao lado do conteúdo: o destaque e a grade esperam o total, não a última pílula. */
+              entranceHolds={false}
             />
           </div>
 

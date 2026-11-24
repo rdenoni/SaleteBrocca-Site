@@ -2,7 +2,8 @@ import { Info } from "lucide-react";
 import { FilterNav, type FilterItem } from "@/components/ui/FilterNav";
 import { ARTICLES_ARE_EXAMPLES, getArticleCategories, getArticles } from "@/lib/content/articles";
 import { Reveal } from "@/motion/Reveal";
-import { stagger } from "@/motion/tokens";
+import { overlapAfter } from "@/motion/timeline";
+import { duration } from "@/motion/tokens";
 import styles from "./ArticleCategoryNav.module.css";
 
 interface ArticleCategoryNavProps {
@@ -19,7 +20,7 @@ function articlesLabel(count: number): string {
 /* id="categorias": âncora dos filtros (/conteudo#categorias). */
 export function ArticleCategoryNav({ current, entranceDelay }: ArticleCategoryNavProps) {
   const pillsDelay =
-    entranceDelay === undefined ? undefined : entranceDelay + (ARTICLES_ARE_EXAMPLES ? stagger.cards * 2 : 0);
+    entranceDelay === undefined ? undefined : entranceDelay + (ARTICLES_ARE_EXAMPLES ? overlapAfter(duration.gentle) : 0);
   const total = getArticles().length;
   const items: FilterItem[] = [
     { label: "Todos", href: "/conteudo", current: current === undefined, count: total, countLabel: articlesLabel(total) },

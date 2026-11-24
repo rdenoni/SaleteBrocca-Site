@@ -8,9 +8,9 @@ import { DrawRule } from "@/motion/DrawRule";
 import { useHoldInView } from "@/motion/pageSequence";
 import { Reveal, revealVariants } from "@/motion/Reveal";
 import { TextReveal } from "@/motion/TextReveal";
-import { afterBanner, heroTimeline } from "@/motion/timeline";
+import { heroTimeline, overlapAfter } from "@/motion/timeline";
 import { useEntranceReady } from "@/motion/transitions/useEntranceReady";
-import { useMotionTokens } from "@/motion/useMotionTokens";
+import { useEntranceTokens, useMotionTokens } from "@/motion/useMotionTokens";
 import styles from "./AuthCard.module.css";
 
 /* Quando o formulário do cartão começa (s, contados a partir da liberação da página): o texto de apoio já subindo. */
@@ -21,13 +21,15 @@ const FormDelayContext = createContext(0);
    O atraso inicial vem do cartão, que sabe quanto o título e o texto levam. */
 /** `delayOverride`: para formulário fora do AuthCard (ex.: Minha conta), que não recebe o atraso pelo contexto. */
 export function useAuthCascade(delayOverride?: number): { ready: boolean; delay: number; cascade: Variants; item: Variants } {
-  const t = useMotionTokens();
+  /* Tokens de entrada: a cascata segue o ritmo da área (MotionPace), como o título e o texto do cartão. */
+  const t = useEntranceTokens();
   const ready = useEntranceReady();
   const contextDelay = useContext(FormDelayContext);
+  /* `delay` volta em tempo normal (quem o usa num Reveal aplica o ritmo); a cascata aplica aqui. */
   const delay = delayOverride ?? contextDelay;
   const cascade: Variants = {
     hidden: {},
-    visible: { transition: { delayChildren: stagger(t.reduced ? 0 : t.stagger.items, { startDelay: delay }) } },
+    visible: { transition: { delayChildren: stagger(t.reduced ? 0 : t.stagger.items, { startDelay: delay * t.pace }) } },
   };
   return { ready, delay, cascade, item: revealVariants("rise", t) };
 }
@@ -52,10 +54,12 @@ export function AuthCard({ title, lead, children, formItems = children ? 1 : 0, 
   const t = useMotionTokens();
   const ready = useEntranceReady();
   const step = (seconds: number): number => (t.reduced ? 0 : seconds);
-  const steps = heroTimeline(t, title.split(/\s+/).length);
-  const start = (id: (typeof steps)[number]["id"]): number => step(steps.find((s) => s.id === id)?.start ?? 0);
+  /* Em sobreposição: cada peça entra com a anterior 30% formada (título → régua → texto → formulário). */
+  const titleStart = step(heroTimeline(t, title.split(/\s+/).length).find((s) => s.id === "title")?.start ?? 0);
+  const ruleStart = titleStart + step(overlapAfter(t.duration.slow));
+  const textStart = ruleStart + step(overlapAfter(t.duration.slow));
 
-  const formDelay = step(afterBanner(t, title));
+  const formDelay = textStart + step(overlapAfter(t.duration.gentle));
   const tailDelay = formDelay + step(formItems * t.stagger.items);
   /* O que está abaixo do cartão (rodapé do site) espera o fim desta sequência. */
   useHoldInView(step(tailDelay + 2 * t.stagger.items + t.duration.base), ready);
@@ -81,10 +85,10 @@ export function AuthCard({ title, lead, children, formItems = children ? 1 : 0, 
             text={title}
             trigger="mount"
             play={ready}
-            delay={start("title")}
+            delay={titleStart}
           />
-          <DrawRule trigger="mount" play={ready} delay={start("rule")} />
-          <Reveal as="p" trigger="mount" play={ready} delay={start("text")} className={styles.lead}>
+          <DrawRule trigger="mount" play={ready} delay={ruleStart} />
+          <Reveal as="p" trigger="mount" play={ready} delay={textStart} className={styles.lead}>
             {lead}
           </Reveal>
           <FormDelayContext.Provider value={formDelay}>{children}</FormDelayContext.Provider>

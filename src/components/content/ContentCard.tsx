@@ -3,6 +3,12 @@ import Link from "next/link";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import type { Article } from "@/types/content";
 import styles from "./ContentCard.module.css";
+import { Reveal } from "@/motion/Reveal";
+import { overlapAfter } from "@/motion/timeline";
+import { duration } from "@/motion/tokens";
+
+/* A foto do card se desvela (de cima para baixo) com o card 30% formado. */
+const CARD_PHOTO_DELAY = overlapAfter(duration.gentle);
 
 export type ContentCardTone = "light" | "blue";
 
@@ -22,7 +28,7 @@ export function ContentCard({ article, tone = "light", letter }: ContentCardProp
           {letter}
         </span>
       )}
-      <div className={styles.photo}>
+      <Reveal variant="mask" delay={CARD_PHOTO_DELAY} className={styles.photo}>
         <Image
           src={article.image}
           alt={article.imageAlt}
@@ -30,7 +36,7 @@ export function ContentCard({ article, tone = "light", letter }: ContentCardProp
           sizes="(max-width: 1099px) 60vw, 280px"
           style={article.imagePosition ? { objectPosition: article.imagePosition } : undefined}
         />
-      </div>
+      </Reveal>
       <div className={styles.panel}>
         <h3 className={styles.title}>
           <Link href={href} className={styles.link}>

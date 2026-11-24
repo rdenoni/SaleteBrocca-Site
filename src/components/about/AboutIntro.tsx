@@ -16,10 +16,10 @@ interface AboutIntroProps {
   sections: readonly { id: string; label: string }[];
 }
 
-/* Foto: a moldura se desvela de baixo para cima (recorte) enquanto a foto assenta 1,08 → 1.
+/* Foto: a moldura se desvela de cima para baixo (recorte) enquanto a foto assenta 1,08 → 1.
    Pedido da cliente: a foto não pode aparecer antes do texto. Custo aceito: a foto (provável LCP) só pinta quando entra. */
 const SETTLE_FROM = 1.08;
-const FRAME_CLOSED = "inset(100% 0% 0% 0%)";
+const FRAME_CLOSED = "inset(0% 0% 100% 0%)";
 const FRAME_OPEN = "inset(0% 0% 0% 0%)";
 /* Deslocamento de onde cada peça chega para se encaixar atrás do retrato (o encaixe, como na Home). */
 const PIECE_TRAVEL = 40;

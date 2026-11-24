@@ -12,7 +12,7 @@ type RevealTag = "div" | "section" | "article" | "header" | "footer" | "aside" |
 export interface RevealProps {
   children: ReactNode;
   as?: RevealTag;
-  /** rise: sobe 24px · fade: só opacidade · mask: desvela de baixo para cima · scale: aproxima 4%. */
+  /** rise: sobe 24px · fade: só opacidade · mask: desvela de cima para baixo, parado (fotos e bases) · scale: aproxima 4%. */
   variant?: RevealVariant;
   delay?: number;
   /** false = entrada e saída: o bloco volta ao estado inicial quando sai da tela (mais rápido, curva "in"). */
@@ -25,8 +25,10 @@ export interface RevealProps {
   "aria-hidden"?: boolean;
   /** Superfície do bloco (ex.: "dark"), lida pelos estilos globais de foco e link. */
   "data-surface"?: string;
-  /** "inView" (padrão): ao entrar na tela. "mount": ao montar (topo da página), segurado por `play`. */
-  trigger?: "inView" | "mount";
+  /** "inView" (padrão): ao entrar na tela. "mount": ao montar (topo da página), segurado por `play`.
+      "parent": segue o bloco de fora (que já é Reveal/Stagger por viewport);
+      para o que fica dentro de um recorte (wipe/mask), que esconderia o próprio bloco do observador de viewport. */
+  trigger?: "inView" | "mount" | "parent";
   /** Só com trigger "mount": false segura o estado inicial. Sem valor, espera a cortina de transição abrir. */
   play?: boolean;
 }
@@ -58,14 +60,11 @@ export function revealVariants(variant: RevealVariant, t: ResolvedMotionTokens, 
         hidden: { opacity: 0, scale: 0.96, transition: exit },
         visible: { opacity: 1, scale: 1, transition: enter },
       };
+    /* Fotos e bases: o recorte desce de cima para baixo, sem deslocamento (subir enquanto desce brigaria). */
     case "mask":
       return {
-        hidden: { clipPath: "inset(100% 0% 0% 0%)", y: t.distance.small, transition: exit },
-        visible: {
-          clipPath: "inset(0% 0% 0% 0%)",
-          y: 0,
-          transition: { duration: t.duration.slow, ease: t.ease.out, ...ownDelay },
-        },
+        hidden: { clipPath: "inset(0% 0% 100% 0%)", transition: exit },
+        visible: { clipPath: "inset(0% 0% 0% 0%)", transition: { duration: t.duration.slow, ease: t.ease.out, ...ownDelay } },
       };
     case "rise":
     default:
@@ -107,16 +106,18 @@ export function Reveal({
       id={id}
       className={className}
       data-reveal=""
-      initial="hidden"
+      initial={trigger === "parent" ? undefined : "hidden"}
       {...(trigger === "mount"
         ? { animate: (play ?? ready) ? "visible" : "hidden" }
-        : {
+        : trigger === "parent"
+          ? {}
+          : {
             whileInView: "visible",
             /* Movimento reduzido: nada volta a se esconder ao sair da tela (once forçado). */
             viewport: { ...t.viewport, once: once || t.reduced, amount: amount ?? t.viewport.amount },
           })}
       /* Por viewport: espera o topo da página se a seção já estava na tela ao abrir (ordem de leitura). */
-      variants={trigger === "inView" ? withInViewWait(variants) : variants}
+      variants={trigger === "mount" ? variants : withInViewWait(variants)}
       {...aria}
     >
       {children}

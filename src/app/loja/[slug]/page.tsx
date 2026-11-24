@@ -10,6 +10,7 @@ import { LinkArrow } from "@/components/ui/LinkArrow";
 import { StickyActionBar } from "@/components/ui/StickyActionBar";
 import { getCheckoutHref, getProduct, getProducts, isProductAvailable } from "@/lib/content/shop";
 import styles from "./produto.module.css";
+import { Reveal } from "@/motion/Reveal";
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
@@ -64,9 +65,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className={styles.top}>
           <figure className={styles.gallery}>
             <span className={styles.galleryBlock} aria-hidden="true" />
-            <div className={styles.galleryFrame}>
+            <Reveal variant="mask" className={styles.galleryFrame}>
               <ProductMedia product={product} sizes="(max-width: 1099px) 100vw, 640px" priority />
-            </div>
+            </Reveal>
           </figure>
 
           <section className={styles.panel} aria-labelledby="compra-titulo">

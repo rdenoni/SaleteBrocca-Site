@@ -4,6 +4,12 @@ import Link from "next/link";
 import { isCourseAvailable } from "@/lib/content/courses";
 import type { Course } from "@/types/content";
 import styles from "./ProductCard.module.css";
+import { Reveal } from "@/motion/Reveal";
+import { overlapAfter } from "@/motion/timeline";
+import { duration } from "@/motion/tokens";
+
+/* A foto do card se desvela (de cima para baixo) com o card 30% formado. */
+const CARD_PHOTO_DELAY = overlapAfter(duration.gentle);
 
 interface ShopCourseCardProps {
   course: Course;
@@ -19,10 +25,10 @@ export function ShopCourseCard({ course }: ShopCourseCardProps) {
       data-status={available ? "available" : "coming-soon"}
       data-linked={available ? "true" : undefined}
     >
-      <div className={styles.media}>
+      <Reveal variant="mask" delay={CARD_PHOTO_DELAY} className={styles.media}>
         <Image src={course.image} alt={course.imageAlt} fill sizes="(max-width: 767px) 100vw, 400px" />
         {!available && <span className={styles.statusBadge}>Em breve</span>}
-      </div>
+      </Reveal>
       <div className={styles.body}>
         <span className={styles.chip}>Curso online</span>
         <h3 className={styles.title}>

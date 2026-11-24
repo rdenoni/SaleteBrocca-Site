@@ -4,6 +4,12 @@ import { Button } from "@/components/ui/Button";
 import { countLessons, isCourseAvailable } from "@/lib/content/courses";
 import type { Course } from "@/types/content";
 import styles from "./CourseCard.module.css";
+import { Reveal } from "@/motion/Reveal";
+import { overlapAfter } from "@/motion/timeline";
+import { duration } from "@/motion/tokens";
+
+/* A foto do card se desvela (de cima para baixo) com o card 30% formado. */
+const CARD_PHOTO_DELAY = overlapAfter(duration.gentle);
 
 interface CourseCardProps {
   course: Course;
@@ -15,10 +21,10 @@ export function CourseCard({ course }: CourseCardProps) {
   const lessons = countLessons(course);
   return (
     <article id={`curso-${course.slug}`} className={`${styles.card} ${available ? "" : styles.soon}`}>
-      <div className={styles.media}>
+      <Reveal variant="mask" delay={CARD_PHOTO_DELAY} className={styles.media}>
         <Image src={course.image} alt={course.imageAlt} fill sizes="(max-width: 767px) 100vw, 600px" />
         <span className={styles.badge}>{available ? "Curso online" : "Em breve"}</span>
-      </div>
+      </Reveal>
       <div className={styles.body}>
         <h3 className={styles.title}>{course.title}</h3>
         <p className={styles.text}>{course.audience}</p>

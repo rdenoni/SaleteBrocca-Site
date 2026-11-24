@@ -30,8 +30,8 @@ const OPEN = "inset(0% 0% 0% 0%)";
 const FROM_BELOW = "inset(100% 0% 0% 0%)";
 const FROM_RIGHT = "inset(0% 0% 0% 100%)";
 const FROM_LEFT = "inset(0% 100% 0% 0%)";
-const CIRCLE_CLOSED = "circle(0% at 50% 50%)";
-const CIRCLE_OPEN = "circle(75% at 50% 50%)";
+/* Foto do avatar: desvela de cima para baixo, como as outras fotos do site (o círculo vem do raio do CSS). */
+const PHOTO_CLOSED = "inset(0% 0% 100% 0%)";
 /* Gesto de arrastar: passou desta distância (px) ou desta velocidade (px/s), troca de depoimento. */
 const SWIPE_OFFSET = 60;
 const SWIPE_VELOCITY = 500;
@@ -97,7 +97,7 @@ function buildVariants(t: ResolvedMotionTokens, startDelay: number, rise: boolea
         }),
       };
 
-  /* Avatar: o anel aparece e a imagem (foto ou iniciais) se revela num círculo que cresce do centro. */
+  /* Avatar: o anel aparece e a imagem (foto ou iniciais) se desvela de cima para baixo. */
   const ring: Variants = {
     enter: { opacity: 0, transition: { duration: t.duration.quick } },
     center: { opacity: 1, transition: { duration: t.duration.base, ease: t.ease.out } },
@@ -110,13 +110,13 @@ function buildVariants(t: ResolvedMotionTokens, startDelay: number, rise: boolea
         exit: { opacity: 0, clipPath: "none", transition: fadeIn },
       }
     : {
-        enter: { opacity: 0, clipPath: CIRCLE_CLOSED },
+        enter: { opacity: 0, clipPath: PHOTO_CLOSED },
         center: {
           opacity: 1,
-          clipPath: CIRCLE_OPEN,
+          clipPath: OPEN,
           transition: { duration: t.duration.slow, ease: t.ease.stroke, opacity: { duration: t.duration.base } },
         },
-        exit: { opacity: 0, clipPath: CIRCLE_CLOSED, transition: { duration: t.duration.base, ease: t.ease.in } },
+        exit: { opacity: 0, clipPath: PHOTO_CLOSED, transition: { duration: t.duration.base, ease: t.ease.in } },
       };
 
   /* Nome, função e etiqueta: só aparecem (fade). */

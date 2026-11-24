@@ -107,7 +107,7 @@ function entranceVariants(t: ResolvedMotionTokens, delay: number) {
       visible: { opacity: 1, x: 0, transition: enter(tLetter, t.duration.gentle, t.ease.out) },
     } satisfies Variants,
     photo: {
-      hidden: { clipPath: "inset(100% 0% 0% 0%)" },
+      hidden: { clipPath: "inset(0% 0% 100% 0%)" },
       visible: { clipPath: OPEN, transition: enter(tPhoto, t.duration.slow, t.ease.out) },
     } satisfies Variants,
     photoImage: {
