@@ -5,8 +5,6 @@
   left: 0;
   right: 0;
   z-index: 60;
-  max-width: var(--page-max);
-  margin-inline: auto;
   height: 4px;
   background: var(--cyan);
   transform-origin: left center;

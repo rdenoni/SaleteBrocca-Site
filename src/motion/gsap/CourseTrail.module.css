@@ -93,7 +93,10 @@
   overflow: hidden;
 }
 
+/* Os cards correm dentro de --page-max (o fundo da faixa segue de ponta a ponta). O motor mede viewport.clientWidth. */
 .root[data-mode="trail"] .viewport {
+  max-width: var(--page-max);
+  margin-inline: auto;
   overflow: hidden;
 }
 

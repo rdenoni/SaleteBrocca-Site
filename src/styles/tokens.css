@@ -45,10 +45,8 @@
 
   /* Layout */
   --container: 1200px;
-  /* Largura máxima do site inteiro (largura de referência do layout); acima dela sobra o fundo --page-backdrop. */
+  /* Largura máxima do conteúdo (largura de referência do layout). Os fundos das seções seguem de ponta a ponta. */
   --page-max: 1440px;
-  /* Navy escurecido (derivado da marca, ≈ #0a1724): mais escuro que o rodapé e os blocos navy, para a borda do site seguir visível. */
-  --page-backdrop: color-mix(in srgb, var(--navy) 65%, black);
   --header-height: 128px;
   --header-height-compact: 72px;
   --page-gutter: var(--space-12);

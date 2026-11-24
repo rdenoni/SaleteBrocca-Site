@@ -31,7 +31,7 @@
 
 .inner {
   width: 100%;
-  max-width: 1776px;
+  max-width: var(--page-max);
   margin-inline: auto;
   padding: 208px calc(var(--page-gutter) + var(--space-16)) var(--space-16);
 }

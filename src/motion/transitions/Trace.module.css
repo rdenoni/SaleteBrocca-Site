@@ -8,8 +8,6 @@
   right: 0;
   z-index: 90; /* acima do cabeçalho (50) abaixo do link de pular (100) */
   width: 100%;
-  max-width: var(--page-max);
-  margin-inline: auto;
   height: 3px;
   background: var(--cyan);
   transform: scaleX(0);
