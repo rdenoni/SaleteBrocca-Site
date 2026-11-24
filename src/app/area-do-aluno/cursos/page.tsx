@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { COURSES_PATH } from "@/lib/auth-paths";
 import { getEnrolledCourses, getStudentProgress, requireStudentSession } from "@/lib/content/student";
+import { MotionPace, STUDENT_PACE } from "@/motion/MotionPace";
 import { Reveal } from "@/motion/Reveal";
 import { motionTokens } from "@/motion/tokens";
 import styles from "./meus-cursos.module.css";
@@ -25,35 +26,37 @@ export default async function MyCoursesPage() {
   const [courses, progress] = await Promise.all([getEnrolledCourses(), getStudentProgress()]);
 
   return (
-    <StudentShell title={TITLE} active="cursos">
-      <ul className={styles.list}>
-        {courses.map((course, index) => (
-          <li key={course.slug}>
-            <ContinueCard
-              course={course}
-              progress={progress}
-              variant="card"
-              entranceDelay={studentContentStart(TITLE) + index * stagger.cards}
-            />
-          </li>
-        ))}
-        {/* Só faz sentido enquanto o aluno tiver no máximo um curso. */}
-        {courses.length <= 1 && (
-          <Reveal as="li">
-            <EmptyState
-              icon={<GraduationCap aria-hidden="true" />}
-              title={courses.length === 0 ? "Você ainda não tem cursos" : "Você ainda não tem outros cursos"}
-              text={
-                courses.length === 0
-                  ? "Assim que a compra for confirmada, o curso aparece aqui. Se você acabou de comprar, aguarde alguns minutos."
-                  : "Quando novos cursos forem lançados, eles aparecerão no catálogo."
-              }
-            >
-              <LinkArrow href="/cursos">{courses.length === 0 ? "Conhecer os cursos" : "Ver o catálogo"}</LinkArrow>
-            </EmptyState>
-          </Reveal>
-        )}
-      </ul>
-    </StudentShell>
+    <MotionPace pace={STUDENT_PACE}>
+      <StudentShell title={TITLE} active="cursos">
+        <ul className={styles.list}>
+          {courses.map((course, index) => (
+            <li key={course.slug}>
+              <ContinueCard
+                course={course}
+                progress={progress}
+                variant="card"
+                entranceDelay={studentContentStart(TITLE) + index * stagger.cards}
+              />
+            </li>
+          ))}
+          {/* Só faz sentido enquanto o aluno tiver no máximo um curso. */}
+          {courses.length <= 1 && (
+            <Reveal as="li">
+              <EmptyState
+                icon={<GraduationCap aria-hidden="true" />}
+                title={courses.length === 0 ? "Você ainda não tem cursos" : "Você ainda não tem outros cursos"}
+                text={
+                  courses.length === 0
+                    ? "Assim que a compra for confirmada, o curso aparece aqui. Se você acabou de comprar, aguarde alguns minutos."
+                    : "Quando novos cursos forem lançados, eles aparecerão no catálogo."
+                }
+              >
+                <LinkArrow href="/cursos">{courses.length === 0 ? "Conhecer os cursos" : "Ver o catálogo"}</LinkArrow>
+              </EmptyState>
+            </Reveal>
+          )}
+        </ul>
+      </StudentShell>
+    </MotionPace>
   );
 }

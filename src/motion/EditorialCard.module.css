@@ -3,7 +3,8 @@
 .card {
   position: relative;
   display: grid;
-  grid-template-columns: 56% 1fr;
+  /* Máscara da foto ~40% mais larga horizontalmente em desktop largo (56% → 78%). */
+  grid-template-columns: 78% 1fr;
   grid-template-rows: 1fr auto;
   height: 100%;
   min-height: 520px;
@@ -16,6 +17,10 @@
 
 .card[data-tone="blue"] {
   background: var(--blue);
+}
+
+.card[data-tone="navy"] {
+  background: var(--navy);
 }
 
 /* Modo "scroll": o fundo do card passa a ser este bloco, que varre da esquerda por scaleX (sem clip-path).
@@ -34,6 +39,10 @@
 
 .card[data-tone="blue"] .block {
   background: var(--blue);
+}
+
+.card[data-tone="navy"] .block {
+  background: var(--navy);
 }
 
 .letter {
@@ -92,8 +101,9 @@
   background: color-mix(in srgb, var(--white) 82%, transparent);
 }
 
-.card[data-tone="blue"] .panel {
-  background: color-mix(in srgb, var(--light-gray) 90%, transparent);
+.card[data-tone="blue"] .panel,
+.card[data-tone="navy"] .panel {
+  background: color-mix(in srgb, var(--light-gray) 92%, transparent);
 }
 
 .title {
@@ -132,7 +142,8 @@
   outline-offset: -8px;
 }
 
-.card[data-tone="blue"]:has(.link:focus-visible) {
+.card[data-tone="blue"]:has(.link:focus-visible),
+.card[data-tone="navy"]:has(.link:focus-visible) {
   outline-color: var(--white);
 }
 
@@ -151,7 +162,8 @@
   color: var(--blue-strong);
 }
 
-.card[data-tone="blue"] .more {
+.card[data-tone="blue"] .more,
+.card[data-tone="navy"] .more {
   color: var(--white);
 }
 

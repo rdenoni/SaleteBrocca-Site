@@ -119,6 +119,7 @@
 }
 
 .text {
+  font: 400 16px/28px var(--font-serif);
   color: var(--charcoal);
 }
 
@@ -164,11 +165,12 @@
 }
 
 .soon .zoom {
+  background: var(--text-muted);
   transform: none !important;
 }
 
 .soon .imageLayer {
-  opacity: 0.7;
+  opacity: 0.78;
 }
 
 .soonNote {

@@ -68,7 +68,7 @@
 
 .logo {
   width: auto;
-  height: 40px;
+  height: 54px;
 }
 
 .close {
@@ -106,10 +106,10 @@
   color: var(--cyan);
 }
 
-/* Página atual: pílula ciano com texto navy (contraste do sistema). */
+/* Página atual: pílula ciano com texto branco (pedido explícito do usuário). */
 .link[aria-current="page"] {
   background: var(--cyan);
-  color: var(--navy);
+  color: var(--white);
 }
 
 .studentWrap {

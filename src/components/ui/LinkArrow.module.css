@@ -8,6 +8,11 @@
   text-transform: uppercase;
   color: var(--blue-strong);
   text-decoration: none;
+  transition: color var(--motion-quick) var(--ease-out);
+}
+
+.link:hover {
+  color: var(--navy);
 }
 
 /* Área de toque de 48px sem mudar o espaçamento do layout (o texto tem 24px de altura). */
@@ -19,12 +24,12 @@
 
 .link svg {
   flex: none;
-  transition: transform var(--motion-quick) var(--ease-out);
+  transition: transform var(--motion-base) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .link:hover svg,
 .link:focus-visible svg {
-  transform: translateX(4px);
+  transform: translateX(5px);
 }
 
 @media (prefers-reduced-motion: reduce) {

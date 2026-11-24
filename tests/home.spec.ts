@@ -173,7 +173,7 @@ test.describe("Home", () => {
   test("avaliação da Home leva a /avaliacao pelo link 'Como funciona a avaliação'", async ({ page }) => {
     await expect(page.locator("#avaliacao").getByRole("link", { name: "Como funciona a avaliação" })).toHaveAttribute(
       "href",
-      "/avaliacao#como-funciona",
+      "/avaliacao",
     );
   });
 
@@ -257,7 +257,7 @@ test.describe("Home", () => {
     await expect(slide.getByText("Depoimento simulado")).toHaveCount(0);
     await expect(slide.getByText(/simulad/i)).toHaveCount(0);
     await expect(carousel.getByRole("button", { name: /Ir para o depoimento \d de 4/ })).toHaveCount(4);
-    await expect(carousel.getByText("Depoimentos 2 a 4 são simulados para demonstrar a troca.")).toBeVisible();
+    await expect(carousel.getByText("Depoimentos 2 a 4 são simulados para demonstrar a troca.")).toHaveCount(0);
   });
 
   test("os depoimentos 2 a 4 mostram a etiqueta 'Depoimento simulado' e o nome marcado", async ({ page }) => {
@@ -322,17 +322,10 @@ test.describe("Home", () => {
     await expect(carousel.getByRole("group", { name: "2 de 4" })).toBeVisible({ timeout: 6_000 });
   });
 
-  test("o botão de pausa (WCAG 2.2.2) alterna e tem alvo de 48px", async ({ page }) => {
+  test("carrossel de depoimentos exibe somente os 4 pontos centralizados (sem play/pause nem barra de tempo)", async ({ page }) => {
     const carousel = await openCarousel(page);
-    const pause = carousel.getByRole("button", { name: "Pausar depoimentos" });
-    const box = (await pause.boundingBox())!;
-    expect(box.width).toBeGreaterThanOrEqual(47.5);
-    expect(box.height).toBeGreaterThanOrEqual(47.5);
-    await pause.click();
-    const resume = carousel.getByRole("button", { name: "Retomar depoimentos" });
-    await expect(resume).toHaveAttribute("aria-pressed", "true");
-    await resume.click();
-    await expect(carousel.getByRole("button", { name: "Pausar depoimentos" })).toHaveAttribute("aria-pressed", "false");
+    await expect(carousel.getByRole("button", { name: /Pausar|Retomar/ })).toHaveCount(0);
+    await expect(carousel.getByRole("button", { name: /Ir para o depoimento \d de 4/ })).toHaveCount(4);
   });
 
   test("trocar de depoimento não muda a altura do palco (±2px)", async ({ page }) => {

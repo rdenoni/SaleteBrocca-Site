@@ -4,6 +4,7 @@ import { StudentShell, studentContentStart } from "@/components/student/StudentS
 import { EmptyState } from "@/components/ui/EmptyState";
 import { getCourse } from "@/lib/content/courses";
 import { getMaterials, requireStudentSession } from "@/lib/content/student";
+import { MotionPace, STUDENT_PACE } from "@/motion/MotionPace";
 import { Reveal } from "@/motion/Reveal";
 import { Stagger, StaggerItem } from "@/motion/Stagger";
 import styles from "./materiais.module.css";
@@ -22,7 +23,8 @@ export default async function MaterialsPage() {
   const courseTitle = (slug: string) => getCourse(slug)?.title ?? "";
 
   return (
-    <StudentShell title={TITLE} active="materiais">
+    <MotionPace pace={STUDENT_PACE}>
+      <StudentShell title={TITLE} active="materiais">
       {materials.length === 0 ? (
         <Reveal trigger="mount" delay={studentContentStart(TITLE)}>
           <EmptyState
@@ -52,6 +54,7 @@ export default async function MaterialsPage() {
           ))}
         </Stagger>
       )}
-    </StudentShell>
+      </StudentShell>
+    </MotionPace>
   );
 }

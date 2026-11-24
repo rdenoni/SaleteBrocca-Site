@@ -42,6 +42,8 @@ export const ENROLLMENT_STATUS_LABEL: Readonly<Record<EnrollmentStatus, string>>
 export interface StudentSession {
   userId: string;
   email: string | undefined;
+  /** Nome vindo de user_metadata (full_name / name / display_name), quando cadastrado. */
+  name: string | undefined;
 }
 
 /** Aluno autenticado desta requisição (valida o token com `getClaims`); null sem login ou sem Supabase. */
@@ -51,7 +53,20 @@ export const getStudentSession = cache(async (): Promise<StudentSession | null> 
   const { data } = await supabase.auth.getClaims();
   const claims = data?.claims;
   if (!claims?.sub) return null;
-  return { userId: claims.sub, email: typeof claims.email === "string" ? claims.email : undefined };
+  const meta =
+    claims.user_metadata && typeof claims.user_metadata === "object"
+      ? (claims.user_metadata as Record<string, unknown>)
+      : null;
+  const name =
+    (typeof meta?.full_name === "string" && meta.full_name.trim()) ||
+    (typeof meta?.name === "string" && meta.name.trim()) ||
+    (typeof meta?.display_name === "string" && meta.display_name.trim()) ||
+    undefined;
+  return {
+    userId: claims.sub,
+    email: typeof claims.email === "string" ? claims.email : undefined,
+    name,
+  };
 });
 
 /** Exige login no modo real (o proxy é só a primeira barreira). Na demonstração devolve null e não redireciona. */

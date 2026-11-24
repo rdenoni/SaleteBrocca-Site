@@ -31,11 +31,11 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--space-6);
+  gap: clamp(12px, 1.5vw, 24px);
   max-width: 1776px;
   height: var(--header-height);
   margin-inline: auto;
-  padding: 0 var(--space-12) 0 var(--space-16);
+  padding: 0 clamp(24px, 3vw, 48px) 0 clamp(28px, 3.5vw, 56px);
   background: var(--white);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-header);
@@ -53,11 +53,69 @@
   height: 56px;
 }
 
-/* Pilha do logo: a imagem original (no fluxo) e, só durante a entrada, as cópias por cima, com o mesmo tamanho:
-   o nome recortado e as duas peças do símbolo. Ver HeaderLogo em Header.tsx. */
+/* Pilha do logo: a imagem original (no fluxo) e, na entrada ou no hover, as cópias por cima com as duas peças. */
 .logoStack {
   position: relative;
   display: block;
+  transition:
+    scale var(--motion-gentle) var(--ease-out),
+    translate var(--motion-gentle) var(--ease-out);
+}
+
+.logoHover {
+  position: absolute;
+  inset: 0;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-quick) var(--ease-out);
+}
+
+.logoHoverPiece {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transition: translate var(--motion-gentle) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .logo:hover .logoStack {
+    scale: 1.03;
+    translate: 0 -1.5px;
+  }
+
+  .logo:hover .logoStack:has(.logoHover) .logoBase {
+    opacity: 0 !important;
+  }
+
+  .logo:hover .logoHover {
+    opacity: 1;
+  }
+
+  .logo:hover .logoHoverPiece:first-child {
+    translate: -2px -1.5px;
+  }
+
+  .logo:hover .logoHoverPiece:last-child {
+    translate: 2px 1.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo:hover .logoStack,
+  .logo:hover .logoHoverPiece:first-child,
+  .logo:hover .logoHoverPiece:last-child {
+    scale: none;
+    translate: none;
+  }
+
+  .logo:hover .logoStack:has(.logoHover) .logoBase {
+    opacity: 1 !important;
+  }
+
+  .logo:hover .logoHover {
+    opacity: 0;
+  }
 }
 
 .logoBase {
@@ -121,7 +179,7 @@
 .navList {
   display: flex;
   height: 100%;
-  gap: var(--space-1);
+  gap: clamp(2px, 0.7vw, 10px);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -131,9 +189,10 @@
   display: flex;
 }
 
-/* Rótulo do link: inline-block para receber o deslocamento da entrada. */
+/* Rótulo do link: inline-block para receber o deslocamento da entrada e o crescimento suave no hover. */
 .navLabel {
   display: inline-block;
+  transition: scale var(--motion-quick) var(--ease-out);
 }
 
 .navLink {
@@ -141,12 +200,31 @@
   z-index: 1;
   display: flex;
   align-items: flex-start;
-  padding: 44px 18px 0;
+  padding: 44px clamp(10px, 1.35vw, 20px) 0;
   font: 700 14px/20px var(--font-sans);
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--navy);
   text-decoration: none;
+  transition: color var(--motion-quick) var(--ease-out);
+}
+
+.navLink[data-active],
+.navLink[aria-current="page"] {
+  color: var(--white);
+}
+
+@media (hover: hover) {
+  .navLink:hover .navLabel {
+    scale: 1.07;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navLink:hover .navLabel {
+    scale: none;
+  }
 }
 
 /* Camadas que se movem: cobrem a lista inteira e são recortadas (clip-path) até o item de destino. */
@@ -191,28 +269,80 @@
 }
 
 .actions {
+  flex: none;
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  margin-left: var(--space-6);
+  margin-left: clamp(8px, 1.2vw, 24px);
 }
 
 .actions .studentButton {
   min-height: 52px;
-  padding-inline: 28px;
+  min-width: 52px;
+  padding-inline: 16px;
+  gap: 0;
+  white-space: nowrap;
+  transition:
+    padding 840ms cubic-bezier(0.22, 1, 0.36, 1),
+    gap 840ms cubic-bezier(0.22, 1, 0.36, 1),
+    color var(--motion-quick) var(--ease-out),
+    border-color var(--motion-quick) var(--ease-out);
+}
+
+/* Desktop: começa compacto (só o ícone) e expande suavemente (2x mais lento, curva ease-out expressiva) no hover, foco ou página atual. */
+@media (min-width: 1100px) {
+  .actions .studentButton > span:nth-child(2) {
+    display: inline-block;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition:
+      max-width 840ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .actions .studentButton:hover,
+  .actions .studentButton:focus-visible,
+  .actions .studentButton[aria-current="page"] {
+    padding-inline: 24px;
+    gap: 10px;
+  }
+
+  .actions .studentButton:hover > span:nth-child(2),
+  .actions .studentButton:focus-visible > span:nth-child(2),
+  .actions .studentButton[aria-current="page"] > span:nth-child(2) {
+    max-width: 200px;
+    opacity: 1;
+  }
+}
+
+@media (min-width: 1100px) and (prefers-reduced-motion: reduce) {
+  .actions .studentButton {
+    padding-inline: 24px;
+    gap: 10px;
+  }
+
+  .actions .studentButton > span:nth-child(2) {
+    max-width: 200px;
+    opacity: 1;
+  }
 }
 
 @media (max-width: 1240px) {
   .header {
-    padding-inline: var(--space-8);
+    padding-inline: var(--space-6);
+  }
+
+  .navList {
+    gap: 2px;
   }
 
   .navLink {
-    padding-inline: 12px;
+    padding-inline: 10px;
   }
 
   .actions {
-    margin-left: var(--space-3);
+    margin-left: var(--space-2);
   }
 }
 
@@ -228,12 +358,12 @@
 
   .header {
     height: var(--header-height-compact);
-    padding: 0 var(--space-3) 0 var(--space-4);
+    padding: 0 var(--space-4) 0 var(--space-6);
     border-radius: var(--radius-md);
   }
 
   .logoImage {
-    height: 40px;
+    height: 50px;
   }
 
   /* Logo do mesmo tamanho; o link ganha folga para a área de toque de 48px (+0,5px: a pílula nasce com transform
@@ -257,7 +387,7 @@
   }
 
   /* Só o ícone: o rótulo (2º filho do MotionButton) continua para leitores de tela e sai do fluxo (sem o gap). */
-  .actions .studentButton > span:nth-child(2) {
+  .actions .studentButton>span:nth-child(2) {
     position: absolute;
     width: 1px;
     height: 1px;

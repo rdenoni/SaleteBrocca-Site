@@ -13,6 +13,7 @@ import {
   type ReactNode,
 } from "react";
 import { PAGE_TRANSITION_MODE, type PageTransitionMode } from "../settings";
+import { getSavedScroll } from "../SmoothScroll";
 import { Trace, type TraceHandle } from "./Trace";
 
 export type { PageTransitionMode };
@@ -224,7 +225,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
         /* scrollIntoView respeita o scroll-padding-top do <html>: o alvo fica abaixo do cabeçalho fixo. */
         const anchor = hashTarget(target.hash);
         if (anchor) anchor.scrollIntoView({ block: "start", behavior: "instant" });
-        else window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+        else window.scrollTo({ top: getSavedScroll(target.pathname), left: 0, behavior: "instant" });
         await nextFrames(PAINT_FRAMES);
         await finishReveal(runId, trace);
       })();

@@ -9,6 +9,8 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 const NO_STORE = { "Cache-Control": "no-store" } as const;
+/* Limite defensivo para o corpo do webhook (payloads legítimos da Kiwify têm poucos KB). */
+const MAX_BODY_BYTES = 256 * 1024;
 
 function json(status: number, body: Record<string, unknown>, headers: Record<string, string> = {}) {
   return NextResponse.json(body, { status, headers: { ...NO_STORE, ...headers } });
@@ -32,7 +34,15 @@ export async function POST(request: Request) {
   const store = openStore();
   if (!store) return notConfigured();
 
+  const contentLength = Number(request.headers.get("content-length") ?? 0);
+  if (Number.isFinite(contentLength) && contentLength > MAX_BODY_BYTES) {
+    return json(413, { error: "payload muito grande" });
+  }
+
   const rawBody = await request.text();
+  if (Buffer.byteLength(rawBody, "utf8") > MAX_BODY_BYTES) {
+    return json(413, { error: "payload muito grande" });
+  }
   const signature = new URL(request.url).searchParams.get("signature");
 
   const result = await handleKiwifyWebhook(rawBody, signature, {

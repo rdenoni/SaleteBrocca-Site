@@ -1,10 +1,53 @@
 "use client";
 
-import { cubicBezier, useScroll, useTransform, type EasingFunction, type MotionValue } from "motion/react";
-import { useRef, type RefObject } from "react";
+import {
+  cubicBezier,
+  useMotionValue,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+  type EasingFunction,
+  type MotionValue,
+} from "motion/react";
+import { useEffect, useRef, type RefObject } from "react";
 import { useScrollWillChange } from "./useScrollWillChange";
 import { ease } from "./tokens";
 import { useMotionTokens } from "./useMotionTokens";
+
+/* Limiar a partir do qual uma animação guiada por scroll é considerada concluída e trava em 1 (não reverte ao subir). */
+const LOCK_THRESHOLD = 0.99;
+
+/* Progresso ligado ao scroll que trava em 1 assim que o usuário completa toda a animação (sem reverse ao rolar para cima).
+   Enquanto ainda está no meio (0 → <1), acompanha a rolagem normalmente. */
+export function useLockedProgress(source: MotionValue<number>, lockAt = LOCK_THRESHOLD): MotionValue<number> {
+  const initial = source.get();
+  const doneRef = useRef(initial >= lockAt);
+  const locked = useMotionValue(doneRef.current ? 1 : initial);
+
+  useMotionValueEvent(source, "change", (latest) => {
+    if (doneRef.current) return;
+    if (latest >= lockAt) {
+      doneRef.current = true;
+      locked.set(1);
+      return;
+    }
+    locked.set(latest);
+  });
+
+  useEffect(() => {
+    const current = source.get();
+    if (doneRef.current) {
+      locked.set(1);
+    } else if (current >= lockAt) {
+      doneRef.current = true;
+      locked.set(1);
+    } else {
+      locked.set(current);
+    }
+  }, [source, locked, lockAt]);
+
+  return locked;
+}
 
 /* Onde, na altura da tela, o TOPO do card está quando a entrada começa e quando termina.
    Começa com o card já ~12% dentro da tela (não colado na borda de baixo, como o gatilho antigo de 88%)
@@ -22,18 +65,13 @@ export interface ScrollEntranceOptions {
 }
 
 export interface ScrollEntrance {
-  /** Progresso 0 → 1 da entrada (preso nas pontas). */
+  /** Progresso 0 → 1 da entrada (preso nas pontas e travado em 1 após completar). */
   progress: MotionValue<number>;
   /** Estilo pronto para um elemento motion: só opacidade e transform. */
   style: { opacity: MotionValue<number> | number; y: MotionValue<number> | number };
 }
 
-/* Entrada de card ligada à rolagem: rolar para baixo revela, rolar para cima desfaz.
-   - Só motion values (nenhuma leitura de layout nem estado do React por quadro).
-   - O useTransform prende nas pontas: um card que já passou do trecho (link direto, ex.: /home#cursos) mede
-     progresso 1 ao montar e aparece inteiro. Nunca fica preso invisível.
-   - Movimento reduzido: sem ligação com o scroll, o card fica visível e parado. Devolve valores fixos em vez
-     de trocar o `style` entre motion value e undefined (o servidor não sabe da preferência e já emitiu opacity 0). */
+/* Entrada de card ligada à rolagem: rolar para baixo revela e, uma vez concluída (100%), trava sem voltar no reverse. */
 export function useScrollEntrance(ref: RefObject<HTMLElement | null>, { index = 0, step = 0 }: ScrollEntranceOptions = {}): ScrollEntrance {
   const t = useMotionTokens();
   const shift = index * step;
@@ -44,12 +82,13 @@ export function useScrollEntrance(ref: RefObject<HTMLElement | null>, { index = 
       [0, ENTRANCE_END - shift],
     ],
   });
-  const opacity = useTransform(scrollYProgress, [0, OPACITY_DONE_AT], [0, 1]);
-  const y = useTransform(scrollYProgress, [0, 1], [t.distance.base, 0]);
+  const progress = useLockedProgress(scrollYProgress);
+  const opacity = useTransform(progress, [0, OPACITY_DONE_AT], [0, 1]);
+  const y = useTransform(progress, [0, 1], [t.distance.base, 0]);
 
-  useScrollWillChange(ref, scrollYProgress, !t.reduced, "transform, opacity");
+  useScrollWillChange(ref, progress, !t.reduced, "transform, opacity");
 
-  return { progress: scrollYProgress, style: t.reduced ? { opacity: 1, y: 0 } : { opacity, y } };
+  return { progress, style: t.reduced ? { opacity: 1, y: 0 } : { opacity, y } };
 }
 
 /* ---------------------------------------------------------------------------------------------------------------
@@ -101,23 +140,21 @@ export interface EditorialScrollEntrance {
   more: { opacity: Num; y: Num };
 }
 
-/* Entrada do card em camadas, ligada à rolagem (rolar para cima desfaz). O progresso é preso nas pontas: um card
-   que já ficou para trás (link direto, ex.: /home#cursos) mede 1 ao montar e aparece inteiro.
-   Movimento reduzido: valores fixos (visível, sem transform) em vez de trocar `style` entre motion value e número,
-   porque o servidor não conhece a preferência e já emitiu o estado escondido. */
+/* Entrada do card em camadas, ligada à rolagem. Uma vez concluída (100%), trava em 1 e não desfaz ao rolar para cima. */
 export function useEditorialScrollEntrance(
   ref: RefObject<HTMLElement | null>,
   { index = 0, step = 0 }: ScrollEntranceOptions = {},
 ): EditorialScrollEntrance {
   const t = useMotionTokens();
   const shift = index * step;
-  const { scrollYProgress: progress } = useScroll({
+  const { scrollYProgress } = useScroll({
     target: ref,
     offset: [
       [0, EDITORIAL_START - shift],
       [0, EDITORIAL_END - shift],
     ],
   });
+  const progress = useLockedProgress(scrollYProgress);
   const out = EASE_OUT;
   const sweep = EASE_SWEEP;
 

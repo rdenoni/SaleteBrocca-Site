@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { ACCOUNT_PATH } from "@/lib/auth-paths";
 import { ENROLLMENT_STATUS_LABEL, getEnrollments, isDemoMode, requireStudentSession } from "@/lib/content/student";
+import { MotionPace, STUDENT_PACE } from "@/motion/MotionPace";
 import { Reveal } from "@/motion/Reveal";
 import { Stagger, StaggerItem } from "@/motion/Stagger";
 import { motionTokens } from "@/motion/tokens";
@@ -32,22 +33,25 @@ export default async function AccountPage() {
 
   if (isDemoMode() || !session) {
     return (
-      <StudentShell title={TITLE} active="conta">
-        <Reveal trigger="mount" delay={START}>
-          <EmptyState
-            icon={<UserRound aria-hidden="true" />}
-            title="Conta ainda não ativa"
-            text="Seus dados, a troca de senha e as compras aparecerão aqui quando o login estiver ativo."
-          />
-        </Reveal>
-      </StudentShell>
+      <MotionPace pace={STUDENT_PACE}>
+        <StudentShell title={TITLE} active="conta">
+          <Reveal trigger="mount" delay={START}>
+            <EmptyState
+              icon={<UserRound aria-hidden="true" />}
+              title="Conta ainda não ativa"
+              text="Seus dados, a troca de senha e as compras aparecerão aqui quando o login estiver ativo."
+            />
+          </Reveal>
+        </StudentShell>
+      </MotionPace>
     );
   }
 
   const enrollments = await getEnrollments();
 
   return (
-    <StudentShell title={TITLE} subtitle="Seus dados de acesso, sua senha e suas compras." active="conta">
+    <MotionPace pace={STUDENT_PACE}>
+      <StudentShell title={TITLE} subtitle="Seus dados de acesso, sua senha e suas compras." active="conta">
       <div className={styles.grid}>
         <section className={styles.panel} aria-labelledby="conta-dados">
           <Stagger trigger="mount" delay={panelStart(0)} className={styles.stack}>
@@ -116,6 +120,7 @@ export default async function AccountPage() {
           </Stagger>
         </section>
       </div>
-    </StudentShell>
+      </StudentShell>
+    </MotionPace>
   );
 }

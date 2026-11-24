@@ -1,4 +1,5 @@
 import { ChevronDown } from "lucide-react";
+import { Stagger, StaggerItem } from "@/motion/Stagger";
 import type { Module } from "@/types/content";
 import styles from "./ModuleList.module.css";
 
@@ -12,12 +13,12 @@ function lessonLabel(count: number): string {
   return count === 1 ? "1 aula" : `${count} aulas`;
 }
 
-/* Acordeão nativo (<details>/<summary>): acessível por teclado e sem JavaScript. */
+/* Acordeão nativo (<details>/<summary>) com entrada em cascata (Stagger/StaggerItem): acessível por teclado e sem JS. */
 export function ModuleList({ modules, openModule }: ModuleListProps) {
   return (
-    <ol className={styles.list}>
+    <Stagger as="ol" pace="items" className={styles.list}>
       {modules.map((module) => (
-        <li key={module.number}>
+        <StaggerItem as="li" key={module.number}>
           <details className={styles.module} open={module.number === openModule}>
             <summary className={styles.head}>
               <span className={styles.number} aria-hidden="true">
@@ -46,8 +47,8 @@ export function ModuleList({ modules, openModule }: ModuleListProps) {
               </ol>
             </div>
           </details>
-        </li>
+        </StaggerItem>
       ))}
-    </ol>
+    </Stagger>
   );
 }

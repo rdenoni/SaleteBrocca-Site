@@ -21,6 +21,9 @@
   /* O símbolo é quadrado (viewBox 360×360): a caixa reserva a mesma altura que o SVG único tinha. */
   aspect-ratio: 1;
   margin-bottom: var(--space-12);
+  transition:
+    scale var(--motion-gentle) var(--ease-out),
+    translate var(--motion-gentle) var(--ease-out);
 }
 
 /* Cada peça do símbolo é uma camada HTML própria, empilhada na mesma caixa (o Motion move estes elementos,
@@ -29,6 +32,34 @@
 .piece {
   position: absolute;
   inset: 0;
+}
+
+.piece {
+  transition: translate var(--motion-gentle) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .symbolWrap:hover {
+    scale: 1.06;
+    translate: 0 -4px;
+  }
+
+  .symbolWrap:hover .piece:first-child {
+    translate: -4px -3px;
+  }
+
+  .symbolWrap:hover .piece:last-child {
+    translate: 4px 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .symbolWrap:hover,
+  .symbolWrap:hover .piece:first-child,
+  .symbolWrap:hover .piece:last-child {
+    scale: none;
+    translate: none;
+  }
 }
 
 .pieceSvg {

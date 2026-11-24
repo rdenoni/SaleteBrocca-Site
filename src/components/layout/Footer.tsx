@@ -32,7 +32,7 @@ export function Footer({ columns, year }: FooterProps) {
     <footer className={styles.footer} data-surface="dark" style={footerStyle}>
       <Stagger className={styles.main}>
         {columns.map((column) => (
-          <StaggerItem key={column.title}>
+          <StaggerItem key={column.title} className={styles.columnWrap}>
             <nav className={styles.column} aria-label={column.title}>
               <h2 className={styles.title}>{column.title}</h2>
               <ul className={styles.links}>
@@ -49,7 +49,7 @@ export function Footer({ columns, year }: FooterProps) {
         ))}
 
         <StaggerItem className={styles.brand}>
-          <Reveal variant="fade" delay={t.duration.gentle}>
+          <Reveal variant="fade" delay={t.duration.gentle} className={styles.logoWrap}>
             <Image
               src="/brand/logo/logo-empilhado-branco.png"
               alt="Salete Brocca"

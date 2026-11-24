@@ -19,7 +19,7 @@ import styles from "./Header.module.css";
 
 const HOME_HREF = "/";
 const LOGO_SRC = "/brand/logo/logo-lateral-cor.png";
-const LOGO_SIZES = "(max-width: 1099px) 130px, 181px";
+const LOGO_SIZES = "(max-width: 1099px) 168px, 181px";
 /* Onde o PNG oficial (500 × 155) se divide: o símbolo ocupa as colunas 19–127 e o nome "SaleteBrocca" começa na 152.
    Medido pixel a pixel (alfa > 8): as colunas 128–151 são totalmente transparentes. Cortar em 140 (28%) não
    atravessa nenhum pixel pintado, então o nome recortado nunca toca o símbolo. */
@@ -161,6 +161,31 @@ function HeaderLogo({ ready }: { ready: boolean }) {
               <span className={styles.logoCopyImage} style={{ backgroundImage: `url(${LOGO_SRC})` }} />
             </motion.span>
           ) : null}
+        </span>
+      ) : null}
+      {phase === "done" && !t.reduced ? (
+        /* Camada de hover (mesma reação da frase-conceito): no repouso invisível (só o PNG oficial aparece);
+           no hover do link, as duas peças SVG se afastam suavemente enquanto o nome permanece nítido. */
+        <span className={styles.logoHover} aria-hidden="true">
+          <span className={styles.logoSymbol} style={SYMBOL_BOX}>
+            {SYMBOL_PIECES.map((piece) => (
+              <span key={piece.key} className={styles.logoHoverPiece}>
+                <svg className={styles.logoPieceSvg} viewBox={SYMBOL_VIEWBOX} overflow="visible" focusable="false">
+                  <path
+                    d={piece.d}
+                    fill="none"
+                    stroke={piece.color}
+                    strokeWidth={SYMBOL_STROKE}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+            ))}
+          </span>
+          <span className={styles.logoPart} style={{ clipPath: WORDMARK_OPEN }}>
+            <span className={styles.logoCopyImage} style={{ backgroundImage: `url(${LOGO_SRC})` }} />
+          </span>
         </span>
       ) : null}
     </span>

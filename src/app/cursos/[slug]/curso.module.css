@@ -70,13 +70,13 @@
 }
 
 /* Onde um rótulo ainda precede o título ("Ao final do curso"), o respiro entre os dois continua. */
-:global(.eyebrow) + .heading {
+:global(.eyebrow)+.heading {
   margin-top: var(--space-3);
 }
 
 .lead {
   max-width: 640px;
-  font: 400 19px/30px var(--font-sans);
+  font: 400 18px/32px var(--font-serif);
   color: var(--charcoal);
 }
 
@@ -148,28 +148,18 @@
   background: var(--light-gray);
 }
 
-/* Bloco ciano deslocado atrás da foto (mesmo recurso do retrato em Sobre). */
 .teacherFigure {
   position: relative;
   flex: none;
   width: 120px;
   height: 120px;
-}
-
-.teacherFigure::before {
-  content: "";
-  position: absolute;
-  right: -12px;
-  bottom: -12px;
-  width: 80%;
-  height: 80%;
   border-radius: var(--radius-lg);
-  background: var(--cyan);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
 }
 
 .teacherPhoto {
-  position: relative;
-  z-index: 1;
+  display: block;
   width: 120px;
   height: 120px;
   object-fit: cover;

@@ -33,7 +33,7 @@ test.describe("Avaliação", () => {
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1, name: "Avaliação" })).toBeVisible();
     await expect(page.getByRole("heading", { level: 2, name: "Quem atende" })).toBeVisible();
-    await expect(page.getByRole("heading", { level: 2, name: "Como funciona a avaliação" })).toBeVisible();
+    await expect(page.locator("#como-funciona")).toHaveCount(0);
     await expect(page.locator("section#formulario")).toHaveCount(1);
   });
 
@@ -98,33 +98,31 @@ test.describe("Avaliação", () => {
     );
   });
 
-  test("detalhes não confirmados mostram 'A confirmar'", async ({ page }) => {
-    const facts = page.locator("#como-funciona dl");
-    await expect(facts.locator("> div")).toHaveCount(4);
-    for (const label of ["Local / modalidade", "Horários", "Faixa etária", "Valor"]) {
-      const tile = facts.locator("div").filter({ has: page.getByText(label, { exact: true }) });
-      await expect(tile.locator(".pending")).toHaveText("A confirmar");
-    }
-    await expect(facts.locator(".pending")).toHaveCount(4);
+  test("seção 'Como funciona' removida enquanto não há dados confirmados", async ({ page }) => {
+    await expect(page.locator("#como-funciona")).toHaveCount(0);
   });
 
-  test("como funciona: botão leva ao formulário e não há etapas inventadas", async ({ page }) => {
-    const how = page.locator("#como-funciona");
-    await expect(how.getByRole("link", { name: "Pedir avaliação" })).toHaveAttribute("href", "#formulario");
-    await expect(how.locator("ol")).toHaveCount(0);
-  });
-
-  test("só o depoimento real da Daniele, sem simulados nem carrossel", async ({ page }) => {
-    const section = page.getByRole("region", { name: "Depoimento" });
-    await expect(section.getByText("Daniele Schlichting Fusinato")).toBeVisible();
-    await expect(section.locator("blockquote")).toHaveCount(1);
-    await expect(page.locator("blockquote")).toHaveCount(1);
-    await expect(page.getByText(/simulad/i)).toHaveCount(0);
+  test("depoimentos rotativos como na Home, começando pelo depoimento real da Daniele", async ({ page }) => {
+    const carousel = page.getByRole("region", { name: "Depoimentos", exact: true }).last();
+    await carousel.scrollIntoViewIfNeeded();
+    const slide = carousel.getByRole("group", { name: "1 de 4" });
+    await expect(slide).toContainText("Daniele Schlichting Fusinato");
+    await expect(carousel.getByRole("button", { name: /Ir para o depoimento \d de 4/ })).toHaveCount(4);
   });
 
   test("sem rolagem horizontal e imagens carregadas", async ({ page }) => {
     await expectNoHorizontalScroll(page);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.reload();
     await loadAllImages(page);
+    /* Rola a página inteira para disparar todos os reveals por viewport antes da captura. */
+    const height = await page.evaluate(() => document.documentElement.scrollHeight);
+    for (let y = 0; y <= height; y += 500) {
+      await page.evaluate((top) => window.scrollTo(0, top), y);
+      await page.waitForTimeout(80);
+    }
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(300);
     await fullPageShot(page, "avaliacao");
   });
 });

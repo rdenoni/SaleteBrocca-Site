@@ -110,6 +110,75 @@
   justify-self: end;
 }
 
+/* Botões Anterior / Próximo: seguem o mesmo princípio do botão Área do Aluno.
+   No desktop começam compactos (só a seta) e expandem suavemente no hover/foco para "< Anterior" e "Próximo >". */
+.navBtn {
+  min-width: 48px;
+  min-height: 48px;
+  padding-inline: 22px;
+  gap: 8px;
+  white-space: nowrap;
+  transition:
+    padding 840ms cubic-bezier(0.22, 1, 0.36, 1),
+    gap 840ms cubic-bezier(0.22, 1, 0.36, 1),
+    color var(--motion-quick) var(--ease-out),
+    border-color var(--motion-quick) var(--ease-out);
+}
+
+.navBtnPrev {
+  flex-direction: row-reverse;
+}
+
+/* Seta para a esquerda recua para a esquerda no hover (espelha a seta de Próximo). */
+.navBtnPrev:hover > span:nth-child(3) {
+  transform: translateX(-4px);
+}
+
+@media (min-width: 768px) and (hover: hover) {
+  .navBtn {
+    padding-inline: 14px;
+    gap: 0;
+  }
+
+  .navBtn > span:nth-child(2) {
+    display: inline-block;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition:
+      max-width 840ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .navBtn:hover,
+  .navBtn:focus-visible {
+    padding-inline: 22px;
+    gap: 8px;
+  }
+
+  .navBtn:hover > span:nth-child(2),
+  .navBtn:focus-visible > span:nth-child(2) {
+    max-width: 140px;
+    opacity: 1;
+  }
+}
+
+@media (min-width: 768px) and (prefers-reduced-motion: reduce) {
+  .navBtn {
+    padding-inline: 22px;
+    gap: 8px;
+  }
+
+  .navBtn > span:nth-child(2) {
+    max-width: 140px;
+    opacity: 1;
+  }
+
+  .navBtnPrev:hover > span:nth-child(3) {
+    transform: none;
+  }
+}
+
 .saveNote {
   margin-top: calc(var(--space-3) * -1);
   font: 400 14px/20px var(--font-sans);

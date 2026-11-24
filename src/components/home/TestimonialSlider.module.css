@@ -176,16 +176,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-4);
   margin-top: var(--space-8);
-}
-
-/* Contrapeso do botão de pausa (48px + gap) à direita: as bolinhas ficam no centro exato da coluna.
-   Só a partir de 480px: em telas estreitas os 4 alvos de 48px + pausa já ocupam quase toda a largura. */
-@media (min-width: 480px) {
-  .controls {
-    padding-left: calc(48px + var(--space-4));
-  }
 }
 
 /* Nota de uma linha perto dos controles. */

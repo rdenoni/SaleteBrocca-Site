@@ -7,31 +7,29 @@
 
 .main {
   display: grid;
-  grid-template-columns: repeat(var(--footer-columns, 3), max-content) 1fr;
-  column-gap: var(--space-12);
-  row-gap: var(--space-6);
+  grid-template-columns: repeat(var(--footer-columns, 4), max-content) 1fr;
+  column-gap: clamp(24px, 3.5vw, 48px);
+  row-gap: var(--space-8);
   align-items: start;
   max-width: calc(var(--container) + 2 * var(--page-gutter));
   margin-inline: auto;
-  padding: var(--space-8) var(--page-gutter) var(--space-6); /* compacto e discreto */
+  padding: var(--space-16) var(--page-gutter) var(--space-12);
 }
 
 .title {
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-4);
   font: 700 12px/16px var(--font-sans);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--cyan);
 }
 
-/* Alvo de cada link: 44px com mouse (altura do site antigo), 48px no toque. Os alvos são reais e não se sobrepõem
-   (gap 0); o aperto visual vem das bordas da lista: margem negativa de cima tira a folga do título e a de baixo, a
-   folga do texto centrado no último link (a metade do que o alvo tem a mais que a linha de 20px). */
+/* Espaçamento limpo com alvos de 44px no mouse e 48px no toque (sem sobreposição). */
 .links {
   --footer-link-target: 44px;
   display: grid;
   gap: 0;
-  margin: calc(-1 * var(--space-2)) 0 calc((20px - var(--footer-link-target)) / 2);
+  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -55,19 +53,13 @@
 
 .linkLabel {
   display: inline-block;
-  transition: transform var(--motion-quick) var(--ease-out);
 }
 
-/* Hover/foco: o texto clareia e dá um passo de 3px para a direita (sem sublinhado). */
+/* Hover/foco: o texto apenas clareia para branco, sem deslocamento nem escala. */
 .links a:hover,
 .links a:focus-visible {
   color: var(--white);
   text-decoration: none;
-}
-
-.links a:hover .linkLabel,
-.links a:focus-visible .linkLabel {
-  transform: translateX(3px);
 }
 
 /* Bloco da marca na metade direita: logo empilhado e os perfis. */
@@ -92,7 +84,8 @@
 
 .social {
   display: flex;
-  gap: 0; /* o respiro vem das células de 48px */
+  gap: 0;
+  /* o respiro vem das células de 48px */
   margin: 0;
   padding: 0;
   list-style: none;
@@ -120,8 +113,8 @@
   position: relative;
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   padding: 0;
   border: 0;
   border-radius: var(--radius-pill);
@@ -130,11 +123,11 @@
   cursor: pointer;
 }
 
-/* O alvo real é o botão de 36px: a célula de 48px é só um div. A área de toque cresce sem mudar o visual. */
+/* O alvo real é o botão de 40px: a célula de 48px é só um div. A área de toque cresce sem mudar o visual. */
 .socialButton::before {
   content: "";
   position: absolute;
-  inset: -6px;
+  inset: -4px;
 }
 
 .socialGlyph {
@@ -143,17 +136,17 @@
 }
 
 .socialGlyph svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
-/* Anel que se desenha ao redor do botão (4px a mais de cada lado do círculo de 36px). */
+/* Anel que se desenha ao redor do botão (4px a mais de cada lado do círculo de 40px). */
 .socialRing {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   translate: -50% -50%;
   overflow: visible;
   pointer-events: none;
@@ -207,7 +200,8 @@
 .legal {
   display: inline-flex;
   align-items: center;
-  min-height: 48px; /* alvo de toque */
+  min-height: 48px;
+  /* alvo de toque */
   color: var(--white);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -221,7 +215,8 @@
 .legalButton {
   display: inline-flex;
   align-items: center;
-  min-height: 48px; /* alvo de toque */
+  min-height: 48px;
+  /* alvo de toque */
   padding: 0;
   border: 0;
   background: none;
@@ -240,7 +235,8 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 48px; /* alvo de toque */
+  min-height: 48px;
+  /* alvo de toque */
   padding: 0 var(--space-3);
   border: 2px solid var(--on-navy-muted);
   border-radius: var(--radius-pill);
@@ -267,8 +263,8 @@
 
 @media (max-width: 1099px) {
   .main {
-    grid-template-columns: repeat(var(--footer-columns, 3), 1fr);
-    column-gap: var(--space-6);
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--space-8);
   }
 
   .brand {
@@ -281,17 +277,24 @@
 
 @media (max-width: 767px) {
   .main {
-    grid-template-columns: repeat(2, 1fr);
-    padding-block: var(--space-6) var(--space-4);
+    grid-template-columns: 1fr;
+    justify-items: center;
+    padding-block: var(--space-8) var(--space-6);
   }
 
-  .logo {
-    width: 112px;
+  .columnWrap,
+  .logoWrap {
+    display: none;
+  }
+
+  .brand {
+    padding-bottom: 0;
   }
 }
 
 /* Movimento reduzido: só a cor muda, o texto não se move. */
 @media (prefers-reduced-motion: reduce) {
+
   .links a:hover .linkLabel,
   .links a:focus-visible .linkLabel {
     transform: none;

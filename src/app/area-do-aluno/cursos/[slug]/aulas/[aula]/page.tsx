@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ChevronLeft, Download, FileText, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, FileText, Play } from "lucide-react";
 import { CompleteLessonButton } from "@/components/student/CompleteLessonButton";
+import { LessonEntranceOnce } from "@/components/student/LessonEntranceOnce";
 import { LessonNotes } from "@/components/student/LessonNotes";
 import { LessonVideo } from "@/components/student/LessonVideo";
 import { LessonTabs } from "@/components/student/LessonTabs";
@@ -25,7 +26,6 @@ import {
 } from "@/lib/content/student";
 import { getLessonPlayback, type LessonPlaybackResult } from "@/lib/mux/lesson-playback";
 import { MotionButton } from "@/motion/MotionButton";
-import { MotionPace } from "@/motion/MotionPace";
 import { Reveal } from "@/motion/Reveal";
 import { Stagger, StaggerItem } from "@/motion/Stagger";
 import { TextReveal } from "@/motion/TextReveal";
@@ -103,7 +103,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const position = `Módulo ${lesson.moduleNumber} · Aula ${lesson.numberInModule}`;
 
   return (
-    <MotionPace pace={LESSON_PACE}>
+    <LessonEntranceOnce pace={LESSON_PACE}>
       <StudentShell eyebrow={position} title={lesson.title} active="cursos" activeIsAncestor>
         <Reveal trigger="mount" delay={start}>
           <Link href={`/area-do-aluno/cursos/${course.slug}`} className={styles.back}>
@@ -138,8 +138,14 @@ export default async function LessonPage({ params }: LessonPageProps) {
             <Stagger className={styles.actions} pace="items">
               <StaggerItem>
                 {previous ? (
-                  <MotionButton href={lessonHref(course.slug, previous)} variant="outline">
-                    Aula anterior
+                  <MotionButton
+                    href={lessonHref(course.slug, previous)}
+                    variant="outline"
+                    aria-label="Aula anterior"
+                    icon={<ChevronLeft aria-hidden="true" size={20} />}
+                    className={`${styles.navBtn} ${styles.navBtnPrev}`}
+                  >
+                    Anterior
                   </MotionButton>
                 ) : null}
               </StaggerItem>
@@ -154,8 +160,14 @@ export default async function LessonPage({ params }: LessonPageProps) {
               </StaggerItem>
               <StaggerItem>
                 {next ? (
-                  <MotionButton href={lessonHref(course.slug, next)} variant="primary">
-                    Próxima aula
+                  <MotionButton
+                    href={lessonHref(course.slug, next)}
+                    variant="primary"
+                    aria-label="Próxima aula"
+                    icon={<ChevronRight aria-hidden="true" size={20} />}
+                    className={styles.navBtn}
+                  >
+                    Próximo
                   </MotionButton>
                 ) : null}
               </StaggerItem>
@@ -251,6 +263,6 @@ export default async function LessonPage({ params }: LessonPageProps) {
           </Reveal>
         </div>
       </StudentShell>
-    </MotionPace>
+    </LessonEntranceOnce>
   );
 }

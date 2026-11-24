@@ -11,11 +11,40 @@
   border: 2px solid var(--light-gray);
   border-radius: var(--radius-md);
   background: var(--white);
-  transition: border-color var(--duration) var(--ease);
+  interpolate-size: allow-keywords;
+  transition:
+    border-color var(--motion-quick) var(--ease-out),
+    box-shadow var(--motion-base) cubic-bezier(0.22, 1, 0.36, 1),
+    translate var(--motion-base) cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) {
+  .module:hover {
+    border-color: var(--light-blue);
+    box-shadow: var(--shadow-card);
+    translate: 0 -2px;
+  }
+
+  .head:hover .number {
+    scale: 1.06;
+  }
 }
 
 .module[open] {
   border-color: var(--light-blue);
+  box-shadow: var(--shadow-card);
+}
+
+.module::details-content {
+  block-size: 0;
+  overflow: clip;
+  transition:
+    block-size var(--motion-base) cubic-bezier(0.22, 1, 0.36, 1),
+    content-visibility var(--motion-base) cubic-bezier(0.22, 1, 0.36, 1) allow-discrete;
+}
+
+.module[open]::details-content {
+  block-size: auto;
 }
 
 .head {
@@ -53,6 +82,7 @@
   background: var(--navy);
   color: var(--cyan);
   font: 800 16px/1 var(--font-sans);
+  transition: scale var(--motion-quick) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .titleWrap {
@@ -81,7 +111,7 @@
   width: 22px;
   height: 22px;
   color: var(--navy);
-  transition: transform var(--duration) var(--ease);
+  transition: transform var(--motion-base) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .module[open] .chevron {

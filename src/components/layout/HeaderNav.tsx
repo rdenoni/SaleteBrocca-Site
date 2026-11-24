@@ -245,6 +245,7 @@ export function HeaderNav({ currentHref, highlightedHref }: HeaderNavProps) {
                 }}
                 className={styles.navLink}
                 aria-current={item.href === currentHref ? "page" : undefined}
+                data-active={item.href === activeHref ? "" : undefined}
                 data-fallback-gota={!measured && item.href === activeHref ? "" : undefined}
                 onPointerEnter={(event) => {
                   if (event.pointerType === "mouse") setHovered(item.href);

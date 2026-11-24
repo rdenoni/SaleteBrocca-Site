@@ -1,9 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion, stagger as staggerChildren, useInView, type PanInfo, type Variants } from "motion/react";
-import { Pause, Play } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useId, useRef, useState, type AnimationEvent, type FocusEvent, type KeyboardEvent } from "react";
+import { useEffect, useId, useRef, useState, type FocusEvent, type KeyboardEvent } from "react";
 import { useMotionTokens, type ResolvedMotionTokens } from "@/motion/useMotionTokens";
 import type { Testimonial } from "@/types/content";
 import styles from "./TestimonialSlider.module.css";
@@ -299,7 +298,6 @@ function TestimonialCarousel({ items, delay, label, simulatedLabel, note, play }
     manual: false,
     cycle: 0,
   });
-  const [userPaused, setUserPaused] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [tabHidden, setTabHidden] = useState(false);
@@ -314,7 +312,7 @@ function TestimonialCarousel({ items, delay, label, simulatedLabel, note, play }
 
   const total = items.length;
   const current = items[state.index] ?? items[0];
-  const paused = userPaused || hovered || focused || tabHidden || !onScreen;
+  const paused = t.reduced || hovered || focused || tabHidden || !onScreen;
 
   /* `cycle` muda a cada troca (até para o mesmo índice) e reinicia a contagem dos 10 s. */
   function goTo(index: number, direction: Direction, manual = true) {
@@ -323,11 +321,20 @@ function TestimonialCarousel({ items, delay, label, simulatedLabel, note, play }
   const goNext = () => goTo(state.index + 1, 1);
   const goPrev = () => goTo(state.index - 1, -1);
 
-  /* Com movimento reduzido o globals.css força animation-duration: 0ms (!important) e o animationend dispararia
-     em cada remontagem: o carrossel giraria sem parar. elapsedTime 0 = relógio zerado, então não avança sozinho. */
-  function handleProgressEnd(event: AnimationEvent<HTMLSpanElement>) {
-    if (event.target === event.currentTarget && event.elapsedTime > 0) goTo(state.index + 1, 1, false);
-  }
+  /* Autoplay silencioso por temporizador (pausa no hover, foco de teclado, aba oculta, fora da tela ou movimento reduzido). */
+  useEffect(() => {
+    if (paused) return;
+    const timer = window.setTimeout(() => {
+      setState((prev) => ({
+        index: (prev.index + 1) % total,
+        direction: 1,
+        touched: true,
+        manual: false,
+        cycle: prev.cycle + 1,
+      }));
+    }, AUTOPLAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [paused, state.index, state.cycle, total]);
 
   /* Só foco por teclado pausa: clicar num ponto com o mouse não deve travar o autoplay para sempre. */
   function handleFocus(event: FocusEvent<HTMLDivElement>) {
@@ -400,37 +407,14 @@ function TestimonialCarousel({ items, delay, label, simulatedLabel, note, play }
                 onClick={() => goTo(index, index > state.index ? 1 : -1)}
               >
                 {selected ? <motion.span layoutId={`${dotId}-ativo`} className={styles.dotActive} transition={spring} /> : null}
-                {selected ? (
-                  <span
-                    key={`${state.index}-${state.cycle}`}
-                    className={styles.progress}
-                    data-paused={paused ? "" : undefined}
-                    data-reduced={t.reduced ? "" : undefined}
-                    style={{ animationDuration: `${AUTOPLAY_MS}ms` }}
-                    onAnimationEnd={handleProgressEnd}
-                    aria-hidden="true"
-                  />
-                ) : null}
               </button>
             );
           })}
         </div>
-        {/* Com movimento reduzido nada roda sozinho, então não há o que pausar. */}
-        {t.reduced ? null : (
-          <button
-            type="button"
-            className={styles.pause}
-            aria-label={userPaused ? "Retomar depoimentos" : "Pausar depoimentos"}
-            aria-pressed={userPaused}
-            onClick={() => setUserPaused((value) => !value)}
-          >
-            {userPaused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}
-          </button>
-        )}
       </div>
       {note ? <p className={styles.note}>{note}</p> : null}
       {/* Anúncio só depois de uma troca feita pela pessoa (nunca na carga da página nem no autoplay). */}
-      <div className="visually-hidden" aria-live={state.manual || userPaused ? "polite" : "off"} aria-atomic="true">
+      <div className="visually-hidden" aria-live={state.manual ? "polite" : "off"} aria-atomic="true">
         {announcement}
       </div>
     </div>

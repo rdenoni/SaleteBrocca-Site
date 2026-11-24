@@ -7,7 +7,7 @@ import { useEntranceReady } from "./transitions/useEntranceReady";
 import { useEntranceTokens, type ResolvedMotionTokens } from "./useMotionTokens";
 
 export type RevealVariant = "rise" | "fade" | "mask" | "scale";
-type RevealTag = "div" | "section" | "article" | "header" | "footer" | "aside" | "figure" | "li" | "ul" | "ol" | "p";
+type RevealTag = "div" | "section" | "article" | "header" | "footer" | "aside" | "figure" | "figcaption" | "li" | "ul" | "ol" | "p";
 
 export interface RevealProps {
   children: ReactNode;
@@ -35,6 +35,11 @@ export interface RevealProps {
 
 /* Saída sempre mais curta que a entrada e com curva "in": some sem disputar atenção. */
 export function revealVariants(variant: RevealVariant, t: ResolvedMotionTokens, delay = 0): Variants {
+  if (t.pace === 0) {
+    const instant = { opacity: 1, y: 0, scale: 1, clipPath: "inset(0% 0% 0% 0%)", transition: { duration: 0 } };
+    return { hidden: instant, visible: instant };
+  }
+
   const exit = { duration: t.duration.base, ease: t.ease.in };
   /* Sem atraso próprio, a chave `delay` fica de fora: um `delay: 0` explícito anula o atraso que a cascata do pai
      (delayChildren/stagger) passa para o filho, e os itens de um Stagger entravam todos juntos. */
@@ -92,10 +97,11 @@ export function Reveal({
 }: RevealProps) {
   const t = useEntranceTokens();
   const ready = useEntranceReady();
+  const skip = t.pace === 0;
   const MotionTag = motion[as] as typeof motion.div;
   /* Ao montar, o bloco faz parte do topo da página: o que vem abaixo espera ele já subindo (ordem de leitura).
      A espera vai em tempo normal (useHoldInView aplica o ritmo). */
-  useHoldInView(trigger === "mount" && !t.reduced ? delay + t.duration.base / t.pace : 0, play ?? ready);
+  useHoldInView(!skip && trigger === "mount" && !t.reduced ? delay + t.duration.base / t.pace : 0, play ?? ready);
   const variants = revealVariants(variant, t, delay * t.pace);
 
   return (
@@ -106,18 +112,21 @@ export function Reveal({
       id={id}
       className={className}
       data-reveal=""
-      initial={trigger === "parent" ? undefined : "hidden"}
-      {...(trigger === "mount"
-        ? { animate: (play ?? ready) ? "visible" : "hidden" }
-        : trigger === "parent"
-          ? {}
-          : {
-            whileInView: "visible",
-            /* Movimento reduzido: nada volta a se esconder ao sair da tela (once forçado). */
-            viewport: { ...t.viewport, once: once || t.reduced, amount: amount ?? t.viewport.amount },
-          })}
+      initial={skip ? false : trigger === "parent" ? undefined : "hidden"}
+      {...(skip
+        ? { animate: "visible" }
+        : trigger === "mount"
+          ? { animate: (play ?? ready) ? "visible" : "hidden" }
+          : trigger === "parent"
+            ? {}
+            : {
+              whileInView: "visible",
+              /* Movimento reduzido: nada volta a se esconder ao sair da tela (once forçado). */
+              viewport: { ...t.viewport, once: once || t.reduced, amount: amount ?? t.viewport.amount },
+            })}
       /* Por viewport: espera o topo da página se a seção já estava na tela ao abrir (ordem de leitura). */
-      variants={trigger === "mount" ? variants : withInViewWait(variants)}
+      variants={skip || trigger === "mount" ? variants : withInViewWait(variants)}
+      style={skip ? { opacity: 1, transform: "none", clipPath: "none" } : undefined}
       {...aria}
     >
       {children}

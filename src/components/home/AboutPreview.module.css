@@ -23,6 +23,7 @@
 .pieceBlue {
   position: absolute;
   border-radius: var(--radius-lg);
+  transition: translate var(--motion-gentle) var(--ease-out);
 }
 
 .pieceCyan {
@@ -49,6 +50,43 @@
   border-radius: var(--radius-lg);
   /* Safari: sem isso a foto em transform vaza do raio. */
   isolation: isolate;
+  box-shadow: var(--shadow-card);
+  transition:
+    box-shadow var(--motion-gentle) var(--ease-out),
+    translate var(--motion-gentle) var(--ease-out);
+}
+
+.frame img {
+  transition: scale var(--motion-gentle) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .photo:hover .frame {
+    box-shadow: var(--shadow-card-hover);
+    translate: 0 -4px;
+  }
+
+  .photo:hover .frame img {
+    scale: 1.04;
+  }
+
+  .photo:hover .pieceCyan {
+    translate: -6px 6px;
+  }
+
+  .photo:hover .pieceBlue {
+    translate: 6px -6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo:hover .frame,
+  .photo:hover .frame img,
+  .photo:hover .pieceCyan,
+  .photo:hover .pieceBlue {
+    translate: none;
+    scale: none;
+  }
 }
 
 .title {
@@ -91,7 +129,17 @@
   }
 
   .photo {
-    max-width: calc(100% - 48px);
+    max-width: 240px;
+  }
+
+  .pieceCyan {
+    left: -16px;
+    bottom: -16px;
+  }
+
+  .pieceBlue {
+    right: -16px;
+    top: -16px;
   }
 
   .title {

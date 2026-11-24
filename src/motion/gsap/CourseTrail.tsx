@@ -51,12 +51,16 @@ function lessonLabel(count: number): string {
   return count === 1 ? "1 aula" : `${count} aulas`;
 }
 
-/* Celular: lista vertical com entradas simples (sobe e aparece, uma vez). Devolve a limpeza. */
+/* Celular: lista vertical com entrada clara em cascata (card sobe + traço ciano se desenha, uma vez, sem reverse). */
 function armMobileEntrances(cards: HTMLElement[], t: ResolvedMotionTokens): () => void {
   const running: { stop: () => void }[] = [];
-  cards.forEach((card) => {
+  const rules = cards.map((card) => card.querySelector<HTMLElement>("[data-card-rule]"));
+
+  cards.forEach((card, i) => {
     card.style.opacity = "0";
-    card.style.transform = `translateY(${t.distance.base}px)`;
+    card.style.transform = `translateY(${t.distance.base}px) scale(0.97)`;
+    const rule = rules[i];
+    if (rule) rule.style.transform = "scaleX(0)";
   });
 
   const observer = new IntersectionObserver(
@@ -67,12 +71,25 @@ function armMobileEntrances(cards: HTMLElement[], t: ResolvedMotionTokens): () =
         .forEach((entry, index) => {
           const card = entry.target as HTMLElement;
           observer.unobserve(card);
+          const delay = index * t.stagger.items;
           const controls = animate(
             card,
-            { opacity: [0, 1], y: [t.distance.base, 0] },
-            { duration: t.duration.gentle, ease: [...t.ease.out], delay: index * t.stagger.items },
+            { opacity: [0, 1], y: [t.distance.base, 0], scale: [0.97, 1] },
+            { duration: t.duration.gentle, ease: [...t.ease.out], delay },
           );
           running.push(controls);
+          const rule = card.querySelector<HTMLElement>("[data-card-rule]");
+          if (rule) {
+            const ruleControls = animate(
+              rule,
+              { scaleX: [0, 1] },
+              { duration: t.duration.gentle, ease: [...t.ease.stroke], delay: delay + t.duration.instant },
+            );
+            running.push(ruleControls);
+            void ruleControls.finished.then(() => {
+              rule.style.transform = "";
+            });
+          }
           /* A animação termina no estado final natural do card: o estilo de "escondido" sai de vez. */
           void controls.finished.then(() => {
             card.style.opacity = "";
@@ -80,16 +97,18 @@ function armMobileEntrances(cards: HTMLElement[], t: ResolvedMotionTokens): () =
           });
         });
     },
-    { rootMargin: ENTRANCE_MARGIN },
+    { rootMargin: ENTRANCE_MARGIN, threshold: 0.1 },
   );
   cards.forEach((card) => observer.observe(card));
 
   return () => {
     observer.disconnect();
     running.forEach((controls) => controls.stop());
-    cards.forEach((card) => {
+    cards.forEach((card, i) => {
       card.style.opacity = "";
       card.style.transform = "";
+      const rule = rules[i];
+      if (rule) rule.style.transform = "";
     });
   };
 }

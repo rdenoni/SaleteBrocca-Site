@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import { LinkArrow } from "@/components/ui/LinkArrow";
+import { Stagger, StaggerItem } from "@/motion/Stagger";
 import type { FaqItem } from "@/types/content";
 import styles from "./FaqList.module.css";
 
@@ -8,14 +9,13 @@ interface FaqListProps {
   className?: string;
 }
 
-/* Acordeão nativo (<details>/<summary>), como a lista de módulos: teclado, leitor de tela e sem JavaScript.
-   Várias respostas podem ficar abertas ao mesmo tempo (dá para comparar). A abertura anima só onde o
-   navegador suporta ::details-content (ver o CSS); nos outros, abre na hora. Cada item tem âncora própria. */
+/* Acordeão nativo (<details>/<summary>) com entrada em cascata (Stagger/StaggerItem): acessível por teclado,
+   leitor de tela e sem JavaScript. Cada item tem âncora própria. */
 export function FaqList({ items, className }: FaqListProps) {
   return (
-    <ul className={[styles.list, className ?? ""].filter(Boolean).join(" ")}>
+    <Stagger as="ul" pace="items" className={[styles.list, className ?? ""].filter(Boolean).join(" ")}>
       {items.map((item) => (
-        <li key={item.id}>
+        <StaggerItem as="li" key={item.id}>
           <details id={`duvida-${item.id}`} className={styles.item}>
             <summary className={styles.question}>
               <span className={styles.questionText}>{item.question}</span>
@@ -41,8 +41,8 @@ export function FaqList({ items, className }: FaqListProps) {
               )}
             </div>
           </details>
-        </li>
+        </StaggerItem>
       ))}
-    </ul>
+    </Stagger>
   );
 }

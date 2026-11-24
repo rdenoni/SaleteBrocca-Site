@@ -16,18 +16,21 @@ interface DrawRuleProps {
    como a caneta que sublinha uma palavra. Decorativa: aria-hidden. */
 export function DrawRule({ className, delay: delayProp = 0, trigger = "inView", play: shouldPlay = true }: DrawRuleProps) {
   const t = useEntranceTokens();
+  const skip = t.pace === 0;
   const delay = delayProp * t.pace;
   /* Reduzido: só opacidade, com a escala fixa em 1 (a régua pode ter hidratado com scaleX 0). */
+  const instant = { opacity: 1, scaleX: 1, transition: { duration: 0 } };
   const from = t.reduced ? { opacity: 0, scaleX: 1 } : { scaleX: 0 };
   const to = t.reduced ? { opacity: 1, scaleX: 1 } : { scaleX: 1 };
   const transition = t.reduced
     ? { duration: t.duration.quick, delay, scaleX: { duration: 0 } }
     : { duration: t.duration.slow, ease: t.ease.stroke, delay };
-  const base: Variants = { hidden: from, visible: { ...to, transition } };
+  const base: Variants = skip ? { hidden: instant, visible: instant } : { hidden: from, visible: { ...to, transition } };
   /* Por viewport: espera o topo da página se já estava na tela ao abrir (ordem de leitura). */
-  const variants = trigger === "mount" ? base : withInViewWait(base);
-  const play =
-    trigger === "mount"
+  const variants = skip || trigger === "mount" ? base : withInViewWait(base);
+  const play = skip
+    ? { animate: "visible" as const }
+    : trigger === "mount"
       ? { animate: shouldPlay ? "visible" : "hidden" }
       : { whileInView: "visible", viewport: t.viewport };
 
@@ -36,8 +39,8 @@ export function DrawRule({ className, delay: delayProp = 0, trigger = "inView", 
       aria-hidden="true"
       className={["rule", className].filter(Boolean).join(" ")}
       data-reveal=""
-      style={{ originX: 0 }}
-      initial="hidden"
+      style={skip ? { originX: 0, opacity: 1, scaleX: 1 } : { originX: 0 }}
+      initial={skip ? false : "hidden"}
       variants={variants}
       {...play}
     />

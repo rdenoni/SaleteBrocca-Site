@@ -12,8 +12,12 @@ import { FaqList } from "@/components/ui/FaqList";
 import { StickyActionBar } from "@/components/ui/StickyActionBar";
 import { countLessons, getCourse, getCourses } from "@/lib/content/courses";
 import { FAQ_SECTION_ID, FAQ_TITLE, getCourseFaq } from "@/lib/content/faq";
-import styles from "./curso.module.css";
 import { Reveal } from "@/motion/Reveal";
+import { Stagger, StaggerItem } from "@/motion/Stagger";
+import { TextReveal } from "@/motion/TextReveal";
+import { afterBanner, afterTitle } from "@/motion/timeline";
+import { motionTokens } from "@/motion/tokens";
+import styles from "./curso.module.css";
 
 interface CoursePageProps {
   params: Promise<{ slug: string }>;
@@ -39,10 +43,17 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
   const lessons = countLessons(course);
   const purchaseHref = `/cursos/${course.slug}/compra`;
+  const { stagger } = motionTokens;
+  const ASIDE_START = afterBanner(motionTokens, course.title);
+  const WHO_START = afterTitle(motionTokens, "Para quem é");
+  const ABOUT_START = afterTitle(motionTokens, "Sobre o curso");
+  const LEARN_START = afterTitle(motionTokens, "Você estará mais preparado para");
+  const MODULES_START = afterTitle(motionTokens, "Módulos e aulas");
+  const FAQ_START = afterTitle(motionTokens, FAQ_TITLE);
 
   return (
     <>
-      <PageBanner eyebrow="Curso online" title={course.title} image={course.image} imagePosition="70% 30%">
+      <PageBanner eyebrow="Curso online" title={course.title}>
         <div className={styles.bannerMeta}>
           <ul className={styles.meta}>
             <li>
@@ -70,60 +81,54 @@ export default async function CoursePage({ params }: CoursePageProps) {
       </div>
 
       <div className={`container ${styles.layout}`}>
-        <div className={styles.aside}>
+        <Reveal as="div" trigger="mount" delay={ASIDE_START} className={styles.aside}>
           <CommercialInfo course={course} />
-        </div>
+        </Reveal>
 
         <div className={styles.main}>
           <section aria-labelledby="para-quem">
-            <h2 id="para-quem" className={styles.heading}>
-              Para quem é
-            </h2>
-            <p className={styles.lead}>{course.audience}</p>
+            <TextReveal as="h2" id="para-quem" className={styles.heading} text="Para quem é" />
+            <Reveal as="p" delay={WHO_START} className={styles.lead}>
+              {course.audience}
+            </Reveal>
           </section>
 
           <section aria-labelledby="sobre-curso">
-            <h2 id="sobre-curso" className={styles.heading}>
-              Sobre o curso
-            </h2>
-            {course.description.map((paragraph) => (
-              <p key={paragraph.slice(0, 32)} className={styles.reading}>
+            <TextReveal as="h2" id="sobre-curso" className={styles.heading} text="Sobre o curso" />
+            {course.description.map((paragraph, index) => (
+              <Reveal as="p" key={paragraph.slice(0, 32)} delay={ABOUT_START + index * stagger.items} className={styles.reading}>
                 {paragraph}
-              </p>
+              </Reveal>
             ))}
-            <aside className={styles.notice} aria-label="Importante">
+            <Reveal as="aside" delay={ABOUT_START + course.description.length * stagger.items} className={styles.notice} aria-label="Importante">
               <Info aria-hidden="true" />
               <p>{course.notice}</p>
-            </aside>
+            </Reveal>
           </section>
 
           <section aria-labelledby="aprender">
             <p className="eyebrow">Ao final do curso</p>
-            <h2 id="aprender" className={styles.heading}>
-              Você estará mais preparado para
-            </h2>
-            <ul className={styles.outcomes}>
+            <TextReveal as="h2" id="aprender" className={styles.heading} text="Você estará mais preparado para" />
+            <Stagger as="ul" delay={LEARN_START} className={styles.outcomes}>
               {course.outcomes.map((outcome) => (
-                <li key={outcome}>
+                <StaggerItem as="li" key={outcome}>
                   <Check aria-hidden="true" />
                   {outcome}
-                </li>
+                </StaggerItem>
               ))}
-            </ul>
+            </Stagger>
           </section>
 
           <section aria-labelledby="conteudo-curso">
-            <h2 id="conteudo-curso" className={styles.heading}>
-              Módulos e aulas
-            </h2>
-            <p className={styles.moduleSummary}>
+            <TextReveal as="h2" id="conteudo-curso" className={styles.heading} text="Módulos e aulas" />
+            <Reveal as="p" delay={MODULES_START} className={styles.moduleSummary}>
               {course.modules.length} módulos · {lessons} aulas
-            </p>
+            </Reveal>
             <ModuleList modules={course.modules} openModule={0} />
           </section>
 
-          <section className={styles.teacher} aria-labelledby="professora">
-            <Reveal variant="mask" className={styles.teacherFigure}>
+          <Reveal as="section" className={styles.teacher} aria-labelledby="professora">
+            <Reveal variant="mask" trigger="parent" className={styles.teacherFigure}>
               <Image
                 src="/images/about/salete-avatar.jpg"
                 alt=""
@@ -143,13 +148,11 @@ export default async function CoursePage({ params }: CoursePageProps) {
               </p>
               <LinkArrow href="/sobre">Conheça a trajetória</LinkArrow>
             </div>
-          </section>
+          </Reveal>
 
           {/* Wireframe §3.2: dúvidas frequentes no fim da página do curso, antes da barra de inscrição. */}
           <section id={FAQ_SECTION_ID} aria-labelledby="duvidas-titulo">
-            <h2 id="duvidas-titulo" className={styles.heading}>
-              {FAQ_TITLE}
-            </h2>
+            <TextReveal as="h2" id="duvidas-titulo" className={styles.heading} text={FAQ_TITLE} />
             <FaqList items={getCourseFaq(course, { onCoursePage: true })} />
           </section>
         </div>

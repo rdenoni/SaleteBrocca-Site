@@ -159,7 +159,7 @@ export function MobileMenu({ currentHref }: MobileMenuProps) {
               alt="SaleteBrocca"
               width={500}
               height={154}
-              sizes="130px"
+              sizes="180px"
               loading="eager"
               className={styles.logo}
             />

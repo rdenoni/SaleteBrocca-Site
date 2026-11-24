@@ -23,13 +23,22 @@
   margin: 0;
 }
 
-.portrait img {
+.portraitMedia {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition:
+    box-shadow var(--motion-gentle) var(--ease-out),
+    translate var(--motion-gentle) var(--ease-out);
+}
+
+.portraitMedia img {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 4 / 5;
   object-fit: cover;
-  border-radius: var(--radius-lg);
+  transition: scale var(--motion-gentle) var(--ease-out);
 }
 
 .portraitCaption {
@@ -42,6 +51,34 @@
   border-radius: var(--radius-md);
   background: var(--white);
   box-shadow: var(--shadow-card);
+  transition:
+    box-shadow var(--motion-gentle) var(--ease-out),
+    translate var(--motion-gentle) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .portrait:hover .portraitMedia {
+    box-shadow: var(--shadow-card-hover);
+    translate: 0 -4px;
+  }
+
+  .portrait:hover .portraitMedia img {
+    scale: 1.04;
+  }
+
+  .portrait:hover .portraitCaption {
+    box-shadow: var(--shadow-card-hover);
+    translate: 0 -4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portrait:hover .portraitMedia,
+  .portrait:hover .portraitMedia img,
+  .portrait:hover .portraitCaption {
+    translate: none;
+    scale: none;
+  }
 }
 
 .portraitName {
@@ -190,44 +227,38 @@
   color: var(--navy);
 }
 
-/* ---------- Depoimento real (um só) ---------- */
+/* ---------- Depoimentos rotativos (mesmo carrossel da Home) ---------- */
 
 .testimonial {
   padding-block: var(--space-24);
-  background: var(--white);
+  background: var(--light-gray);
 }
 
-/* A legenda precisa ser filha direta do figure: a grade põe a foto ao lado do texto e da legenda. */
-.quoteCard {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+.testimonialCard {
+  display: flex;
   align-items: center;
-  gap: var(--space-4) var(--space-12);
-  margin: 0;
-  padding: var(--space-12) clamp(24px, 4vw, 64px);
+  justify-content: center;
+  padding: var(--space-16) clamp(24px, 5vw, 64px) var(--space-12);
   border-radius: var(--radius-lg);
   background: var(--navy);
   color: var(--white);
+  box-shadow: var(--shadow-card);
+  transition:
+    box-shadow var(--motion-gentle) var(--ease-out),
+    translate var(--motion-gentle) var(--ease-out);
 }
 
-.quoteCardNoPhoto {
-  grid-template-columns: minmax(0, 1fr);
+@media (hover: hover) {
+  .testimonialCard:hover {
+    box-shadow: var(--shadow-card-hover);
+    translate: 0 -4px;
+  }
 }
 
-.quotePhoto {
-  grid-row: 1 / span 2;
-  width: 128px;
-  height: 128px;
-  border-radius: 50%;
-  box-shadow: 0 0 0 6px var(--cyan);
-}
-
-.quotePhoto img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
+@media (prefers-reduced-motion: reduce) {
+  .testimonialCard:hover {
+    translate: none;
+  }
 }
 
 .quote {
@@ -362,7 +393,7 @@
     justify-items: start;
   }
 
-  .quotePhoto {
+  .quotePhotoRing {
     grid-row: auto;
   }
 

@@ -65,7 +65,7 @@ export function StudentShell({
           <nav aria-label="Seções da Área do Aluno" className={styles.nav}>
             <Stagger as="ul" trigger="mount" delay={start}>
               {SECTIONS.map((section) => (
-                <StaggerItem as="li" key={section.id}>
+                <StaggerItem as="li" variant="fade" key={section.id}>
                   <Link
                     href={section.href}
                     className={styles.tab}
@@ -78,7 +78,7 @@ export function StudentShell({
             </Stagger>
           </nav>
           {demo ? (
-            <Reveal trigger="mount" delay={start + SECTIONS.length * stagger.items}>
+            <Reveal variant="fade" trigger="mount" delay={start + SECTIONS.length * stagger.items}>
               <p className={styles.demo} role="note">
                 <Info aria-hidden="true" />
                 <span>
@@ -87,7 +87,7 @@ export function StudentShell({
               </p>
             </Reveal>
           ) : (
-            <Reveal trigger="mount" delay={start + SECTIONS.length * stagger.items} className={styles.signOut}>
+            <Reveal variant="fade" trigger="mount" delay={start + SECTIONS.length * stagger.items} className={styles.signOut}>
               <form action={signOut}>
                 <MotionButton type="submit" variant="outline">
                   Sair

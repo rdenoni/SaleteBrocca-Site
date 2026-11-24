@@ -1,11 +1,9 @@
 /* Trilha do curso.
    Base = lista vertical (sem JavaScript, no celular e com movimento reduzido: tudo visível).
-   O layout horizontal fixado só existe quando o GSAP liga data-mode="trail" (≥ 768px e movimento completo).
-   Visual compacto e discreto: cards finos (contorno, sem bloco de cor), tipos menores, pouco espaço vazio.
-   Não há tokens de tamanho de fonte no projeto: os tamanhos abaixo reaproveitam os já usados no site. */
+   O layout horizontal só existe quando o GSAP liga data-mode="trail" (≥ 768px e movimento completo). */
 
 .root {
-  --card-width: min(300px, 72vw);
+  --card-width: min(380px, 82vw);
 
   position: relative;
   overflow-x: clip; /* a trilha nunca gera rolagem horizontal da página */
@@ -20,97 +18,141 @@
   width: 100%;
 }
 
-/* Lista compacta: 1 coluna no celular (375px sem rolagem horizontal) e, com movimento reduzido numa tela larga,
-   uma grade de 2–3 colunas que cabe em poucas linhas em vez de uma pilha alta. */
+/* Lista vertical no celular e grade com movimento reduzido. */
 .track {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
-  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: var(--space-4);
   max-width: calc(var(--container) + 2 * var(--page-gutter));
   margin: 0 auto;
-  padding: var(--space-6) var(--page-gutter) var(--space-8);
+  padding: var(--space-8) var(--page-gutter) var(--space-12);
   list-style: none;
 }
 
-/* Card fino: só um contorno claro sobre o navy. O bloco sólido anterior pesava na página. */
+/* Cartão ampliado com micro-reação suave no hover. */
 .card {
   display: grid;
   grid-template-columns: 1fr auto;
   align-content: start;
   align-items: center;
-  gap: var(--space-1) var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid color-mix(in srgb, var(--white) 14%, transparent);
-  border-radius: var(--radius-sm);
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-6);
+  border: 1px solid color-mix(in srgb, var(--white) 18%, transparent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--navy-raised) 55%, transparent);
+  transition:
+    translate var(--motion-base) cubic-bezier(0.22, 1, 0.36, 1),
+    border-color var(--motion-quick) var(--ease-out),
+    background-color var(--motion-quick) var(--ease-out),
+    box-shadow var(--motion-base) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .code {
-  font: 700 13px/16px var(--font-sans);
+  font: 700 14px/18px var(--font-sans);
   letter-spacing: 0.08em;
   color: var(--cyan);
+  transition: translate var(--motion-quick) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .title {
   grid-column: 1 / -1;
-  font: 800 20px/28px var(--font-sans);
-  letter-spacing: -0.01em;
+  font: 800 24px/32px var(--font-sans);
+  letter-spacing: -0.015em;
   color: var(--white);
 }
 
-/* Contagem de aulas: texto ciano sobre navy, sem o chip sólido (contraste ok; ciano nunca leva texto claro). */
+/* Contagem de aulas: texto ciano sobre navy (contraste 8.2:1). */
 .count {
   grid-column: 2;
   grid-row: 1;
-  font: 700 13px/16px var(--font-sans);
+  font: 700 14px/18px var(--font-sans);
   color: var(--cyan);
   transform-origin: right center;
 }
 
-/* O traço só aparece na trilha horizontal, onde ele marca o módulo em foco; na lista ele só ocupava espaço. */
+/* Traço ciano sob o título do módulo (desenhado tanto no celular quanto na trilha horizontal). */
 .rule {
-  display: none;
-  width: 32px;
-  height: 2px;
+  display: block;
+  grid-column: 1 / -1;
+  width: 48px;
+  height: 3px;
+  margin-block: var(--space-2);
   border-radius: var(--radius-pill);
   background: var(--cyan);
   transform-origin: left center;
+  transition: scale var(--motion-base) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .first {
   grid-column: 1 / -1;
-  font: 400 14px/20px var(--font-serif);
+  font: 400 15px/24px var(--font-serif);
   color: var(--on-navy-muted);
+}
+
+@media (hover: hover) {
+  .card:hover {
+    translate: 0 -6px;
+    border-color: var(--cyan);
+    background: var(--navy-raised);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+  }
+
+  .card:hover .rule {
+    scale: 1.35 1;
+  }
+
+  .card:hover .code {
+    translate: 2px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:hover,
+  .card:hover .rule,
+  .card:hover .code {
+    translate: none;
+    scale: none;
+  }
 }
 
 /* ---------- Trilha horizontal (ligada pelo GSAP; sem pin) ---------- */
 
-/* O painel tem a altura do conteúdo e rola com a página (antes: tela inteira fixada, com muito navy vazio). */
 .root[data-mode="trail"] .panel {
   display: grid;
-  gap: var(--space-4);
-  /* Parte do respiro pedido para a faixa (ver FeaturedCourses.module.css). */
-  padding-block: var(--space-8);
+  gap: var(--space-6);
+  padding-block: var(--space-16);
   overflow: hidden;
 }
 
-/* Os cards correm dentro de --page-max (o fundo da faixa segue de ponta a ponta). O motor mede viewport.clientWidth. */
+/* Os cards correm dentro de --page-max com feather amplo nas bordas laterais. */
 .root[data-mode="trail"] .viewport {
   max-width: var(--page-max);
   margin-inline: auto;
   overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black clamp(96px, 12vw, 180px),
+    black calc(100% - clamp(96px, 12vw, 180px)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black clamp(96px, 12vw, 180px),
+    black calc(100% - clamp(96px, 12vw, 180px)),
+    transparent 100%
+  );
 }
 
-/* Os cards começam alinhados ao título (container/gutter), sem meia tela vazia antes do primeiro:
-   o destaque segue o card mais perto do centro, então não precisam parar no centro. */
 .root[data-mode="trail"] .track {
   position: relative; /* offsetParent dos cards: o GSAP mede o centro de cada um */
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-6);
   width: max-content;
   max-width: none;
   margin: 0;
-  padding: var(--space-6) max(var(--page-gutter), calc((100% - var(--container)) / 2));
-  /* will-change só enquanto a faixa está na tela (ligado em courseTrailEngine.ts). */
+  padding: var(--space-8) max(var(--page-gutter), calc((100% - var(--container)) / 2));
 }
 
 .root[data-mode="trail"] .card {

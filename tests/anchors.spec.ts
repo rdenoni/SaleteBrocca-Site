@@ -10,7 +10,7 @@ const pill = (page: Page): Locator => banner(page).locator(":scope > div").first
 const footer = (page: Page): Locator => page.getByRole("contentinfo");
 
 const MIN_FOOTER_TARGET = 44;
-const FOOTER_COLUMN_COUNT = 3;
+const FOOTER_COLUMN_COUNT = 4;
 
 /* Abre a página e espera a hidratação: o SmartHeader só publica data-header-pin num efeito do cliente.
    Sem isso, sob carga o clique pode cair antes do React ligar os links e se perder. */
@@ -168,6 +168,7 @@ test.describe("foco ao chegar numa âncora", () => {
 
 test.describe("links do rodapé", () => {
   test("cada link de coluna tem alvo de pelo menos 44px e os alvos não se sobrepõem", async ({ page }) => {
+    test.skip((page.viewportSize()?.width ?? 0) < 768, "no celular o mapa do site fica oculto (apenas redes sociais e barra legal)");
     await gotoHydrated(page, "/cursos");
     await footer(page).scrollIntoViewIfNeeded();
 

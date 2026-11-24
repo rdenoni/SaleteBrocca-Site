@@ -8,7 +8,7 @@ const NAV_NAME = "Principal";
 /* Menu na ordem do cabeçalho; a Loja entrou depois de Cursos. */
 const MAIN_NAV_LABELS = ["Cursos", "Loja", "Avaliação", "Conteúdo", "Sobre", "Contato"];
 
-/* Rodapé aprovado (3 colunas). Os links de curso e de categoria vêm dos dados do site: hoje, 1 curso e 3 categorias. */
+/* Rodapé aprovado (4 colunas, máximo de 3 links por coluna). */
 const FOOTER_COLUMNS = [
   {
     title: "Atendimento",
@@ -22,8 +22,7 @@ const FOOTER_COLUMNS = [
     title: "Cursos",
     links: [
       { label: "Catálogo", href: "/cursos" },
-      { label: "Dificuldades na Aprendizagem", href: "/cursos/dificuldades-na-aprendizagem" },
-      { label: "Loja", href: "/loja" },
+      { label: "Dúvidas frequentes", href: "/cursos#duvidas" },
       { label: "Área do Aluno", href: "/area-do-aluno" },
     ],
   },
@@ -31,14 +30,21 @@ const FOOTER_COLUMNS = [
     title: "Conteúdo",
     links: [
       { label: "Todos os conteúdos", href: "/conteudo" },
+      { label: "Podcast", href: "/conteudo/podcast" },
       { label: "Audição", href: "/conteudo/categoria/audicao" },
+    ],
+  },
+  {
+    title: "Loja e temas",
+    links: [
+      { label: "Loja", href: "/loja" },
       { label: "Deglutição", href: "/conteudo/categoria/degluticao" },
       { label: "Fala e fluência", href: "/conteudo/categoria/fala-e-fluencia" },
-      { label: "Aprendizagem", href: "/conteudo/categoria/aprendizagem" },
-      { label: "Leitura e escrita", href: "/conteudo/categoria/leitura-e-escrita" },
     ],
   },
 ] as const;
+
+const isMobile = (page: Page): boolean => (page.viewportSize()?.width ?? 0) < 768;
 
 const isDesktop = (page: Page): boolean => (page.viewportSize()?.width ?? 0) >= DESKTOP_MIN_WIDTH;
 
@@ -299,7 +305,7 @@ test.describe("rodapé", () => {
     await expect(list).toBeVisible();
     await expect(list.getByRole("button")).toHaveCount(networks.length);
     await expect(footer.locator("a[target='_blank']")).toHaveCount(0);
-    await expect(footer).toContainText("Perfis em confirmação");
+    await expect(footer).not.toContainText("Perfis em confirmação");
     await expect(footer).not.toContainText("Professora e fonoaudióloga clínica");
 
     for (const network of networks) {
@@ -328,9 +334,14 @@ test.describe("rodapé", () => {
     await page.mouse.move(0, 0);
     await expect(notice).toHaveText("", { timeout: 6000 });
 
-    /* 3 colunas de links, logo empilhado, copyright com o ano do servidor, os dois links legais e "Voltar ao topo". */
-    await expect(footer.getByRole("navigation")).toHaveCount(FOOTER_COLUMNS.length);
-    await expect(footer.getByRole("img", { name: "Salete Brocca" })).toBeVisible();
+    /* No mobile (<768px) o mapa do site e o logo ficam ocultos, deixando apenas redes sociais e barra legal. */
+    if (isMobile(page)) {
+      await expect(footer.getByRole("navigation")).toHaveCount(0);
+      await expect(footer.getByRole("img", { name: "Salete Brocca" })).toBeHidden();
+    } else {
+      await expect(footer.getByRole("navigation")).toHaveCount(FOOTER_COLUMNS.length);
+      await expect(footer.getByRole("img", { name: "Salete Brocca" })).toBeVisible();
+    }
     await expect(footer).toContainText(`© ${new Date().getFullYear()} SaleteBrocca`);
     await expect(footer.getByRole("link", { name: "Política de privacidade" })).toHaveAttribute("href", "/privacidade");
     await expect(footer.getByRole("link", { name: "Termos de uso" })).toHaveAttribute("href", "/termos-de-uso");
@@ -338,13 +349,15 @@ test.describe("rodapé", () => {
     expect(await noHorizontalScroll(page)).toBe(true);
   });
 
-  test("3 colunas (Atendimento, Cursos, Conteúdo) com os links aprovados e sem âncoras", async ({ page }) => {
+  test("4 colunas (Atendimento, Cursos, Conteúdo, Loja e temas) com no máximo 3 links cada e sem âncoras", async ({ page }) => {
+    test.skip(isMobile(page), "no celular o mapa do site fica oculto (apenas redes sociais e barra legal)");
     await page.goto("/cursos");
     const footer = page.getByRole("contentinfo");
     await footer.scrollIntoViewIfNeeded();
 
     await expect(footer.getByRole("navigation")).toHaveCount(FOOTER_COLUMNS.length);
     for (const column of FOOTER_COLUMNS) {
+      expect(column.links.length).toBeLessThanOrEqual(3);
       const nav = footer.getByRole("navigation", { name: column.title, exact: true });
       await expect(nav.getByRole("heading", { level: 2, name: column.title })).toBeVisible();
       await expect(nav.getByRole("link")).toHaveText(column.links.map((link) => link.label));
@@ -352,11 +365,11 @@ test.describe("rodapé", () => {
         await expect(nav.getByRole("link", { name: link.label, exact: true })).toHaveAttribute("href", link.href);
       }
     }
-    expect(await footer.locator("nav a[href*='#']").count()).toBe(0);
     await expect(footer.getByRole("navigation", { name: "Profissão", exact: true })).toHaveCount(0);
   });
 
   test("'Marcar avaliação' do rodapé leva a /avaliacao", async ({ page }) => {
+    test.skip(isMobile(page), "no celular o mapa do site fica oculto");
     await page.goto("/cursos");
     const footer = page.getByRole("contentinfo");
     await footer.getByRole("link", { name: "Marcar avaliação", exact: true }).click();
@@ -364,6 +377,7 @@ test.describe("rodapé", () => {
   });
 
   test("links não ganham sublinhado no hover: clareiam e recuam 3px", async ({ page }) => {
+    test.skip(isMobile(page), "no celular o mapa do site fica oculto");
     await page.goto("/cursos");
     const footer = page.getByRole("contentinfo");
     const link = footer.getByRole("link", { name: "Catálogo" });
@@ -376,7 +390,7 @@ test.describe("rodapé", () => {
     await link.hover();
     await expect(link).toHaveCSS("color", "rgb(255, 255, 255)");
     await expect(link).toHaveCSS("text-decoration-line", "none");
-    await expect(label).toHaveCSS("transform", "matrix(1, 0, 0, 1, 3, 0)");
+    await expect(label).toHaveCSS("transform", "none");
 
     /* Todos os links das colunas, sem exceção. */
     const decorations = await footer.locator("nav a").evaluateAll((anchors) =>
@@ -387,6 +401,7 @@ test.describe("rodapé", () => {
   });
 
   test("foco por teclado desenha contorno ciano nos links", async ({ page }) => {
+    test.skip(isMobile(page), "no celular o mapa do site fica oculto");
     await page.goto("/cursos");
     const footer = page.getByRole("contentinfo");
     const link = footer.getByRole("link", { name: "Todos os conteúdos" });

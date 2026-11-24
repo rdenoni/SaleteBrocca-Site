@@ -15,8 +15,13 @@ function escapeRegExp(text: string): string {
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  poweredByHeader: false,
+  experimental: {
+    optimizePackageImports: ["lucide-react", "motion"],
+  },
   images: {
     formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 60 * 60 * 24 * 30,
   },
   async redirects() {
     return [
@@ -46,11 +51,30 @@ const nextConfig: NextConfig = {
       { source: "/motion/:path([^.]+)", destination: "/motion/:path.html" },
     ];
   },
-  /* O laboratório de movimento é de revisão: aberto para quem tem o link, fora dos buscadores. */
+  /* Cabeçalhos de segurança globais + noindex no laboratório de movimento + cache HTTP longo em assets locais. */
   async headers() {
     return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
+          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
+        ],
+      },
       { source: "/motion", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
       { source: "/motion/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+      {
+        source: "/brand/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=2592000" }],
+      },
+      {
+        source: "/images/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=2592000" }],
+      },
     ];
   },
 };

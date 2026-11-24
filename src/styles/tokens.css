@@ -48,11 +48,11 @@
   /* Largura máxima do conteúdo (largura de referência do layout). Os fundos das seções seguem de ponta a ponta. */
   --page-max: 1440px;
   --header-height: 128px;
-  --header-height-compact: 72px;
+  --header-height-compact: 80px;
   --page-gutter: var(--space-12);
 
   /* Sombras */
-  --shadow-header: 0 12px 32px rgba(15, 36, 56, 0.14);
+  --shadow-header: 0 18px 44px rgba(15, 36, 56, 0.28), 0 6px 16px rgba(15, 36, 56, 0.16);
   --shadow-card: 0 8px 24px rgba(15, 36, 56, 0.1);
   --shadow-card-hover: 0 18px 40px rgba(15, 36, 56, 0.18);
 

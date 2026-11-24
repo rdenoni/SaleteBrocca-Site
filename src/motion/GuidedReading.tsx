@@ -4,6 +4,7 @@ import { motion, useScroll, useSpring, useTransform, type MotionValue } from "mo
 import { useRef } from "react";
 import styles from "./GuidedReading.module.css";
 import { useMotionTokens } from "./useMotionTokens";
+import { useLockedProgress } from "./useScrollEntrance";
 
 /* Tom das palavras ainda não lidas (opacidade do --navy). Alto o bastante para o parágrafo continuar legível. */
 const UNREAD_OPACITY = 0.28;
@@ -46,7 +47,8 @@ export function GuidedReading({ text, as = "p", className }: GuidedReadingProps)
   const Tag = as;
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "end 0.5"] });
-  const progress = useSpring(scrollYProgress, t.follow);
+  const lockedProgress = useLockedProgress(scrollYProgress);
+  const progress = useSpring(lockedProgress, t.follow);
 
   if (t.reduced) {
     return (

@@ -91,8 +91,7 @@ export function startCourseTrail(parts: TrailParts): TrailHandle {
       setActive(nearest);
     };
 
-    /* Sem pin: a faixa corre na horizontal enquanto ela mesma atravessa a tela (do pé da tela até o topo), sem
-       acrescentar nenhuma rolagem extra. O x vem do próprio scroll (scrub), só transform. */
+    /* Sem pin: a faixa corre na horizontal conforme o scroll avança e volta (scrub bidirecional). */
     gsap.to(track, {
       x: () => -travel(),
       ease: "none",

@@ -12,7 +12,8 @@ import styles from "./EvaluationSection.module.css";
 import { TestimonialSlider } from "./TestimonialSlider";
 
 const OPEN = "inset(0% 0% 0% 0%)";
-/* Recorte fechado na borda direita: a coluna navy se abre da direita para a esquerda. */
+/* Recorte fechado nas bordas externas: a base branca entra da esquerda e a coluna navy entra da direita. */
+const CLOSED_AT_LEFT = "inset(0% 100% 0% 0%)";
 const CLOSED_AT_RIGHT = "inset(0% 0% 0% 100%)";
 /* Fração da abertura em que o texto do depoimento já pode subir. */
 const TESTIMONIAL_START = 0.4;
@@ -39,6 +40,16 @@ export function EvaluationSection({ testimonials }: EvaluationSectionProps) {
         visible: { clipPath: OPEN, transition: { duration: t.duration.slow, ease: t.ease.stroke } },
       };
 
+  const wipeLeft: Variants = t.reduced
+    ? {
+        hidden: { opacity: 0, clipPath: OPEN, transition: { duration: t.duration.quick, clipPath: { duration: 0 } } },
+        visible: { opacity: 1, clipPath: OPEN, transition: { duration: t.duration.quick, clipPath: { duration: 0 } } },
+      }
+    : {
+        hidden: { clipPath: CLOSED_AT_LEFT },
+        visible: { clipPath: OPEN, transition: { duration: t.duration.slow, ease: t.ease.stroke } },
+      };
+
   const rise: Variants = t.reduced
     ? {
         hidden: { opacity: 0, y: 0, transition: { duration: t.duration.quick, y: { duration: 0 } } },
@@ -46,13 +57,15 @@ export function EvaluationSection({ testimonials }: EvaluationSectionProps) {
       }
     : {
         hidden: { opacity: 0, y: t.distance.base },
-        visible: { opacity: 1, y: 0, transition: { duration: t.duration.gentle, ease: t.ease.out } },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: t.duration.gentle, ease: t.ease.out, delay: t.duration.slow * TESTIMONIAL_START },
+        },
       };
 
   return (
-    /* UM gatilho só, na seção: formulário, "?" e coluna dos depoimentos começam juntos (pedido do cliente).
-       Antes cada bloco tinha o próprio whileInView e o formulário (topo mais baixo por causa do respiro) entrava
-       depois da coluna navy. Os filhos herdam "hidden" → "visible" pelos variants. */
+    /* UM gatilho só, na seção: base do formulário, formulário, "?" e coluna dos depoimentos entram sincronizados. */
     <motion.section
       className={styles.section}
       id={HOME_SECTION_IDS.evaluation}
@@ -62,7 +75,7 @@ export function EvaluationSection({ testimonials }: EvaluationSectionProps) {
       viewport={t.viewport}
       onViewportEnter={() => setTestimonialPlays(true)}
     >
-      <div className={styles.form}>
+      <motion.div className={styles.form} data-reveal="" variants={wipeLeft}>
         <motion.div className={styles.formInner} data-reveal="" variants={rise}>
           <div className={styles.formStack}>
             <EvaluationForm />
@@ -71,12 +84,11 @@ export function EvaluationSection({ testimonials }: EvaluationSectionProps) {
             </TransitionLink>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
       <motion.div className={styles.testimonial} data-surface="dark" data-reveal="" variants={wipe}>
         <TestimonialSlider
           items={testimonials}
           simulatedLabel={HOME_TESTIMONIALS.simulatedTag}
-          note={testimonials.some((item) => item.simulated) ? HOME_TESTIMONIALS.simulatedNote : undefined}
           delay={t.duration.slow * TESTIMONIAL_START}
           play={testimonialPlays}
         />

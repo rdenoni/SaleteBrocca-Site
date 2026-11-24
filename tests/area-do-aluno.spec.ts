@@ -143,6 +143,51 @@ test.describe("Área do Aluno — player", () => {
     await expect(page.getByRole("link", { name: "Aula anterior" })).toHaveCount(0);
     await expect(page.getByRole("link", { name: "Próxima aula" })).toBeVisible();
   });
+
+  test("animação de entrada roda uma única vez e não repete ao trocar de aula ou recarregar", async ({ page }) => {
+    /* Aguarda o registro da primeira entrada no localStorage. */
+    await page.waitForFunction(() => window.localStorage.getItem("salete-brocca:lesson-entrance-seen") === "1");
+
+    /* Troca de aula: entrada imediata (sem elementos ocultos em opacity 0). */
+    await page.getByRole("link", { name: "Próxima aula" }).click();
+    await expect(page).toHaveURL(`${COURSE}/aulas/m01-a03`);
+    const hiddenAfterSwitch = await page.evaluate(() => {
+      const main = document.querySelector("main");
+      if (!main) return -1;
+      return Array.from(main.querySelectorAll<HTMLElement>("[data-reveal]")).filter((el) => {
+        if (el.offsetParent === null) return false;
+        return parseFloat(getComputedStyle(el).opacity) < 0.99;
+      }).length;
+    });
+    expect(hiddenAfterSwitch).toBe(0);
+
+    /* Recarga completa do site: continua sem repetir a animação de entrada. */
+    await page.reload({ waitUntil: "load" });
+    await expect(page.locator("h1")).toBeVisible();
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => {
+            const main = document.querySelector("main");
+            if (!main) return -1;
+            return Array.from(main.querySelectorAll<HTMLElement>("[data-reveal]")).filter((el) => {
+              if (el.offsetParent === null) return false;
+              return parseFloat(getComputedStyle(el).opacity) < 0.99;
+            }).length;
+          }),
+        { timeout: 1500 },
+      )
+      .toBe(0);
+  });
+
+  test("mantém a posição de scroll ao recarregar a página", async ({ page }) => {
+    await page.evaluate(() => window.scrollTo(0, 420));
+    await page.waitForFunction(
+      () => Number(window.sessionStorage.getItem(`salete-brocca:scroll:${window.location.pathname}`) ?? 0) >= 350,
+    );
+    await page.reload({ waitUntil: "load" });
+    await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 2000 }).toBeGreaterThanOrEqual(350);
+  });
 });
 
 test.describe("Área do Aluno — materiais", () => {

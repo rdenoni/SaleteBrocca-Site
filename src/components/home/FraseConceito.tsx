@@ -20,6 +20,7 @@ import { MotionButton } from "@/motion/MotionButton";
 import { StaggerItem } from "@/motion/Stagger";
 import { TextReveal } from "@/motion/TextReveal";
 import { useMotionTokens } from "@/motion/useMotionTokens";
+import { useLockedProgress } from "@/motion/useScrollEntrance";
 import { useScrollWillChange } from "@/motion/useScrollWillChange";
 import { HOME_CONCEPT as CONCEPT, HOME_SECTION_IDS } from "@/lib/content/home";
 import styles from "./FraseConceito.module.css";
@@ -72,7 +73,9 @@ export function FraseConceito() {
   const [fitted, setFitted] = useState(false);
 
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: SCROLL_OFFSET });
-  const progress = useSpring(scrollYProgress, t.follow);
+  /* Trava em 1 assim que as peças completam o encaixe (FIT_END), sem desfazer ao rolar para cima. */
+  const lockedProgress = useLockedProgress(scrollYProgress, FIT_END);
+  const progress = useSpring(lockedProgress, t.follow);
   /* 1 = peças afastadas, 0 = encaixadas. */
   const apart = useTransform(progress, [FIT_START, FIT_END], [1, 0], { clamp: true });
   const cyanX = useTransform(apart, [0, 1], ["0%", `${-APART_PERCENT.x}%`]);

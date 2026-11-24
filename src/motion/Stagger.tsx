@@ -42,38 +42,43 @@ export function Stagger({
 }: StaggerProps) {
   const t = useEntranceTokens();
   const ready = useEntranceReady();
+  const skip = t.pace === 0;
   const MotionTag = motion[as] as typeof motion.div;
-  const gap = t.reduced ? 0 : t.stagger[pace];
+  const gap = t.reduced || skip ? 0 : t.stagger[pace];
   const mount = trigger === "mount";
-  const variants: Variants = {
-    hidden: {},
-    /* Função: resolvida quando o grupo entra; por viewport, soma a espera pelo topo da página (ordem de leitura). */
-    visible: () => ({
-      transition: {
-        delayChildren: staggerChildren(gap, { startDelay: t.reduced ? 0 : delay * t.pace + (mount ? 0 : inViewWait()) }),
-      },
-    }),
-  };
+  const variants: Variants = skip
+    ? { hidden: {}, visible: { transition: { delayChildren: 0 } } }
+    : {
+        hidden: {},
+        /* Função: resolvida quando o grupo entra; por viewport, soma a espera pelo topo da página (ordem de leitura). */
+        visible: () => ({
+          transition: {
+            delayChildren: staggerChildren(gap, { startDelay: t.reduced ? 0 : delay * t.pace + (mount ? 0 : inViewWait()) }),
+          },
+        }),
+      };
   /* Ao montar, a cascata faz parte do topo: o que vem abaixo espera o último item já subindo. */
   const lastItem = Math.max(0, Children.count(children) - 1);
-  useHoldInView(mount && holdsInView && !t.reduced ? delay + (lastItem * gap + t.duration.base) / t.pace : 0, ready);
+  useHoldInView(!skip && mount && holdsInView && !t.reduced ? delay + (lastItem * gap + t.duration.base) / t.pace : 0, ready);
 
-  const play = mount
-    ? { animate: ready ? "visible" : "hidden" }
-    : trigger === "parent"
-      ? {}
-      : {
-        whileInView: "visible",
-        /* Movimento reduzido: nada volta a se esconder ao sair da tela (once forçado), como no Reveal. */
-        viewport: { ...t.viewport, once: once || t.reduced },
-      };
+  const play = skip
+    ? { animate: "visible" as const }
+    : mount
+      ? { animate: ready ? "visible" : "hidden" }
+      : trigger === "parent"
+        ? {}
+        : {
+          whileInView: "visible",
+          /* Movimento reduzido: nada volta a se esconder ao sair da tela (once forçado), como no Reveal. */
+          viewport: { ...t.viewport, once: once || t.reduced },
+        };
 
   return (
     <MotionTag
       /* Como no Reveal: com once=false, remonta ao mudar o modo para o "once forçado" do reduzido valer. */
       key={once ? undefined : t.reduced ? "reduced" : "full"}
       className={className}
-      initial={trigger === "parent" ? undefined : "hidden"}
+      initial={skip ? false : trigger === "parent" ? undefined : "hidden"}
       variants={variants}
       {...play}
       {...aria}
@@ -92,9 +97,15 @@ interface StaggerItemProps {
 
 export function StaggerItem({ children, as = "div", variant = "rise", className }: StaggerItemProps) {
   const t = useEntranceTokens();
+  const skip = t.pace === 0;
   const MotionTag = motion[as] as typeof motion.div;
   return (
-    <MotionTag className={className} data-reveal="" variants={revealVariants(variant, t)}>
+    <MotionTag
+      className={className}
+      data-reveal=""
+      variants={revealVariants(variant, t)}
+      {...(skip ? { initial: false, animate: "visible", style: { opacity: 1, transform: "none", clipPath: "none" } } : {})}
+    >
       {children}
     </MotionTag>
   );

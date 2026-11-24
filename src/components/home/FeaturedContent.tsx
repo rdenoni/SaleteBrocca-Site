@@ -10,8 +10,8 @@ import { HOME_ARTICLES_NOTE, HOME_SECTION_IDS } from "@/lib/content/home";
 import type { Article } from "@/types/content";
 import styles from "./FeaturedContent.module.css";
 
-/* Blocos de cor da referência: claro | azul | claro, com as letras de "BLOG" ao fundo. */
-const TONES: readonly EditorialCardTone[] = ["light", "blue", "light"];
+/* Blocos de cor distintos: claro (PAC) | azul (Disfagia) | navy (Gagueira), com as letras de "BLOG" ao fundo. */
+const TONES: readonly EditorialCardTone[] = ["light", "blue", "navy"];
 const LETTERS = ["B", "O", "G"] as const;
 /* A letra deriva só alguns por cento da própria altura (sobe e desce em torno do centro). */
 const LETTER_DRIFT = "7%";

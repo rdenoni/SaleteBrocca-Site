@@ -9,16 +9,14 @@ import { SocialButton } from "./SocialButton";
 import styles from "./Footer.module.css";
 
 const PENDING_NOTICE = "Endereço em confirmação";
-const PENDING_CAPTION = "Perfis em confirmação";
 
 /* Lista de perfis com UM só aviso, centralizado na própria lista: assim o balão nunca passa da tela
    (a lista é mais larga que ele, mesmo a 320px) e dois avisos nunca se sobrepõem. Perfis sem endereço confirmado
    (href null) são botões, não links; o aviso fica numa região viva educada (role="status"), então o leitor de tela
-   o anuncia sem interromper. A legenda só aparece enquanto houver algum perfil pendente. */
+   o anuncia sem interromper. */
 export function SocialProfiles() {
   const t = useMotionTokens();
   const [noticeFor, setNoticeFor] = useState<SocialNetwork | null>(null);
-  const hasPending = SOCIAL_LINKS.some((profile) => profile.href === null);
 
   /* O último botão a pedir o aviso vence; um botão só tira o aviso se ele ainda for o dono. */
   const handleNotice = useCallback((network: SocialNetwork, visible: boolean) => {
@@ -73,7 +71,6 @@ export function SocialProfiles() {
           </AnimatePresence>
         </span>
       </div>
-      {hasPending ? <p className={styles.socialCaption}>{PENDING_CAPTION}</p> : null}
     </div>
   );
 }

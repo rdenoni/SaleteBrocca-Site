@@ -19,7 +19,7 @@ export interface EditorialCardArticle {
   imagePosition?: string;
 }
 
-export type EditorialCardTone = "light" | "blue";
+export type EditorialCardTone = "light" | "blue" | "navy";
 
 /* Entrada própria do card (opt-in), em dois modos:
    - "time" (padrão): o card observa a viewport sozinho e, ao chegar à tela, toca a cascata por tempo.
@@ -226,7 +226,7 @@ function EditorialCardView({
             alt={article.imageAlt}
             fill
             priority={priority}
-            sizes="(max-width: 1099px) 60vw, 280px"
+            sizes="(max-width: 1099px) 60vw, 420px"
             style={article.imagePosition ? { objectPosition: article.imagePosition } : undefined}
           />
         </motion.div>

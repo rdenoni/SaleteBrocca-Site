@@ -29,7 +29,7 @@ export const EVALUATION_FACTS: readonly EvaluationFact[] = [
 export const EVALUATION_STEPS: readonly { title: string; text: string }[] = [];
 
 /** Link discreto sob o formulário da Home. */
-export const EVALUATION_HOME_LINK = { label: "Como funciona a avaliação", href: "/avaliacao#como-funciona" } as const;
+export const EVALUATION_HOME_LINK = { label: "Como funciona a avaliação", href: "/avaliacao" } as const;
 
 export const EVALUATION_PAGE = {
   title: "Avaliação",

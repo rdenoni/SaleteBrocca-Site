@@ -1,8 +1,8 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "motion/react";
+import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
-import { useId, useRef, type MouseEventHandler } from "react";
+import { useEffect, useId, useRef, useState, type MouseEventHandler } from "react";
 import { DrawRule } from "./DrawRule";
 import styles from "./HeroSequence.module.css";
 import { TextReveal } from "./TextReveal";
@@ -13,20 +13,67 @@ import { heroTimeline, type HeroTimelineStep } from "./timeline";
 import { useMotionTokens } from "./useMotionTokens";
 import { useScrollWillChange } from "./useScrollWillChange";
 
-/* Textos e foto do Hero ORIGINAL do site. São só valores padrão: a página pode sobrescrever. */
-const DEFAULT_TITLE = "Conheça nossos cursos";
-const DEFAULT_TEXT = "Formação, conhecimento e ferramentas para compreender as dificuldades de aprendizagem.";
-const DEFAULT_CTA_LABEL = "Explorar cursos";
-const DEFAULT_CTA_HREF = "/cursos";
-const DEFAULT_IMAGE = "/images/hero/crianca-escrevendo.jpg";
+/* Slides reais do Hero: alterna continuamente em fade leve entre o curso disponível
+   (Conheça nossos cursos — tratamento azul) e o Curso de Alfabetização (Em breve — foto colorida). */
+interface HeroSlide {
+  id: string;
+  title: string;
+  text: string;
+  image: string;
+  imagePosition?: string;
+  tone: "blue" | "color";
+  badge?: string;
+  ctaLabel: string;
+  ctaHref?: string;
+}
 
-/* Foto: parte de 1,08 e assenta em 1 (a foto é a imagem do LCP: a opacidade nunca anima). */
+const DEFAULT_SLIDES: readonly HeroSlide[] = [
+  {
+    id: "cursos",
+    title: "Conheça nossos cursos",
+    text: "Formação, conhecimento e ferramentas para compreender as dificuldades de aprendizagem.",
+    image: "/images/hero/crianca-escrevendo.jpg",
+    imagePosition: "60% 40%",
+    tone: "blue",
+    ctaLabel: "Explorar cursos",
+    ctaHref: "/cursos",
+  },
+  {
+    id: "alfabetizacao",
+    title: "Curso de Alfabetização",
+    text: "Em breve. Curso em preparação para pais, professores e profissionais que acompanham crianças no início da alfabetização.",
+    image: "/images/articles/leitura-fluencia.jpg",
+    imagePosition: "55% 35%",
+    tone: "blue",
+    badge: "Em breve",
+    ctaLabel: "Em breve",
+  },
+  {
+    id: "avaliacao",
+    title: "Avaliação fonoaudiológica",
+    text: "Atendimento clínico e orientação para famílias e escolas diante de dificuldades na aprendizagem.",
+    image: "/images/hero/avaliacao-fonoaudiologica.jpg",
+    imagePosition: "65% 30%",
+    tone: "blue",
+    ctaLabel: "Pedir avaliação",
+    ctaHref: "/avaliacao",
+  },
+  {
+    id: "conteudo",
+    title: "Conteúdos e artigos",
+    text: "Artigos, orientações práticas e reflexões sobre leitura, escrita, fala, audição e aprendizagem.",
+    image: "/images/articles/familia-e-escola.jpg",
+    imagePosition: "55% 35%",
+    tone: "blue",
+    ctaLabel: "Ver conteúdos",
+    ctaHref: "/conteudo",
+  },
+];
+
+const SLIDE_INTERVAL_MS = 7000;
+const CROSSFADE_SECONDS = 1.2;
+
 const PHOTO_START_SCALE = 1.08;
-/* Saída por scroll (parallax mais evidente, ainda calmo):
-   - a foto desce 28% da altura do Hero e aproxima 1 → 1,06 enquanto o Hero sai;
-   - o texto sobe 1,75× a distância de seção (40px → 70px) e esmaece até 0,4.
-   Sem borda vazia: a foto cobre de 0,28·p·H para baixo e a parte visível do Hero começa em p·H (p = progresso 0–1),
-   então o topo fica coberto enquanto a descida for menor que 100%; o fundo é recortado pelo overflow do Hero. */
 const PHOTO_DRIFT = "28%";
 const PHOTO_EXIT_SCALE = 1.06;
 const CONTENT_RISE_FACTOR = 1.75;
@@ -46,18 +93,16 @@ export interface HeroSequenceProps {
   onCtaClick?: MouseEventHandler<HTMLAnchorElement>;
 }
 
-/* O Hero original, animado. Em repouso é idêntico ao do site (foto P&B em soft-light sobre --blue-strong,
-   véu navy, título fluido, régua ciano, texto e botão fantasma).
-   Entrada: foto assenta, título palavra por palavra, régua se desenha, texto e botão sobem em sequência.
-   Saída (scroll): a foto desce em parallax e o conteúdo sobe e esmaece um pouco.
-   Movimento reduzido: foto estática, sem parallax, só fades rápidos de texto e botão. */
+/* Hero rotativo em fade leve entre o banner principal (Dificuldades na Aprendizagem)
+   e o banner "Em breve" do Curso de Alfabetização (foto colorida + selo ciano).
+   Controles centralizados na base apenas para trocar de banner; sem troca automática em movimento reduzido. */
 export function HeroSequence({
   headingLevel = "h1",
-  title = DEFAULT_TITLE,
-  text = DEFAULT_TEXT,
-  ctaLabel = DEFAULT_CTA_LABEL,
-  ctaHref = DEFAULT_CTA_HREF,
-  imageSrc = DEFAULT_IMAGE,
+  title,
+  text,
+  ctaLabel,
+  ctaHref,
+  imageSrc,
   onCtaClick,
 }: HeroSequenceProps) {
   const t = useMotionTokens();
@@ -65,24 +110,46 @@ export function HeroSequence({
   const heroRef = useRef<HTMLElement>(null);
   const photoLayerRef = useRef<HTMLDivElement>(null);
 
-  /* Uma assinatura por vez: chegando pela cortina, a sequência espera a cortina começar a abrir.
-     Só na primeira vez: sair da página não faz o Hero voltar ao estado inicial sob a cortina. */
+  const slides: readonly HeroSlide[] = [
+    {
+      ...DEFAULT_SLIDES[0],
+      ...(title ? { title } : {}),
+      ...(text ? { text } : {}),
+      ...(ctaLabel ? { ctaLabel } : {}),
+      ...(ctaHref ? { ctaHref } : {}),
+      ...(imageSrc ? { image: imageSrc } : {}),
+    },
+    ...DEFAULT_SLIDES.slice(1),
+  ];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [hovered, setHovered] = useState(false);
+
+  /* Reinicia a contagem a cada troca (automática ou manual) e volta continuamente ao primeiro slide. */
+  useEffect(() => {
+    if (t.reduced || hovered || slides.length <= 1) return;
+    const timer = window.setTimeout(() => {
+      if (!document.hidden) {
+        setActiveIndex((prev) => (prev + 1) % slides.length);
+      }
+    }, SLIDE_INTERVAL_MS);
+    return () => window.clearTimeout(timer);
+  }, [activeIndex, t.reduced, hovered, slides.length]);
+
   const ready = useEntranceReady();
 
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  /* A foto só é promovida (will-change) durante a saída por scroll; em repouso, no topo, nada fica promovido. */
   useScrollWillChange(photoLayerRef, scrollYProgress, !t.reduced);
   const photoY = useTransform(scrollYProgress, [0, 1], ["0%", PHOTO_DRIFT]);
   const photoExitScale = useTransform(scrollYProgress, [0, 1], [1, PHOTO_EXIT_SCALE]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -t.distance.section * CONTENT_RISE_FACTOR]);
   const contentOpacity = useTransform(scrollYProgress, [0, 1], [1, CONTENT_END_OPACITY]);
 
-  const steps = heroTimeline(t, title.split(/\s+/).filter(Boolean).length);
+  const activeSlide = slides[activeIndex % slides.length];
+  const steps = heroTimeline(t, slides[0].title.split(/\s+/).filter(Boolean).length);
   const startOf = (id: HeroTimelineStep["id"]): number => (t.reduced ? 0 : (steps.find((step) => step.id === id)?.start ?? 0));
-  /* Seções já na tela ao abrir só entram depois do Hero (ordem de leitura). */
   useHoldInView(t.reduced ? 0 : startOf("cta") + t.duration.base, ready);
 
-  /* Texto e botão: sobem e aparecem (reduzido: só opacidade, rápido). `y: 0` no destino garante que nada fica deslocado. */
   const riseIn = (id: "text" | "cta") => ({
     initial: { opacity: 0, y: t.reduced ? 0 : t.distance.base },
     animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y: t.reduced ? 0 : t.distance.base },
@@ -91,10 +158,20 @@ export function HeroSequence({
       : { duration: t.duration.gentle, ease: t.ease.out, delay: startOf(id) },
   });
 
+  const HeadingTag = headingLevel;
+
   return (
-    <section ref={heroRef} className={styles.hero} aria-labelledby={titleId} data-surface="photo">
-      {/* Duas camadas: a de fora (mistura, P&B, opacidade) leva o parallax do scroll (descida + aproximação);
-          a de dentro leva só a escala de entrada. A opacidade nunca sai de 1 na entrada (é a imagem do LCP). */}
+    <section
+      ref={heroRef}
+      className={styles.hero}
+      data-tone={activeSlide.tone}
+      aria-labelledby={titleId}
+      data-surface="photo"
+      onPointerEnter={(event) => {
+        if (event.pointerType === "mouse") setHovered(true);
+      }}
+      onPointerLeave={() => setHovered(false)}
+    >
       <motion.div
         ref={photoLayerRef}
         aria-hidden="true"
@@ -108,30 +185,104 @@ export function HeroSequence({
           animate={{ scale: ready ? 1 : PHOTO_START_SCALE }}
           transition={t.reduced ? { duration: 0 } : { duration: t.duration.story, ease: t.ease.out }}
         >
-          <Image src={imageSrc} alt="" fill priority sizes="100vw" className={styles.photo} />
+          {slides.map((slide, index) => (
+            <motion.div
+              key={slide.id}
+              className={slide.tone === "blue" ? styles.slideBlue : styles.slideColor}
+              initial={false}
+              animate={{ opacity: index === activeIndex ? 1 : 0 }}
+              transition={{ duration: t.reduced ? 0 : CROSSFADE_SECONDS, ease: "easeInOut" }}
+            >
+              <Image
+                src={slide.image}
+                alt=""
+                fill
+                priority={index === 0}
+                loading={index === 0 ? "eager" : "lazy"}
+                sizes="100vw"
+                className={styles.photo}
+                style={slide.imagePosition ? { objectPosition: slide.imagePosition } : undefined}
+              />
+            </motion.div>
+          ))}
         </motion.div>
       </motion.div>
 
       <motion.div className={styles.inner} style={t.reduced ? undefined : { y: contentY, opacity: contentOpacity }}>
-        <TextReveal
-          as={headingLevel}
-          id={titleId}
-          text={title}
-          className={styles.title}
-          trigger="mount"
-          play={ready}
-          delay={startOf("title")}
-        />
-        <DrawRule trigger="mount" play={ready} delay={startOf("rule")} className={styles.rule} />
-        <motion.p className={styles.text} data-reveal="" {...riseIn("text")}>
-          {text}
-        </motion.p>
-        <motion.div data-reveal="" {...riseIn("cta")}>
-          <TransitionLink href={ctaHref} className={styles.cta} onClick={onCtaClick}>
-            <span>{ctaLabel}</span>
-          </TransitionLink>
-        </motion.div>
+        <AnimatePresence mode="wait" initial={false}>
+          {activeIndex === 0 ? (
+            <motion.div
+              key={slides[0].id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: t.reduced ? 0 : 0.45, ease: "easeInOut" }}
+            >
+              <TextReveal
+                as={headingLevel}
+                id={titleId}
+                text={slides[0].title}
+                className={styles.title}
+                trigger="mount"
+                play={ready}
+                delay={startOf("title")}
+              />
+              <DrawRule trigger="mount" play={ready} delay={startOf("rule")} className={styles.rule} />
+              <motion.p className={styles.text} data-reveal="" {...riseIn("text")}>
+                {slides[0].text}
+              </motion.p>
+              <motion.div data-reveal="" {...riseIn("cta")}>
+                <TransitionLink href={slides[0].ctaHref ?? "/cursos"} className={styles.cta} onClick={onCtaClick}>
+                  <span>{slides[0].ctaLabel}</span>
+                </TransitionLink>
+              </motion.div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key={activeSlide.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: t.reduced ? 0 : 0.45, ease: "easeInOut" }}
+            >
+              {activeSlide.badge ? <span className={styles.soonBadge}>{activeSlide.badge}</span> : null}
+              <HeadingTag id={titleId} className={styles.title}>
+                {activeSlide.title}
+              </HeadingTag>
+              <span className={`rule ${styles.rule}`} aria-hidden="true" />
+              <p className={styles.text}>{activeSlide.text}</p>
+              {activeSlide.ctaHref ? (
+                <div>
+                  <TransitionLink href={activeSlide.ctaHref} className={styles.cta}>
+                    <span>{activeSlide.ctaLabel}</span>
+                  </TransitionLink>
+                </div>
+              ) : (
+                <div className={styles.soonRow}>
+                  <button type="button" className={styles.ctaDisabled} disabled>
+                    {activeSlide.ctaLabel}
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
+
+      <div className={styles.controls} aria-label="Selecionar banner">
+        <div className={styles.dots}>
+          {slides.map((slide, index) => (
+            <button
+              key={slide.id}
+              type="button"
+              className={styles.dot}
+              aria-label={`Mostrar banner ${index + 1}: ${slide.title}`}
+              aria-current={index === activeIndex ? "true" : undefined}
+              onClick={() => setActiveIndex(index)}
+            />
+          ))}
+        </div>
+      </div>
     </section>
   );
 }

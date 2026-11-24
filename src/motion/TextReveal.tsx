@@ -28,6 +28,7 @@ interface TextRevealProps {
 export function TextReveal({ text, as = "h2", className, id, delay = 0, trigger = "inView", play }: TextRevealProps) {
   const t = useEntranceTokens();
   const ready = useEntranceReady();
+  const skip = t.pace === 0;
   const shouldPlay = play ?? ready;
   const Tag = as;
   const lines = text
@@ -36,43 +37,58 @@ export function TextReveal({ text, as = "h2", className, id, delay = 0, trigger 
     .filter((line) => line.length > 0);
   const plainText = lines.map((line) => line.join(" ")).join(" ");
 
-  const container: Variants = {
-    hidden: {},
-    /* Função: resolvida quando a entrada dispara; por viewport, soma a espera pelo topo da página. */
-    visible: () => ({
-      transition: {
-        delayChildren: staggerChildren(t.reduced ? 0 : t.stagger.words, {
-          startDelay: delay * t.pace + (trigger === "inView" ? inViewWait() : 0),
+  const container: Variants = skip
+    ? { hidden: {}, visible: { transition: { delayChildren: 0 } } }
+    : {
+        hidden: {},
+        /* Função: resolvida quando a entrada dispara; por viewport, soma a espera pelo topo da página. */
+        visible: () => ({
+          transition: {
+            delayChildren: staggerChildren(t.reduced ? 0 : t.stagger.words, {
+              startDelay: delay * t.pace + (trigger === "inView" ? inViewWait() : 0),
+            }),
+          },
         }),
-      },
-    }),
-  };
+      };
   /* Reduzido: só opacidade, e y zerado nos dois estados. A hidratação roda com o movimento completo
      (o servidor não sabe a preferência), então a palavra pode já estar deslocada quando o modo troca. */
-  const word: Variants = t.reduced
+  const word: Variants = skip
     ? {
-        hidden: { opacity: 0, y: "0%" },
-        visible: { opacity: 1, y: "0%", transition: { duration: t.duration.quick, y: { duration: 0 } } },
+        hidden: { opacity: 1, y: "0%", transition: { duration: 0 } },
+        visible: { opacity: 1, y: "0%", transition: { duration: 0 } },
       }
-    : {
-        hidden: { y: "105%" },
-        visible: { y: "0%", transition: { duration: t.duration.slow, ease: t.ease.out } },
-      };
+    : t.reduced
+      ? {
+          hidden: { opacity: 0, y: "0%" },
+          visible: { opacity: 1, y: "0%", transition: { duration: t.duration.quick, y: { duration: 0 } } },
+        }
+      : {
+          hidden: { y: "105%" },
+          visible: { y: "0%", transition: { duration: t.duration.slow, ease: t.ease.out } },
+        };
 
-  const playProps =
-    trigger === "mount" ? { animate: shouldPlay ? "visible" : "hidden" } : { whileInView: "visible", viewport: t.viewport };
+  const playProps = skip
+    ? { animate: "visible" as const }
+    : trigger === "mount"
+      ? { animate: shouldPlay ? "visible" : "hidden" }
+      : { whileInView: "visible", viewport: t.viewport };
 
   return (
     <Tag id={id} className={className}>
       <span className="visually-hidden">{plainText}</span>
-      <motion.span aria-hidden="true" className={styles.words} initial="hidden" variants={container} {...playProps}>
+      <motion.span aria-hidden="true" className={styles.words} initial={skip ? false : "hidden"} variants={container} {...playProps}>
         {/* O espaço fica FORA da máscara: dentro de um inline-block, o espaço final colapsa. */}
         {lines.map((words, lineIndex) => (
           <Fragment key={lineIndex}>
             {words.map((value, index) => (
               <Fragment key={`${value}-${index}`}>
                 <span className={styles.mask}>
-                  <motion.span className={styles.word} data-reveal="" variants={word}>
+                  <motion.span
+                    className={styles.word}
+                    data-reveal=""
+                    variants={word}
+                    style={skip ? { opacity: 1, transform: "none" } : undefined}
+                  >
                     {value}
                   </motion.span>
                 </span>

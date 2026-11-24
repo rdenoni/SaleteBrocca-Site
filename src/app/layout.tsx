@@ -13,9 +13,9 @@ import { MotionProvider } from "@/motion/MotionProvider";
 import { NOSCRIPT_REVEAL_CSS } from "@/motion/noscript";
 import { PageTransitionProvider } from "@/motion/transitions/PageTransitionProvider";
 
+/* Noto Sans é fonte variável: omitir `weight` baixa um único arquivo variável por estilo em vez de 10 arquivos estáticos. */
 const notoSans = Noto_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
   style: ["normal", "italic"],
   variable: "--font-noto-sans",
   display: "swap",
