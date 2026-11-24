@@ -15,7 +15,7 @@ interface ArticleGridProps {
   delay?: number;
 }
 
-/* Blocos de cor alternados (claro | azul). Enquanto houver menos artigos que colunas,
+/* Blocos de cor alternados (claro | azul). Quando a última linha fica incompleta,
    um aviso honesto completa a linha em vez de artigos inventados.
    Entrada: os blocos sobem em cascata, da esquerda para a direita, depois do título da seção. */
 export function ArticleGrid({ articles, delay = 0 }: ArticleGridProps) {
@@ -26,7 +26,7 @@ export function ArticleGrid({ articles, delay = 0 }: ArticleGridProps) {
           <ContentCard article={article} tone={TONES[index % TONES.length]} />
         </StaggerItem>
       ))}
-      {articles.length < COLUMNS && (
+      {articles.length % COLUMNS !== 0 && (
         <StaggerItem as="li">
           <EmptyState
             icon={<Newspaper aria-hidden="true" />}

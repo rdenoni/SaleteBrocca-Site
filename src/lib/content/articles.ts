@@ -1,11 +1,21 @@
 import type { Article, ArticleBlock, ArticleCategory } from "@/types/content";
+import {
+  DIFICULDADE_BODY,
+  DISLEXIA_BODY,
+  FAMILIA_ESCOLA_BODY,
+  FUNCOES_EXECUTIVAS_BODY,
+  IRLEN_BODY,
+  LEITURA_BODY,
+} from "./articles-aprendizagem";
 
-/* Categorias PROPOSTAS a partir dos temas dos três artigos do site de referência.
+/* Categorias PROPOSTAS a partir dos temas dos artigos (as três primeiras vêm do site de referência).
    Validar nomes e organização com a cliente. */
 const CATEGORIES: readonly ArticleCategory[] = [
   { slug: "audicao", label: "Audição" },
   { slug: "degluticao", label: "Deglutição" },
   { slug: "fala-e-fluencia", label: "Fala e fluência" },
+  { slug: "aprendizagem", label: "Aprendizagem" },
+  { slug: "leitura-e-escrita", label: "Leitura e escrita" },
 ];
 
 /* PAC, Disfagia e Gagueira: textos revisados pela autora (SAIDA/ARTIGOS/ARTIGOS_PAC_DISFAGIA_GAGUEIRA_REVISAO.md).
@@ -319,6 +329,74 @@ const ARTICLES: readonly Article[] = [
     imagePosition: "50% 30%",
     publishedAt: PUBLISHED_AT,
     body: GAGUEIRA_BODY,
+  },
+  /* Seis textos novos (articles-aprendizagem.ts), ainda sem a revisão da autora: sem data até a publicação.
+     Fotos: Pexels, provisórias. */
+  {
+    slug: "dificuldade-ou-transtorno-de-aprendizagem",
+    keyword: "Aprendizagem:",
+    title: "Dificuldade ou transtorno: qual é a diferença?",
+    category: "aprendizagem",
+    image: "/images/articles/dificuldade-ou-transtorno.jpg",
+    imageAlt: "Menina de tranças debruçada sobre o caderno, escrevendo com caneta vermelha",
+    imagePosition: "40% center",
+    publishedAt: null,
+    body: DIFICULDADE_BODY,
+  },
+  {
+    slug: "dislexia-sinais-na-leitura",
+    keyword: "Dislexia:",
+    title: "Quais sinais merecem atenção na leitura?",
+    category: "leitura-e-escrita",
+    image: "/images/articles/dislexia.jpg",
+    imageAlt: "Duas crianças organizam cartões com letras sobre uma mesa amarela",
+    imagePosition: "60% center",
+    publishedAt: null,
+    body: DISLEXIA_BODY,
+  },
+  {
+    slug: "leitura-decodificacao-fluencia-compreensao",
+    keyword: "Leitura:",
+    title: "Ler rápido é o mesmo que ler bem?",
+    category: "leitura-e-escrita",
+    image: "/images/articles/leitura-fluencia.jpg",
+    imageAlt: "Menino em pé na sala de aula folheando um livro ilustrado",
+    imagePosition: "58% center",
+    publishedAt: null,
+    body: LEITURA_BODY,
+  },
+  {
+    slug: "funcoes-executivas-na-escola",
+    keyword: "Funções executivas:",
+    title: "Como elas aparecem nas tarefas escolares?",
+    category: "aprendizagem",
+    image: "/images/articles/funcoes-executivas.jpg",
+    imageAlt: "Menino concentrado segurando um cubo mágico colorido",
+    imagePosition: "45% center",
+    publishedAt: null,
+    body: FUNCOES_EXECUTIVAS_BODY,
+  },
+  {
+    slug: "sindrome-de-irlen-queixas-visuais-na-leitura",
+    keyword: "Síndrome de Irlen:",
+    title: "O que se sabe sobre as queixas visuais na leitura?",
+    category: "leitura-e-escrita",
+    image: "/images/articles/queixas-visuais-leitura.jpg",
+    imageAlt: "Livro aberto sobre uma mesa de madeira, com uma criança ao fundo",
+    imagePosition: "40% center",
+    publishedAt: null,
+    body: IRLEN_BODY,
+  },
+  {
+    slug: "familia-e-escola-como-conversar",
+    keyword: "Família e escola:",
+    title: "Como conversar sobre uma dificuldade de aprendizagem?",
+    category: "aprendizagem",
+    image: "/images/articles/familia-e-escola.jpg",
+    imageAlt: "Mãos de um adulto e de uma criança movem as argolas coloridas de um ábaco",
+    imagePosition: "35% center",
+    publishedAt: null,
+    body: FAMILIA_ESCOLA_BODY,
   },
 ];
 

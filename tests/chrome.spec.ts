@@ -34,6 +34,8 @@ const FOOTER_COLUMNS = [
       { label: "Audição", href: "/conteudo/categoria/audicao" },
       { label: "Deglutição", href: "/conteudo/categoria/degluticao" },
       { label: "Fala e fluência", href: "/conteudo/categoria/fala-e-fluencia" },
+      { label: "Aprendizagem", href: "/conteudo/categoria/aprendizagem" },
+      { label: "Leitura e escrita", href: "/conteudo/categoria/leitura-e-escrita" },
     ],
   },
 ] as const;

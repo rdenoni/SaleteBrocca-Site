@@ -8,8 +8,6 @@ const NOINDEX_ROUTES = [
   "/termos-de-uso",
   "/cursos/dificuldades-na-aprendizagem/compra",
   "/loja/checkout",
-  "/conteudo",
-  "/conteudo/disfagia-sintomas-e-tratamento",
 ] as const;
 
 const NOINDEX_META = /<meta[^>]+name="robots"[^>]+content="[^"]*noindex/i;

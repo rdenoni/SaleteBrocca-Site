@@ -31,7 +31,7 @@ test.describe("Conteúdo — biblioteca", () => {
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1, name: "Conteúdo" })).toBeVisible();
     const categories = page.getByRole("navigation", { name: "Categorias de conteúdo" });
-    await expect(categories.getByRole("link")).toHaveCount(4);
+    await expect(categories.getByRole("link")).toHaveCount(6);
     await expect(categories.getByRole("link", { name: /Todos/ })).toHaveAttribute("aria-current", "page");
     await expect(page.getByRole("heading", { level: 2, name: /^PAC:/ })).toBeVisible();
     await expect(page.getByRole("heading", { level: 3, name: /^Disfagia:/ })).toBeVisible();
