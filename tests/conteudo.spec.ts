@@ -35,13 +35,13 @@ test.describe("Conteúdo — biblioteca", () => {
     await expect(categories.getByRole("link", { name: /Todos/ })).toHaveAttribute("aria-current", "page");
     await expect(page.getByRole("heading", { level: 2, name: /^PAC:/ })).toBeVisible();
     await expect(page.getByRole("heading", { level: 3, name: /^Disfagia:/ })).toBeVisible();
-    await expect(page.getByRole("heading", { level: 3, name: /^Castigo:/ })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 3, name: /^Gagueira:/ })).toBeVisible();
     await expect(page.getByText("Novos artigos em breve")).toBeVisible();
   });
 
-  test("títulos de exemplo avisados e fora dos buscadores", async ({ page }) => {
-    await expect(page.getByRole("note").filter({ hasText: "Conteúdo de exemplo." })).toBeVisible();
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  test("artigos publicados: sem aviso de exemplo e abertos aos buscadores", async ({ page }) => {
+    await expect(page.getByRole("note").filter({ hasText: "Conteúdo de exemplo." })).toHaveCount(0);
+    await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0);
   });
 
   test("destaque leva ao artigo", async ({ page }) => {
@@ -85,7 +85,7 @@ test.describe("Conteúdo — artigo", () => {
     await page.goto(ARTICLE);
   });
 
-  test("título, trilha, autoria e texto ainda não publicado", async ({ page }) => {
+  test("título, trilha, autoria, data e texto publicado", async ({ page }) => {
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1, name: /^Disfagia: Quais os sintomas/ })).toBeVisible();
     const trail = page.getByRole("navigation", { name: "Trilha de navegação" });
@@ -93,9 +93,11 @@ test.describe("Conteúdo — artigo", () => {
     await expect(trail.locator("[aria-current='page']")).toHaveText("Disfagia");
     await expect(page.getByText("Maria Salete Brocca Denoni").first()).toBeVisible();
     await expect(page.getByText("Data a confirmar")).toHaveCount(0);
-    await expect(page.getByText("Artigo de exemplo")).toBeVisible();
-    await expect(page.getByText("Texto em preparação")).toBeVisible();
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+    await expect(page.locator("time")).toHaveAttribute("datetime", "2026-11-24");
+    await expect(page.getByText("Artigo de exemplo")).toHaveCount(0);
+    await expect(page.getByText("Texto em preparação")).toHaveCount(0);
+    await expect(page.getByRole("heading", { level: 2, name: "Sinais de alerta" })).toBeVisible();
+    await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0);
   });
 
   test("chamada final e leia também", async ({ page }) => {
@@ -115,9 +117,9 @@ test.describe("Conteúdo — artigo", () => {
 
 test("card da Home abre o artigo", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: /^Castigo:/ }).click();
-  await expect(page).toHaveURL("/conteudo/castigo-13-verdades");
-  await expect(page.getByRole("heading", { level: 1, name: /^Castigo:/ })).toBeVisible();
+  await page.getByRole("link", { name: /^Gagueira:/ }).click();
+  await expect(page).toHaveURL("/conteudo/gagueira-quando-procurar-avaliacao");
+  await expect(page.getByRole("heading", { level: 1, name: /^Gagueira:/ })).toBeVisible();
 });
 
 const PODCAST_EPISODE = "/conteudo/podcast/dislexia-o-que-e-e-o-que-nao-e";

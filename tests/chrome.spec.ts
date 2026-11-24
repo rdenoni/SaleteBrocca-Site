@@ -33,7 +33,7 @@ const FOOTER_COLUMNS = [
       { label: "Todos os conteúdos", href: "/conteudo" },
       { label: "Audição", href: "/conteudo/categoria/audicao" },
       { label: "Deglutição", href: "/conteudo/categoria/degluticao" },
-      { label: "Comportamento infantil", href: "/conteudo/categoria/comportamento-infantil" },
+      { label: "Fala e fluência", href: "/conteudo/categoria/fala-e-fluencia" },
     ],
   },
 ] as const;

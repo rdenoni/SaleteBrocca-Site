@@ -177,9 +177,9 @@ test.describe("Home", () => {
     );
   });
 
-  test("artigos de exemplo avisam que são exemplo", async ({ page }) => {
+  test("artigos publicados não mostram aviso de exemplo", async ({ page }) => {
     const section = page.getByRole("region", { name: "Conteúdos em destaque" });
-    await expect(section.getByRole("note")).toContainText("Conteúdo de exemplo.");
+    await expect(section.getByRole("note")).toHaveCount(0);
   });
 
   test("sem rolagem horizontal", async ({ page }) => {
