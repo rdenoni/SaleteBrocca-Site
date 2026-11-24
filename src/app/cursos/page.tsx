@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CourseCard } from "@/components/courses/CourseCard";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { FaqList } from "@/components/ui/FaqList";
-import { getCourses } from "@/lib/content/courses";
+import { getCatalogCourses, getCourses } from "@/lib/content/courses";
 import { FAQ_SECTION_ID, FAQ_TITLE, getCourseFaq } from "@/lib/content/faq";
 import styles from "./cursos.module.css";
 
@@ -10,13 +10,15 @@ export const metadata: Metadata = {
   title: "Cursos",
   description:
     "Cursos de Maria Salete Brocca Denoni para pais, professores e profissionais que acompanham crianças em idade escolar.",
-  /* O 301 de /loja?categoria=cursos chega aqui com a query (o Next sempre a repassa): o canônico evita a duplicata. */
+  /* Canônico fixo: evita duplicatas quando a página é aberta com query string. */
   alternates: { canonical: "/cursos" },
 };
 
 /* Catálogo: só cursos reais. Filtros entram quando houver mais de um curso. */
 export default function CoursesPage() {
   const courses = getCourses();
+  const catalog = getCatalogCourses();
+  const comingSoon = catalog.length - courses.length;
   const faqCourse = courses.length === 1 ? courses[0] : undefined;
   return (
     <>
@@ -30,14 +32,15 @@ export default function CoursesPage() {
         <div className="container">
           <header className={styles.head}>
             <h2 id="catalogo-titulo" className={styles.title}>
-              Cursos disponíveis
+              Nossos cursos
             </h2>
             <p className={styles.count}>
-              {courses.length === 1 ? "1 curso" : `${courses.length} cursos`}
+              {courses.length === 1 ? "1 curso disponível" : `${courses.length} cursos disponíveis`}
+              {comingSoon > 0 && ` · ${comingSoon} em breve`}
             </p>
           </header>
           <div className={styles.list}>
-            {courses.map((course) => (
+            {catalog.map((course) => (
               <CourseCard key={course.slug} course={course} />
             ))}
           </div>

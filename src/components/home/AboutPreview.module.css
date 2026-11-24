@@ -41,7 +41,7 @@
   background: var(--blue);
 }
 
-/* Moldura da foto: o recorte (clip-path) abre de baixo para cima; o raio vem do overflow. */
+/* Moldura da foto: o recorte (clip-path) abre de cima para baixo; o raio vem do overflow. */
 .frame {
   position: relative;
   z-index: 1;

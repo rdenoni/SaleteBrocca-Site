@@ -28,9 +28,29 @@ test.describe("Cursos — catálogo", () => {
     await expect(page.locator("h1")).toHaveCount(1);
     const card = page.getByRole("article").filter({ hasText: "Dificuldades na Aprendizagem" });
     await expect(card).toHaveCount(1);
+    await expect(page.getByRole("link", { name: "Ver curso" })).toHaveCount(1);
     await card.getByRole("link", { name: "Ver curso" }).click();
     await expect(page).toHaveURL(`/cursos/${SLUG}`);
     await expectNoHorizontalScroll(page);
+  });
+
+  test("Alfabetização aparece desabilitada: 'Em breve', sem link e sem página própria", async ({ page }) => {
+    await page.goto("/cursos");
+    await expect(page.getByText("1 curso disponível · 1 em breve")).toBeVisible();
+    const soon = page.locator("#curso-alfabetizacao");
+    await expect(soon).toHaveCount(1);
+    await expect(soon.getByRole("heading", { level: 3, name: "Alfabetização" })).toBeVisible();
+    await expect(soon.getByText("Em breve", { exact: true })).toHaveCount(2);
+    await expect(soon.getByText("Curso em preparação. Ainda não está disponível para inscrição.")).toBeVisible();
+    await expect(soon.getByRole("link")).toHaveCount(0);
+    await expect(soon.getByRole("link", { name: "Ver curso" })).toHaveCount(0);
+    await expect(page.locator('a[href="/cursos/alfabetizacao"]')).toHaveCount(0);
+    await expectNoHorizontalScroll(page);
+  });
+
+  test("/cursos/alfabetizacao não existe (404)", async ({ page }) => {
+    const response = await page.goto("/cursos/alfabetizacao");
+    expect(response?.status()).toBe(404);
   });
 
   test("menu marca Cursos como página atual", async ({ page }) => {

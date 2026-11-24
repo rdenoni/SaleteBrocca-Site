@@ -78,8 +78,6 @@
 
 .chevron {
   flex: none;
-  width: 22px;
-  height: 22px;
   color: var(--navy);
   transition: transform var(--duration) var(--ease);
 }
@@ -133,7 +131,9 @@
   color: var(--blue-strong);
 }
 
-.lesson[aria-current="page"] .lessonNumber {
+.lesson[aria-current="page"] .lessonNumber,
+.lesson[aria-current="page"] [data-status="in-progress"] {
+  /* Sobre a faixa azul-clara o blue-strong dá 4,36:1 (< 4,5 em texto pequeno). */
   color: var(--navy);
 }
 
@@ -143,27 +143,27 @@
 }
 
 /* Lateral do player: tipografia menor. */
-.list[data-compact] .head {
+.compact .head {
   min-height: 60px;
   padding: var(--space-3) var(--space-4);
 }
 
-.list[data-compact] .number {
+.compact .number {
   width: 36px;
   height: 36px;
   font-size: 14px;
 }
 
-.list[data-compact] .title {
+.compact .title {
   font-size: 16px;
   line-height: 22px;
 }
 
-.list[data-compact] .lessons {
+.compact .lessons {
   padding: 0 var(--space-2) var(--space-2);
 }
 
-.list[data-compact] .lesson {
+.compact .lesson {
   font-size: 15px;
   line-height: 22px;
 }

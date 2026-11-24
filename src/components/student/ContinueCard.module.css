@@ -7,7 +7,7 @@
   box-shadow: var(--shadow-card);
 }
 
-.card[data-variant="wide"] {
+.card.wide {
   background: var(--navy);
   color: var(--white);
   box-shadow: none;
@@ -39,7 +39,7 @@
   color: var(--navy);
 }
 
-.card[data-variant="wide"] .title {
+.card.wide .title {
   color: var(--white);
 }
 
@@ -50,7 +50,7 @@
   color: var(--charcoal);
 }
 
-.card[data-variant="wide"] .next {
+.card.wide .next {
   color: var(--white);
 }
 
@@ -59,7 +59,7 @@
   color: var(--blue-strong);
 }
 
-.card[data-variant="wide"] .nextLabel {
+.card.wide .nextLabel {
   color: var(--on-navy-muted);
 }
 
@@ -72,14 +72,15 @@
 
 .progressText {
   font: 400 15px/22px var(--font-sans);
+  font-variant-numeric: tabular-nums;
   color: var(--text-muted);
 }
 
-.card[data-variant="wide"] .progressText {
+.card.wide .progressText {
   color: var(--on-navy-muted);
 }
 
-.card[data-variant="wide"] .progressText strong {
+.card.wide .progressText strong {
   color: var(--white);
 }
 

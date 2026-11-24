@@ -36,8 +36,11 @@ Regra: não avançar de fase sem cumprir os critérios de conclusão e sem valid
 | 6 | Retratos profissionais em alta resolução (os atuais têm 384px) | Sobre, Home, depoimentos |
 | 7 | Licença das fotos de banco de imagem | Hero, cards, artigos |
 | 8 | Pauta real dos conteúdos: títulos, textos completos, datas e categorias. Hoje os 3 títulos da referência são exemplos, as categorias (Audição, Deglutição, Comportamento infantil) são uma proposta e o site avisa "Conteúdo de exemplo" (`ARTICLES_ARE_EXAMPLES` em `src/lib/content/articles.ts`, com `noindex`) | Conteúdos em destaque (Home), Conteúdo |
-| 9 | Produtos digitais reais da loja | Loja |
+| 9 | Produtos da loja. Definidos: Box R$ 399,00 (postagem em até 5 dias úteis); caneca R$ 59,90, agenda R$ 89,90, Kit Educador R$ 139,90 (produção e postagem em até 7 dias úteis); físicos pelos Correios com frete grátis; PDFs R$ 9,90 por e-mail; app R$ 39,90 por download (segue "em breve" até existir). Faltam detalhes de cada item (faixa etária, componentes, dimensões, páginas, materiais) e fotos | Loja |
 | 10 | Texto jurídico da política de privacidade e responsável pelos dados | Privacidade, LGPD |
+| 11 | Dados de contato das artes de identidade de 2021 (telefone, e-mail, site, perfis sociais, endereço do consultório em Criciúma, registro no carimbo): confirmar se continuam válidos. Detalhes em [02 §9](02-BRAND-GUIDELINES.md) | Contato, footer, papelaria e peças novas |
+| 12 | Paleta Coolors "Salete Denoni" (dourado e verde-petróleo): confirmar se pertence a outro projeto. Até lá, fica fora da identidade | Nenhum (não usada) |
+| 13 | Nomes das versões do logo no manual ("vertical especial" e "responsiva"): confirmar qual arquivo corresponde a cada uma | Design system, peças impressas |
 
 ## Riscos
 

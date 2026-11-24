@@ -1,0 +1,42 @@
+.section {
+  margin-top: var(--space-24);
+}
+
+.head {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-8);
+}
+
+.headText {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+
+.heading {
+  font: 800 34px/42px var(--font-sans);
+  color: var(--navy);
+}
+
+.intro {
+  max-width: 640px;
+  font: 400 17px/28px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.all {
+  margin-top: var(--space-8);
+}
+
+@media (max-width: 767px) {
+  .section {
+    margin-top: var(--space-16);
+  }
+
+  .heading {
+    font-size: 26px;
+    line-height: 32px;
+  }
+}

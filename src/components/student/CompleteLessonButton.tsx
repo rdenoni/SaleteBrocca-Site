@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { Circle, CircleAlert, CircleCheck } from "lucide-react";
 import { setLessonCompleted } from "@/app/area-do-aluno/lesson-actions";
+import { AnimatedCheck } from "@/motion/icons";
 import styles from "./CompleteLessonButton.module.css";
 
 interface CompleteLessonButtonProps {
@@ -19,11 +20,15 @@ interface CompleteLessonButtonProps {
 export function CompleteLessonButton({ courseSlug, lessonCode, initialCompleted, persist }: CompleteLessonButtonProps) {
   const [completed, setCompleted] = useState(initialCompleted);
   const [error, setError] = useState<string>();
+  /* O traço do check só desenha depois de um clique: ao abrir a aula já concluída o ícone vem parado
+     (o AnimatedCheck anima ao montar, sem esperar a entrada da página). */
+  const [touched, setTouched] = useState(false);
   const [pending, startTransition] = useTransition();
-  const Icon = completed ? CircleCheck : Circle;
+  const icon = !completed ? <Circle aria-hidden="true" /> : touched ? <AnimatedCheck size={18} /> : <CircleCheck aria-hidden="true" />;
 
   function toggle() {
     const next = !completed;
+    setTouched(true);
     setCompleted(next);
     setError(undefined);
     if (!persist) return;
@@ -44,7 +49,7 @@ export function CompleteLessonButton({ courseSlug, lessonCode, initialCompleted,
   return (
     <div className={styles.wrap}>
       <button type="button" className={styles.button} aria-pressed={completed} disabled={pending} onClick={toggle}>
-        <Icon aria-hidden="true" />
+        {icon}
         Marcar como concluída
       </button>
       <p className={styles.error} role="alert">

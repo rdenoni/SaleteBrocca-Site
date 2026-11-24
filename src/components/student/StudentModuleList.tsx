@@ -1,9 +1,13 @@
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 import { getLessonRefs, getLessonStatus, lessonHref, type ProgressByCourse } from "@/lib/content/student";
+import { Stagger, StaggerItem } from "@/motion/Stagger";
+import { motionTokens } from "@/motion/tokens";
 import type { Course } from "@/types/content";
 import { LessonStatusBadge } from "./LessonStatusBadge";
 import styles from "./StudentModuleList.module.css";
+
+const { duration, stagger } = motionTokens;
 
 interface StudentModuleListProps {
   course: Course;
@@ -15,15 +19,26 @@ interface StudentModuleListProps {
   openModule?: number;
   /** Versão estreita da lateral do player: status só com ícone. */
   compact?: boolean;
+  /** Espera (s) antes do primeiro módulo; a página passa o fim do título da seção (afterTitle). */
+  delay?: number;
 }
 
-/* Módulos em acordeão nativo; cada aula é um link para o player, com o estado em ícone + palavra. */
-export function StudentModuleList({ course, progress, currentSlug, openModule, compact = false }: StudentModuleListProps) {
+/* Módulos em acordeão nativo; cada aula é um link para o player, com o estado em ícone + palavra.
+   Entrada (por viewport): módulo a módulo, de cima para baixo; as aulas do módulo aberto entram em cascata logo
+   depois do cabeçalho dele. Módulos fechados não estão na tela: as aulas entram quando o aluno abre o módulo. */
+export function StudentModuleList({
+  course,
+  progress,
+  currentSlug,
+  openModule,
+  compact = false,
+  delay = 0,
+}: StudentModuleListProps) {
   const lessons = getLessonRefs(course);
 
   return (
-    <ol className={styles.list} data-compact={compact ? "" : undefined}>
-      {course.modules.map((module) => {
+    <Stagger as="ol" delay={delay} className={compact ? `${styles.list} ${styles.compact}` : styles.list}>
+      {course.modules.map((module, index) => {
         const moduleLessons = lessons.filter((lesson) => lesson.moduleNumber === module.number);
         const done = moduleLessons.filter(
           (lesson) => getLessonStatus(course.slug, lesson.code, progress) === "completed",
@@ -32,7 +47,7 @@ export function StudentModuleList({ course, progress, currentSlug, openModule, c
           module.number === openModule || moduleLessons.some((lesson) => lesson.slug === currentSlug);
 
         return (
-          <li key={module.number}>
+          <StaggerItem as="li" key={module.number}>
             <details className={styles.module} open={isOpen}>
               <summary className={styles.head}>
                 <span className={styles.number} aria-hidden="true">
@@ -47,11 +62,16 @@ export function StudentModuleList({ course, progress, currentSlug, openModule, c
                     {done} de {moduleLessons.length} concluídas
                   </span>
                 </span>
-                <ChevronDown className={styles.chevron} aria-hidden="true" />
+                <ChevronDown className={styles.chevron} aria-hidden="true" size={24} />
               </summary>
-              <ol className={styles.lessons}>
+              <Stagger
+                as="ol"
+                className={styles.lessons}
+                /* Fechado, o atraso da página não vale: a cascata roda quando o aluno abre o módulo. */
+                delay={isOpen ? delay + index * stagger.items + duration.quick : 0}
+              >
                 {moduleLessons.map((lesson) => (
-                  <li key={lesson.code}>
+                  <StaggerItem as="li" key={lesson.code}>
                     <Link
                       href={lessonHref(course.slug, lesson)}
                       className={styles.lesson}
@@ -63,13 +83,13 @@ export function StudentModuleList({ course, progress, currentSlug, openModule, c
                       <span className={styles.lessonTitle}>{lesson.title}</span>
                       <LessonStatusBadge status={getLessonStatus(course.slug, lesson.code, progress)} compact={compact} />
                     </Link>
-                  </li>
+                  </StaggerItem>
                 ))}
-              </ol>
+              </Stagger>
             </details>
-          </li>
+          </StaggerItem>
         );
       })}
-    </ol>
+    </Stagger>
   );
 }

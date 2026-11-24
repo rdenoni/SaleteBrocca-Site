@@ -29,6 +29,13 @@
   background: var(--cyan);
 }
 
+/* 32px: tamanho de "ilustração em destaque" da iconografia. Navy, como o título. */
+.icon {
+  flex: none;
+  margin-bottom: var(--space-1);
+  color: var(--navy);
+}
+
 .title {
   font: 800 26px/32px var(--font-sans);
   color: var(--navy);

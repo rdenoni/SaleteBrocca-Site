@@ -1,20 +1,70 @@
+"use client";
+
+import { createContext, useContext, type ReactNode } from "react";
 import Image from "next/image";
-import type { ReactNode } from "react";
+import Link from "next/link";
+import { stagger, type Variants } from "motion/react";
+import { DrawRule } from "@/motion/DrawRule";
+import { useHoldInView } from "@/motion/pageSequence";
+import { Reveal, revealVariants } from "@/motion/Reveal";
+import { TextReveal } from "@/motion/TextReveal";
+import { heroTimeline, overlapAfter } from "@/motion/timeline";
+import { useEntranceReady } from "@/motion/transitions/useEntranceReady";
+import { useEntranceTokens, useMotionTokens } from "@/motion/useMotionTokens";
 import styles from "./AuthCard.module.css";
+
+/* Quando o formulário do cartão começa (s, contados a partir da liberação da página): o texto de apoio já subindo. */
+const FormDelayContext = createContext(0);
+
+/* Entrada em cascata dos formulários dentro do AuthCard (login, recuperar, definir senha, confirmar):
+   cada filho direto do formulário é um motion.* com data-reveal e variants={item}, na ordem de leitura.
+   O atraso inicial vem do cartão, que sabe quanto o título e o texto levam. */
+/** `delayOverride`: para formulário fora do AuthCard (ex.: Minha conta), que não recebe o atraso pelo contexto. */
+export function useAuthCascade(delayOverride?: number): { ready: boolean; delay: number; cascade: Variants; item: Variants } {
+  /* Tokens de entrada: a cascata segue o ritmo da área (MotionPace), como o título e o texto do cartão. */
+  const t = useEntranceTokens();
+  const ready = useEntranceReady();
+  const contextDelay = useContext(FormDelayContext);
+  /* `delay` volta em tempo normal (quem o usa num Reveal aplica o ritmo); a cascata aplica aqui. */
+  const delay = delayOverride ?? contextDelay;
+  const cascade: Variants = {
+    hidden: {},
+    visible: { transition: { delayChildren: stagger(t.reduced ? 0 : t.stagger.items, { startDelay: delay * t.pace }) } },
+  };
+  return { ready, delay, cascade, item: revealVariants("rise", t) };
+}
 
 interface AuthCardProps {
   title: string;
   lead: string;
   /** Formulário ou mensagem principal. */
   children?: ReactNode;
+  /** Quantos itens a cascata do formulário tem (a nota e o rodapé entram depois do último). Sem formulário: 0. */
+  formItems?: number;
   /** Nota pequena abaixo do formulário. */
   note?: ReactNode;
   /** Rodapé do cartão, separado por uma linha (links de apoio). */
   footer?: ReactNode;
 }
 
-/* Cartão branco sobre azul-claro com as peças da marca (wireframe 3.12): login, recuperar e definir senha. */
-export function AuthCard({ title, lead, children, note, footer }: AuthCardProps) {
+/* Cartão branco sobre azul-claro com as peças da marca (wireframe 3.12): login, recuperar e definir senha.
+   Ordem de entrada (leitura): título palavra por palavra → régua ciano → texto de apoio → campos e botões do
+   formulário, um a um → nota → aviso de privacidade → links de apoio. As peças da marca ficam fixas (fundo). */
+export function AuthCard({ title, lead, children, formItems = children ? 1 : 0, note, footer }: AuthCardProps) {
+  const t = useMotionTokens();
+  const ready = useEntranceReady();
+  const step = (seconds: number): number => (t.reduced ? 0 : seconds);
+  /* Em sobreposição: cada peça entra com a anterior 30% formada (título → régua → texto → formulário). */
+  const titleStart = step(heroTimeline(t, title.split(/\s+/).length).find((s) => s.id === "title")?.start ?? 0);
+  const ruleStart = titleStart + step(overlapAfter(t.duration.slow));
+  const textStart = ruleStart + step(overlapAfter(t.duration.slow));
+
+  const formDelay = textStart + step(overlapAfter(t.duration.gentle));
+  const tailDelay = formDelay + step(formItems * t.stagger.items);
+  /* O que está abaixo do cartão (rodapé do site) espera o fim desta sequência. */
+  useHoldInView(step(tailDelay + 2 * t.stagger.items + t.duration.base), ready);
+  const tail = (index: number): number => tailDelay + step(index * t.stagger.items);
+
   return (
     <section className={styles.page} aria-labelledby="page-title">
       <Image
@@ -28,14 +78,33 @@ export function AuthCard({ title, lead, children, note, footer }: AuthCardProps)
       />
       <div className={`container ${styles.inner}`}>
         <div className={styles.card}>
-          <h1 id="page-title" className={styles.title}>
-            {title}
-          </h1>
-          <span className="rule" aria-hidden="true" />
-          <p className={styles.lead}>{lead}</p>
-          {children}
-          {note && <p className={styles.note}>{note}</p>}
-          {footer && <p className={styles.alt}>{footer}</p>}
+          <TextReveal
+            as="h1"
+            id="page-title"
+            className={styles.title}
+            text={title}
+            trigger="mount"
+            play={ready}
+            delay={titleStart}
+          />
+          <DrawRule trigger="mount" play={ready} delay={ruleStart} />
+          <Reveal as="p" trigger="mount" play={ready} delay={textStart} className={styles.lead}>
+            {lead}
+          </Reveal>
+          <FormDelayContext.Provider value={formDelay}>{children}</FormDelayContext.Provider>
+          {note && (
+            <Reveal as="p" trigger="mount" play={ready} delay={tail(0)} className={styles.note}>
+              {note}
+            </Reveal>
+          )}
+          <Reveal as="p" trigger="mount" play={ready} delay={tail(1)} className={styles.privacy}>
+            Veja como tratamos seus dados na <Link href="/privacidade">política de privacidade</Link>.
+          </Reveal>
+          {footer && (
+            <Reveal as="p" trigger="mount" play={ready} delay={tail(2)} className={styles.alt}>
+              {footer}
+            </Reveal>
+          )}
         </div>
       </div>
     </section>

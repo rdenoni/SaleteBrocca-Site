@@ -1,12 +1,7 @@
-import { BookOpen, Puzzle, type LucideIcon } from "lucide-react";
 import { LinkArrow } from "@/components/ui/LinkArrow";
-import type { ProductCategory, ProductCategoryInfo } from "@/types/content";
+import type { ProductCategoryInfo } from "@/types/content";
+import { CATEGORY_ICONS } from "./category-icons";
 import styles from "./UpcomingCategory.module.css";
-
-const ICONS: Record<ProductCategory, LucideIcon> = {
-  materiais: BookOpen,
-  jogos: Puzzle,
-};
 
 interface UpcomingCategoryProps {
   category: ProductCategoryInfo;
@@ -16,9 +11,9 @@ interface UpcomingCategoryProps {
   showTitle?: boolean;
 }
 
-/* Categoria prevista sem produtos confirmados: bloco de cor honesto em vez de produto inventado. */
+/* Categoria prevista sem produtos cadastrados: bloco de cor honesto em vez de produto inventado. */
 export function UpcomingCategory({ category, tone = "light", showTitle = true }: UpcomingCategoryProps) {
-  const Icon = ICONS[category.id];
+  const Icon = CATEGORY_ICONS[category.id];
   const dark = tone === "navy";
 
   return (

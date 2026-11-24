@@ -11,8 +11,16 @@ async function loadAllImages(page: Page): Promise<void> {
   for (const image of await page.locator("main img, footer img").all()) {
     if (await image.isVisible()) await image.scrollIntoViewIfNeeded();
   }
+  /* Imagem lazy fora da tela não conta: o carrossel de depoimentos troca de slide sozinho e monta a foto nova
+     enquanto o teste já rolou para o rodapé; ela só carrega quando volta à tela (comportamento correto do lazy). */
   await page.waitForFunction(
-    () => Array.from(document.images).every((img) => img.offsetParent === null || img.complete),
+    () =>
+      Array.from(document.images).every((img) => {
+        if (img.offsetParent === null || img.complete) return true;
+        const box = img.getBoundingClientRect();
+        const onScreen = box.bottom > 0 && box.top < window.innerHeight;
+        return img.loading === "lazy" && !onScreen;
+      }),
     undefined,
     { timeout: 15_000 },
   );
@@ -99,6 +107,17 @@ test.describe("Home", () => {
     await expect(card).toContainText("21 aulas");
   });
 
+  test("Alfabetização aparece desabilitada, sem link, e a trilha segue no curso disponível", async ({ page }) => {
+    const soon = page.locator("#curso-alfabetizacao");
+    await expect(soon).toHaveCount(1);
+    await expect(soon.getByRole("heading", { level: 3, name: "Alfabetização" })).toBeAttached();
+    await expect(soon.getByText("Em breve", { exact: true })).toHaveCount(2);
+    await expect(soon.getByText("Curso em preparação. Ainda não está disponível para inscrição.")).toBeAttached();
+    await expect(soon.getByRole("link")).toHaveCount(0);
+    await expect(page.locator('main a[href="/cursos/alfabetizacao"]')).toHaveCount(0);
+    await expect(soon).not.toContainText("módulos");
+  });
+
   test("Área do Aluno sempre acessível no header", async ({ page }) => {
     const student = page.getByRole("banner").getByRole("link", { name: "Área do Aluno" });
     await expect(student).toBeVisible();
@@ -113,11 +132,9 @@ test.describe("Home", () => {
     if (isDesktop(width)) {
       await expect(desktopNav).toBeVisible();
       await expect(menuButton).toBeHidden();
-      /* Menu aprovado no mapa do site: a Loja saiu do topo (fica no rodapé) e a Avaliação entrou. */
-      for (const label of ["Cursos", "Avaliação", "Conteúdo", "Sobre", "Contato"]) {
+      for (const label of ["Cursos", "Loja", "Avaliação", "Conteúdo", "Sobre", "Contato"]) {
         await expect(desktopNav.getByRole("link", { name: label, exact: true })).toBeVisible();
       }
-      await expect(desktopNav.getByRole("link", { name: "Loja", exact: true })).toHaveCount(0);
       return;
     }
 
@@ -140,6 +157,7 @@ test.describe("Home", () => {
 
     await form.getByLabel("Nome completo").fill("Maria da Silva");
     await form.getByLabel("Telefone").fill("(48) 99999-0000");
+    await form.getByRole("checkbox").check();
     await form.getByRole("button", { name: "Pedir avaliação" }).click();
     await expect(form.getByRole("status")).toContainText("Dados conferidos");
     await expect(form.getByText("Informe seu nome completo.")).toHaveCount(0);

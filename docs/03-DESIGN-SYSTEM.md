@@ -186,3 +186,17 @@ Padrão (`padrao-modulo.png`) e peças (`grafismo-pecas.png`) como apoio em áre
 - Um `h1` por página; landmarks `header`, `nav`, `main`, `footer`; rótulos visíveis em todos os campos.
 - Carrossel do hero com pausa e controles acessíveis; não troca sozinho com movimento reduzido.
 - Formulários anunciam erros com `aria-invalid` e `aria-describedby`.
+
+## 16. Movimento: ordem de entrada
+
+Regra da cliente: as entradas seguem a hierarquia da informação. Partituras em `src/motion/timeline.ts`.
+
+- **Cascata**: título (e o que pertence a ele) → subtítulo → texto → o resto (foto, índice, botões). Numa seção que entra ao chegar à tela, o conteúdo espera o título (`afterTitle`).
+- **Página**: o banner/topo primeiro (`afterBanner`), depois as demais seções, na **ordem de leitura** (de cima para baixo, da esquerda para a direita). Uma seção que já aparece na tela ao abrir (tela alta) espera o topo terminar: as sequências do topo chamam `useHoldInView` e as entradas por viewport somam `inViewWait()` (`src/motion/pageSequence.ts`).
+- Filetes e réguas ciano também entram (o traço, `DrawRule`), nunca ficam estáticos enquanto o resto anima.
+- **Cabeçalho**: símbolo → logotipo → links → gota da página atual → botões (`headerTimeline`), começando logo que a pílula branca desce.
+- **Nada da página começa antes de a entrada do cabeçalho estar 80% feita** (`useEntranceReady`; o cabeçalho usa `useCurtainReady`). Nas navegações seguintes o cabeçalho não entra de novo, então a página não espera.
+- **Mensagens e frases de destaque** (ex.: "Toda criança, independente da dificuldade, tem a capacidade de ler e escrever."): leitura guiada (`GuidedReading`), ligada à rolagem.
+- Cada passo começa por volta da metade do anterior: a ordem fica clara sem ninguém esperar a animação acabar.
+- **Telas abertas muitas vezes seguidas**: mesma ordem, em ritmo curto. O layout de cada área aplica o ritmo: Área do Aluno `STUDENT_PACE` (0,4), Loja e Conteúdo `BROWSE_PACE` (0,6). `<MotionPace>` multiplica as entradas (durações, cadências, atrasos e a espera do topo) sem mexer em hover, toque e abas. Os atrasos continuam escritos em tempo normal. Nessas áreas os conjuntos se sobrepõem (`OVERLAP` = 0,3 em `timeline.ts`): o seguinte entra com o anterior 30% formado (na Loja, as categorias com o subtítulo do banner; o título do catálogo quando a pílula Aplicativos termina; o texto do destaque com a base 30% desvelada). O que fica dentro de um recorte usa `trigger="parent"` para não esperar o recorte chegar até ele.
+- **Fotos e bases se desvelam de cima para baixo** em todo o site (`variant="mask"` do Reveal e os recortes próprios do Sobre, da Home e do EditorialCard), sem deslocamento. Toda foto de conteúdo tem esse desvelar; nos cards, com o card 30% formado. Ficam de fora as fotos de fundo do Hero e dos banners (assentam com escala).

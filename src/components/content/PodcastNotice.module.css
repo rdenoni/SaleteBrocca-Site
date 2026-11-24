@@ -1,0 +1,20 @@
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  max-width: 640px;
+  font: 400 14px/20px var(--font-sans);
+  color: var(--text-muted);
+}
+
+.note svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  color: var(--blue-strong);
+}
+
+.note strong {
+  color: var(--navy);
+}

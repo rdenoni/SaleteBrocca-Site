@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { ProgressBar } from "@/components/student/ProgressBar";
 import { StudentModuleList } from "@/components/student/StudentModuleList";
-import { StudentShell } from "@/components/student/StudentShell";
-import { Button } from "@/components/ui/Button";
+import { StudentShell, studentContentStart } from "@/components/student/StudentShell";
 import { COURSES_PATH } from "@/lib/auth-paths";
 import { getCourse, getCourses } from "@/lib/content/courses";
 import {
@@ -13,7 +12,16 @@ import {
   lessonHref,
   requireStudentSession,
 } from "@/lib/content/student";
+import { MotionButton } from "@/motion/MotionButton";
+import { Reveal } from "@/motion/Reveal";
+import { Stagger, StaggerItem } from "@/motion/Stagger";
+import { TextReveal } from "@/motion/TextReveal";
+import { afterTitle } from "@/motion/timeline";
+import { motionTokens } from "@/motion/tokens";
 import styles from "./curso-aluno.module.css";
+
+const MODULES_TITLE = "Módulos e aulas";
+const { duration, stagger } = motionTokens;
 
 interface StudentCoursePageProps {
   params: Promise<{ slug: string }>;
@@ -32,6 +40,9 @@ export async function generateMetadata({ params }: StudentCoursePageProps): Prom
   return course ? { title: `${course.title} | Área do Aluno` } : {};
 }
 
+/* Movimento (ordem de leitura): banner (nome do curso) → barra de seções → resumo do progresso (ao montar: a base
+   azul, depois "Seu progresso" e a contagem, a barra que cresce e "Continuar aula") → "Módulos e aulas" → módulos de
+   cima para baixo, com as aulas do módulo aberto em cascata (por viewport: espera o topo). */
 export default async function StudentCoursePage({ params }: StudentCoursePageProps) {
   const { slug } = await params;
   if (!getCourse(slug)) notFound();
@@ -42,33 +53,55 @@ export default async function StudentCoursePage({ params }: StudentCoursePagePro
 
   const progressByCourse = await getStudentProgress();
   const progress = getCourseProgress(course, progressByCourse);
+  const start = studentContentStart(course.title);
+  /* A base azul se desvela primeiro; o texto começa com ela já subindo. */
+  const bodyStart = start + duration.base;
 
   return (
     <StudentShell eyebrow="Meus cursos" title={course.title} active="cursos" activeIsAncestor>
-      <section className={styles.summary} aria-labelledby="progresso-curso">
-        <div className={styles.summaryText}>
-          <h2 id="progresso-curso" className={styles.summaryTitle}>
-            Seu progresso
-          </h2>
-          <p className={styles.count}>
-            <strong>{progress.completed}</strong> de {progress.total} aulas · {progress.percent}%
-          </p>
-        </div>
-        <div className={styles.bar}>
-          <ProgressBar percent={progress.percent} label={`Progresso em ${course.title}`} onTint />
-        </div>
+      <Reveal
+        as="section"
+        variant="mask"
+        trigger="mount"
+        delay={start}
+        className={styles.summary}
+        aria-labelledby="progresso-curso"
+      >
+        <Stagger className={styles.summaryText} trigger="mount" delay={bodyStart}>
+          <StaggerItem>
+            <h2 id="progresso-curso" className={styles.summaryTitle}>
+              Seu progresso
+            </h2>
+          </StaggerItem>
+          <StaggerItem>
+            <p className={styles.count}>
+              <strong>{progress.completed}</strong> de {progress.total} aulas · {progress.percent}%
+            </p>
+          </StaggerItem>
+        </Stagger>
+        {/* StaggerItem (e não Reveal): o preenchimento da barra herda o atraso que o Stagger passa ao item. */}
+        <Stagger trigger="mount" delay={bodyStart + 2 * stagger.items}>
+          <StaggerItem>
+            <ProgressBar percent={progress.percent} label={`Progresso em ${course.title}`} onTint />
+          </StaggerItem>
+        </Stagger>
         {progress.current && (
-          <Button href={lessonHref(course.slug, progress.current)} variant="primary">
-            Continuar aula
-          </Button>
+          <Reveal trigger="mount" delay={bodyStart + 3 * stagger.items} className={styles.cta}>
+            <MotionButton href={lessonHref(course.slug, progress.current)} variant="primary">
+              Continuar aula
+            </MotionButton>
+          </Reveal>
         )}
-      </section>
+      </Reveal>
 
       <section aria-labelledby="modulos-aulas">
-        <h2 id="modulos-aulas" className={styles.heading}>
-          Módulos e aulas
-        </h2>
-        <StudentModuleList course={course} progress={progressByCourse} openModule={progress.current?.moduleNumber} />
+        <TextReveal as="h2" id="modulos-aulas" className={styles.heading} text={MODULES_TITLE} />
+        <StudentModuleList
+          course={course}
+          progress={progressByCourse}
+          openModule={progress.current?.moduleNumber}
+          delay={afterTitle(motionTokens, MODULES_TITLE)}
+        />
       </section>
     </StudentShell>
   );

@@ -1,0 +1,5 @@
+/* Sem cor própria: herda a da superfície (navy no claro, branco na frase da Sobre, que é navy). */
+/* Cada palavra é inline-block só para receber opacidade própria; a quebra de linha segue natural. */
+.word {
+  display: inline-block;
+}

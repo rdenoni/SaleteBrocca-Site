@@ -8,7 +8,9 @@ import styles from "./HeroSequence.module.css";
 import { TextReveal } from "./TextReveal";
 import { TransitionLink } from "./transitions/TransitionLink";
 import { useEntranceReady } from "./transitions/useEntranceReady";
-import { useMotionTokens, type ResolvedMotionTokens } from "./useMotionTokens";
+import { useHoldInView } from "./pageSequence";
+import { heroTimeline, type HeroTimelineStep } from "./timeline";
+import { useMotionTokens } from "./useMotionTokens";
 import { useScrollWillChange } from "./useScrollWillChange";
 
 /* Textos e foto do Hero ORIGINAL do site. São só valores padrão: a página pode sobrescrever. */
@@ -30,34 +32,7 @@ const PHOTO_EXIT_SCALE = 1.06;
 const CONTENT_RISE_FACTOR = 1.75;
 const CONTENT_END_OPACITY = 0.4;
 
-export interface HeroTimelineStep {
-  id: "photo" | "title" | "rule" | "text" | "cta";
-  label: string;
-  /** Início em segundos (em segundos de tempo real). */
-  start: number;
-  /** Duração em segundos. */
-  duration: number;
-  /** Tokens que geram o tempo, para documentar. */
-  tokens: string;
-}
-
-/* A partitura da sequência de entrada: única fonte para o componente E para a página que a documenta.
-   Todo tempo vem dos tokens, então acompanha o controle de velocidade. ~1,6 s em 1×. */
-export function heroTimeline(t: ResolvedMotionTokens, wordCount = 3): HeroTimelineStep[] {
-  const titleStart = t.duration.instant;
-  const titleDuration = (wordCount - 1) * t.stagger.words + t.duration.slow;
-  const ruleStart = titleStart + t.duration.gentle;
-  const textStart = ruleStart + t.duration.quick;
-  const ctaStart = textStart + t.stagger.cards;
-
-  return [
-    { id: "photo", label: "Foto assenta (1,08 para 1)", start: 0, duration: t.duration.story, tokens: "duration.story · ease.out" },
-    { id: "title", label: "Título, palavra por palavra", start: titleStart, duration: titleDuration, tokens: "duration.instant + stagger.words · duration.slow" },
-    { id: "rule", label: "Régua ciano se desenha", start: ruleStart, duration: t.duration.slow, tokens: "+ duration.gentle · duration.slow · ease.stroke" },
-    { id: "text", label: "Texto de apoio sobe e aparece", start: textStart, duration: t.duration.gentle, tokens: "+ duration.quick · duration.gentle · ease.out" },
-    { id: "cta", label: "Botão sobe e aparece", start: ctaStart, duration: t.duration.gentle, tokens: "+ stagger.cards · duration.gentle · ease.out" },
-  ];
-}
+export { heroTimeline, type HeroTimelineStep } from "./timeline";
 
 export interface HeroSequenceProps {
   /** Nível do título. O laboratório usa "h2" porque a página já tem um h1. */
@@ -104,6 +79,8 @@ export function HeroSequence({
 
   const steps = heroTimeline(t, title.split(/\s+/).filter(Boolean).length);
   const startOf = (id: HeroTimelineStep["id"]): number => (t.reduced ? 0 : (steps.find((step) => step.id === id)?.start ?? 0));
+  /* Seções já na tela ao abrir só entram depois do Hero (ordem de leitura). */
+  useHoldInView(t.reduced ? 0 : startOf("cta") + t.duration.base, ready);
 
   /* Texto e botão: sobem e aparecem (reduzido: só opacidade, rápido). `y: 0` no destino garante que nada fica deslocado. */
   const riseIn = (id: "text" | "cta") => ({

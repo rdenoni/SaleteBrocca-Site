@@ -103,6 +103,31 @@ export type Database = {
         };
         Relationships: [];
       };
+      /* supabase/migrations/20261123130000_lesson_notes.sql */
+      lesson_notes: {
+        Row: {
+          user_id: string;
+          course_slug: string;
+          lesson_code: string;
+          body: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id?: string;
+          course_slug: string;
+          lesson_code: string;
+          body?: string;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          course_slug?: string;
+          lesson_code?: string;
+          body?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       /* supabase/migrations/20261120120000_lesson_videos.sql: o aluno só lê; quem grava é o servidor. */
       lesson_videos: {
         Row: {

@@ -46,6 +46,21 @@
   color: var(--text-muted);
 }
 
+.privacy {
+  font: 400 14px/20px var(--font-sans);
+  color: var(--text-muted);
+}
+
+.privacy a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  color: var(--blue-strong);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .alt {
   padding-top: var(--space-4);
   border-top: 1px solid var(--light-gray);

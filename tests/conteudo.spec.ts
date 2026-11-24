@@ -119,3 +119,87 @@ test("card da Home abre o artigo", async ({ page }) => {
   await expect(page).toHaveURL("/conteudo/castigo-13-verdades");
   await expect(page.getByRole("heading", { level: 1, name: /^Castigo:/ })).toBeVisible();
 });
+
+const PODCAST_EPISODE = "/conteudo/podcast/dislexia-o-que-e-e-o-que-nao-e";
+
+test.describe("Conteúdo — podcast", () => {
+  test("a biblioteca mostra a seção Podcast com 3 episódios de exemplo", async ({ page }) => {
+    await page.goto("/conteudo");
+    const section = page.getByRole("region", { name: "Podcast" });
+    await expect(section.getByRole("heading", { level: 2, name: "Podcast" })).toBeVisible();
+    await expect(section.getByText("Podcast simulado")).toBeVisible();
+    await expect(section.getByRole("heading", { level: 3 })).toHaveCount(3);
+    await expect(section.getByText("Episódio de exemplo")).toHaveCount(3);
+    await expect(section.getByRole("link", { name: "Ver todos os episódios" })).toHaveAttribute(
+      "href",
+      "/conteudo/podcast",
+    );
+    await expectNoHorizontalScroll(page);
+  });
+
+  test("a listagem tem 3 episódios, aviso de simulação e trilha", async ({ page }) => {
+    await page.goto("/conteudo/podcast");
+    await expect(page.locator("h1")).toHaveCount(1);
+    await expect(page.getByRole("heading", { level: 1, name: "Podcast" })).toBeVisible();
+    const trail = page.getByRole("navigation", { name: "Trilha de navegação" });
+    await expect(trail.getByRole("link")).toHaveText(["Início", "Conteúdo"]);
+    await expect(trail.locator("[aria-current='page']")).toHaveText("Podcast");
+    await expect(page.getByRole("note").filter({ hasText: "Podcast simulado." })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 3 })).toHaveCount(3);
+    await expect(page.getByRole("heading", { level: 3, name: /^Dificuldade ou transtorno\?/ })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 3, name: /^Dislexia:/ })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 3, name: /^Atenção, memória/ })).toBeVisible();
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+    await expectNoHorizontalScroll(page);
+    await fullPageShot(page, "podcast");
+  });
+
+  test("o card leva ao episódio", async ({ page }) => {
+    await page.goto("/conteudo/podcast");
+    await page.getByRole("link", { name: /^Dislexia:/ }).click();
+    await expect(page).toHaveURL(PODCAST_EPISODE);
+  });
+
+  test("o episódio mostra título, player desativado, roteiro e link para o curso", async ({ page }) => {
+    await page.goto(PODCAST_EPISODE);
+    await expect(page.locator("h1")).toHaveCount(1);
+    await expect(page.getByRole("heading", { level: 1, name: "Dislexia: o que é e o que não é" })).toBeVisible();
+    await expect(page.getByText("Áudio em produção", { exact: true })).toBeVisible();
+    await expect(page.locator("audio")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Reproduzir" })).toHaveAttribute("aria-disabled", "true");
+    await expect(page.getByRole("heading", { level: 2, name: "Neste episódio" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: "Roteiro" })).toBeVisible();
+    await expect(page.getByText("Salete:", { exact: true }).first()).toBeVisible();
+    const course = page.getByRole("complementary", { name: "Do curso" });
+    await expect(course.getByText("Dislexia: história e definição atual")).toBeVisible();
+    await expect(course.getByRole("link", { name: "Conhecer o curso" })).toHaveAttribute(
+      "href",
+      "/cursos/dificuldades-na-aprendizagem",
+    );
+    const trail = page.getByRole("navigation", { name: "Trilha de navegação" });
+    await expect(trail.getByRole("link")).toHaveText(["Início", "Conteúdo", "Podcast"]);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  });
+
+  test("anterior e próximo episódio", async ({ page }) => {
+    await page.goto(PODCAST_EPISODE);
+    const pager = page.getByRole("navigation", { name: "Outros episódios" });
+    await expect(pager.getByRole("link")).toHaveCount(2);
+    await pager.getByRole("link", { name: /Próximo episódio/ }).click();
+    await expect(page).toHaveURL("/conteudo/podcast/atencao-memoria-funcoes-executivas");
+    const last = page.getByRole("navigation", { name: "Outros episódios" });
+    await expect(last.getByRole("link")).toHaveCount(1);
+    await expect(last.getByRole("link", { name: /Episódio anterior/ })).toBeVisible();
+  });
+
+  test("episódio sem rolagem horizontal", async ({ page }) => {
+    await page.goto(PODCAST_EPISODE);
+    await expectNoHorizontalScroll(page);
+    await fullPageShot(page, "podcast-episodio");
+  });
+
+  test("episódio inexistente responde 404", async ({ page }) => {
+    const response = await page.goto("/conteudo/podcast/nao-existe");
+    expect(response?.status()).toBe(404);
+  });
+});

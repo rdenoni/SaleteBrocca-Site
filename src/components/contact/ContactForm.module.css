@@ -21,8 +21,9 @@
 
 .consent {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* o texto pode quebrar em várias linhas: a caixa fica na primeira */
   min-height: 48px;
+  padding-block: var(--space-3);
   gap: var(--space-3);
   font: 400 15px/22px var(--font-sans);
   color: var(--charcoal);
@@ -47,7 +48,7 @@
 .status {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-2);
   font: 400 14px/20px var(--font-sans);
 }
 
@@ -60,11 +61,12 @@
   color: var(--success);
 }
 
+/* 18px: tamanho da iconografia para metadados e mensagens. */
 .error svg,
 .status svg {
   flex: none;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
 }
 
 .actions {

@@ -5,7 +5,7 @@ import { loginPathWithNext } from "@/lib/auth-paths";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { EnrollmentStatus } from "@/types/database";
-import type { Course, CourseProgress, LessonRef, LessonStatus, StudentMaterial } from "@/types/content";
+import type { Course, CourseProgress, LessonRef, LessonStatus } from "@/types/content";
 import { getCourse, getCourses } from "./courses";
 
 /* Dois modos, decididos por `isSupabaseConfigured()`:
@@ -31,9 +31,6 @@ export type ProgressByCourse = Readonly<Record<string, StudentCourseProgress>>;
 const DEMO_PROGRESS: ProgressByCourse = {
   "dificuldades-na-aprendizagem": { completed: ["M00_A01", "M00_A02", "M01_A01"], current: "M01_A02" },
 };
-
-/* Nenhum material complementar confirmado ainda: as telas mostram o estado vazio. */
-const MATERIALS: readonly StudentMaterial[] = [];
 
 export const ENROLLMENT_STATUS_LABEL: Readonly<Record<EnrollmentStatus, string>> = {
   active: "Ativa",
@@ -108,6 +105,27 @@ export const getStudentProgress = cache(async (): Promise<ProgressByCourse> => {
   }
   return Object.fromEntries([...byCourse].map(([slug, completed]) => [slug, { completed }]));
 });
+
+/** Anotação do aluno numa aula: "" quando não há. null quando a leitura falha: a tela não deixa editar, porque o
+    salvamento automático gravaria o campo vazio por cima da anotação real. */
+export async function getLessonNote(courseSlug: string, lessonCode: string): Promise<string | null> {
+  if (isDemoMode()) return "";
+  const session = await getStudentSession();
+  if (!session) return null;
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("lesson_notes")
+    .select("body")
+    .eq("user_id", session.userId)
+    .eq("course_slug", courseSlug)
+    .eq("lesson_code", lessonCode)
+    .maybeSingle();
+  if (error) {
+    console.error(`Falha ao carregar a anotação: ${error.message}`);
+    return null;
+  }
+  return data?.body ?? "";
+}
 
 export function lessonSlug(code: string): string {
   return code.toLowerCase().replace(/_/g, "-");
@@ -189,6 +207,4 @@ export async function getEnrolledCourse(slug: string): Promise<Course | undefine
   return slugs.includes(slug) ? getCourse(slug) : undefined;
 }
 
-export function getMaterials(courseSlug?: string): readonly StudentMaterial[] {
-  return courseSlug ? MATERIALS.filter((material) => material.courseSlug === courseSlug) : MATERIALS;
-}
+export { getLessonMaterials, getMaterial, getMaterials } from "./materials";

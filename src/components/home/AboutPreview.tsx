@@ -11,7 +11,7 @@ import { HOME_ABOUT as ABOUT, HOME_SECTION_IDS } from "@/lib/content/home";
 import styles from "./AboutPreview.module.css";
 
 const OPEN = "inset(0% 0% 0% 0%)";
-const CLOSED_AT_BOTTOM = "inset(100% 0% 0% 0%)";
+const CLOSED_FROM_TOP = "inset(0% 0% 100% 0%)";
 const SETTLE_FROM = 1.12;
 /* Deslocamento de onde cada peça colorida chega para se encaixar atrás da foto. */
 const PIECE_TRAVEL = 40;
@@ -20,7 +20,7 @@ const PARALLAX_STRENGTH = 0.05;
 /* As peças encaixam quando a moldura já abriu cerca de metade. */
 const PIECES_START = 0.5;
 
-/* Retrato com a revelação: a moldura abre de baixo para cima enquanto a foto assenta (1,12 → 1);
+/* Retrato com a revelação: a moldura abre de cima para baixo enquanto a foto assenta (1,12 → 1);
    as duas peças do símbolo (ciano e azul) se encaixam atrás dela. Depois, parallax leve dentro da moldura. */
 function PortraitReveal() {
   const t = useMotionTokens();
@@ -32,7 +32,7 @@ function PortraitReveal() {
         visible: { opacity: 1, clipPath: OPEN, transition: { duration: t.duration.quick, clipPath: { duration: 0 } } },
       }
     : {
-        hidden: { clipPath: CLOSED_AT_BOTTOM },
+        hidden: { clipPath: CLOSED_FROM_TOP },
         visible: { clipPath: OPEN, transition: { duration: t.duration.slow, ease: t.ease.stroke } },
       };
 

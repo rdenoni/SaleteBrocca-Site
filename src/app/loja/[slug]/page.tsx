@@ -1,21 +1,22 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Check, Lock } from "lucide-react";
+import { Check, Lock, Hourglass } from "lucide-react";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { ProductMedia } from "@/components/shop/ProductMedia";
 import { Button } from "@/components/ui/Button";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { StickyActionBar } from "@/components/ui/StickyActionBar";
-import { getCheckoutHref, getProduct, getProducts } from "@/lib/content/shop";
+import { getCheckoutHref, getProduct, getProducts, isProductAvailable } from "@/lib/content/shop";
 import styles from "./produto.module.css";
+import { Reveal } from "@/motion/Reveal";
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
-/* Sem produtos avulsos cadastrados, nenhum slug é gerado e toda URL /loja/[slug] responde 404.
+/* Só os produtos cadastrados (inclusive os "em breve") geram página; qualquer outro slug responde 404.
    Os endereços antigos dos cursos são redirecionados em next.config.ts antes de chegar aqui. */
 export const dynamicParams = false;
 
@@ -34,13 +35,19 @@ function Price({ value }: { value: string | null }) {
   return value ? <strong>{value}</strong> : <span className="pending">A confirmar</span>;
 }
 
+const CONTACT_HREF = "/contato#formulario";
+
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
   const product = getProduct(slug);
   if (!product) notFound();
 
+  const available = isProductAvailable(product);
   const checkoutHref = getCheckoutHref(product);
-  const related = getProducts().filter((item) => item.slug !== product.slug);
+  /* Disponíveis primeiro: o relacionado que o visitante pode comprar vem antes do que ainda não existe. */
+  const related = getProducts()
+    .filter((item) => item.slug !== product.slug)
+    .sort((a, b) => Number(isProductAvailable(b)) - Number(isProductAvailable(a)));
 
   return (
     <>
@@ -58,20 +65,35 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className={styles.top}>
           <figure className={styles.gallery}>
             <span className={styles.galleryBlock} aria-hidden="true" />
-            <div className={styles.galleryFrame}>
-              <Image src={product.image} alt={product.imageAlt} fill priority sizes="(max-width: 1099px) 100vw, 640px" />
-            </div>
+            <Reveal variant="mask" className={styles.galleryFrame}>
+              <ProductMedia product={product} sizes="(max-width: 1099px) 100vw, 640px" priority />
+            </Reveal>
           </figure>
 
           <section className={styles.panel} aria-labelledby="compra-titulo">
             <h2 id="compra-titulo" className={styles.panelTitle}>
-              Informações de compra
+              {available ? "Informações de compra" : "Disponibilidade"}
             </h2>
             <span className="rule" aria-hidden="true" />
-            <p className={styles.price}>
-              <span>Preço</span>
-              <Price value={product.price} />
-            </p>
+            {available ? (
+              <p className={styles.price}>
+                <span>Preço</span>
+                <Price value={product.price} />
+              </p>
+            ) : (
+              <>
+                <p className={styles.status}>
+                  <Hourglass aria-hidden="true" />
+                  Em breve
+                </p>
+                {product.price && (
+                  <p className={styles.price}>
+                    <span>Preço previsto</span>
+                    <Price value={product.price} />
+                  </p>
+                )}
+              </>
+            )}
             <dl className={styles.facts}>
               {product.facts.map((fact) => (
                 <div key={fact.label}>
@@ -80,13 +102,25 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 </div>
               ))}
             </dl>
-            <Button href={checkoutHref} variant="primary" className={styles.buy}>
-              Comprar
-            </Button>
-            <p className={styles.note}>
-              <Lock aria-hidden="true" />
-              Pagamento online em preparação.
-            </p>
+            {available ? (
+              <>
+                <Button href={checkoutHref} variant="primary" className={styles.buy}>
+                  Comprar
+                </Button>
+                <p className={styles.note}>
+                  <Lock aria-hidden="true" />
+                  Pagamento online em preparação.
+                </p>
+              </>
+            ) : (
+              <>
+                <Button variant="primary" className={styles.buy} disabled aria-disabled="true">
+                  Indisponível
+                </Button>
+                <p className={styles.soonText}>Este produto ainda está em desenvolvimento.</p>
+                <LinkArrow href={CONTACT_HREF}>Avise-me pelo contato</LinkArrow>
+              </>
+            )}
           </section>
         </div>
 
@@ -105,7 +139,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           <section className={styles.includes} aria-labelledby="inclui">
             <h2 id="inclui" className={styles.includesTitle}>
-              O que inclui
+              {available ? "O que inclui" : "O que está previsto"}
             </h2>
             <ul>
               {product.includes.map((item) => (
@@ -121,7 +155,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         {related.length > 0 && (
           <section className={styles.related} aria-labelledby="relacionados">
             <h2 id="relacionados" className={styles.heading}>
-              Produtos relacionados
+              Outros produtos da loja
             </h2>
             <ul className={styles.relatedGrid}>
               {related.slice(0, 3).map((item) => (
@@ -139,13 +173,27 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </div>
 
       <StickyActionBar>
-        <p className={styles.barPrice}>
-          <span>Preço</span>
-          <Price value={product.price} />
-        </p>
-        <Button href={checkoutHref} variant="primary">
-          Comprar
-        </Button>
+        {available ? (
+          <>
+            <p className={styles.barPrice}>
+              <span>Preço</span>
+              <Price value={product.price} />
+            </p>
+            <Button href={checkoutHref} variant="primary">
+              Comprar
+            </Button>
+          </>
+        ) : (
+          <>
+            <p className={styles.barPrice}>
+              <span>Disponibilidade</span>
+              <strong>Em breve</strong>
+            </p>
+            <Button variant="primary" disabled aria-disabled="true">
+              Indisponível
+            </Button>
+          </>
+        )}
       </StickyActionBar>
     </>
   );

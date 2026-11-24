@@ -2,7 +2,9 @@
 
 import { motion, type Variants } from "motion/react";
 import type { ReactNode } from "react";
-import { useMotionTokens, type ResolvedMotionTokens } from "./useMotionTokens";
+import { useHoldInView, withInViewWait } from "./pageSequence";
+import { useEntranceReady } from "./transitions/useEntranceReady";
+import { useEntranceTokens, type ResolvedMotionTokens } from "./useMotionTokens";
 
 export type RevealVariant = "rise" | "fade" | "mask" | "scale";
 type RevealTag = "div" | "section" | "article" | "header" | "footer" | "aside" | "figure" | "li" | "ul" | "ol" | "p";
@@ -10,7 +12,7 @@ type RevealTag = "div" | "section" | "article" | "header" | "footer" | "aside" |
 export interface RevealProps {
   children: ReactNode;
   as?: RevealTag;
-  /** rise: sobe 24px · fade: só opacidade · mask: desvela de baixo para cima · scale: aproxima 4%. */
+  /** rise: sobe 24px · fade: só opacidade · mask: desvela de cima para baixo, parado (fotos e bases) · scale: aproxima 4%. */
   variant?: RevealVariant;
   delay?: number;
   /** false = entrada e saída: o bloco volta ao estado inicial quando sai da tela (mais rápido, curva "in"). */
@@ -20,12 +22,24 @@ export interface RevealProps {
   className?: string;
   id?: string;
   "aria-labelledby"?: string;
+  "aria-hidden"?: boolean;
+  /** Superfície do bloco (ex.: "dark"), lida pelos estilos globais de foco e link. */
+  "data-surface"?: string;
+  /** "inView" (padrão): ao entrar na tela. "mount": ao montar (topo da página), segurado por `play`.
+      "parent": segue o bloco de fora (que já é Reveal/Stagger por viewport);
+      para o que fica dentro de um recorte (wipe/mask), que esconderia o próprio bloco do observador de viewport. */
+  trigger?: "inView" | "mount" | "parent";
+  /** Só com trigger "mount": false segura o estado inicial. Sem valor, espera a cortina de transição abrir. */
+  play?: boolean;
 }
 
 /* Saída sempre mais curta que a entrada e com curva "in": some sem disputar atenção. */
 export function revealVariants(variant: RevealVariant, t: ResolvedMotionTokens, delay = 0): Variants {
   const exit = { duration: t.duration.base, ease: t.ease.in };
-  const enter = { duration: t.duration.gentle, ease: t.ease.out, delay };
+  /* Sem atraso próprio, a chave `delay` fica de fora: um `delay: 0` explícito anula o atraso que a cascata do pai
+     (delayChildren/stagger) passa para o filho, e os itens de um Stagger entravam todos juntos. */
+  const ownDelay = delay > 0 ? { delay } : {};
+  const enter = { duration: t.duration.gentle, ease: t.ease.out, ...ownDelay };
 
   /* Reduzido: só opacidade. Transform e recorte ficam neutros nos dois estados, sem animar: o bloco pode ter
      hidratado com o estado inicial do movimento completo (o servidor não sabe a preferência). */
@@ -46,14 +60,11 @@ export function revealVariants(variant: RevealVariant, t: ResolvedMotionTokens, 
         hidden: { opacity: 0, scale: 0.96, transition: exit },
         visible: { opacity: 1, scale: 1, transition: enter },
       };
+    /* Fotos e bases: o recorte desce de cima para baixo, sem deslocamento (subir enquanto desce brigaria). */
     case "mask":
       return {
-        hidden: { clipPath: "inset(100% 0% 0% 0%)", y: t.distance.small, transition: exit },
-        visible: {
-          clipPath: "inset(0% 0% 0% 0%)",
-          y: 0,
-          transition: { duration: t.duration.slow, ease: t.ease.out, delay },
-        },
+        hidden: { clipPath: "inset(0% 0% 100% 0%)", transition: exit },
+        visible: { clipPath: "inset(0% 0% 0% 0%)", transition: { duration: t.duration.slow, ease: t.ease.out, ...ownDelay } },
       };
     case "rise":
     default:
@@ -75,10 +86,17 @@ export function Reveal({
   amount,
   className,
   id,
+  trigger = "inView",
+  play,
   ...aria
 }: RevealProps) {
-  const t = useMotionTokens();
+  const t = useEntranceTokens();
+  const ready = useEntranceReady();
   const MotionTag = motion[as] as typeof motion.div;
+  /* Ao montar, o bloco faz parte do topo da página: o que vem abaixo espera ele já subindo (ordem de leitura).
+     A espera vai em tempo normal (useHoldInView aplica o ritmo). */
+  useHoldInView(trigger === "mount" && !t.reduced ? delay + t.duration.base / t.pace : 0, play ?? ready);
+  const variants = revealVariants(variant, t, delay * t.pace);
 
   return (
     <MotionTag
@@ -88,11 +106,18 @@ export function Reveal({
       id={id}
       className={className}
       data-reveal=""
-      initial="hidden"
-      whileInView="visible"
-      /* Movimento reduzido: nada volta a se esconder ao sair da tela (once forçado). */
-      viewport={{ ...t.viewport, once: once || t.reduced, amount: amount ?? t.viewport.amount }}
-      variants={revealVariants(variant, t, delay)}
+      initial={trigger === "parent" ? undefined : "hidden"}
+      {...(trigger === "mount"
+        ? { animate: (play ?? ready) ? "visible" : "hidden" }
+        : trigger === "parent"
+          ? {}
+          : {
+            whileInView: "visible",
+            /* Movimento reduzido: nada volta a se esconder ao sair da tela (once forçado). */
+            viewport: { ...t.viewport, once: once || t.reduced, amount: amount ?? t.viewport.amount },
+          })}
+      /* Por viewport: espera o topo da página se a seção já estava na tela ao abrir (ordem de leitura). */
+      variants={trigger === "mount" ? variants : withInViewWait(variants)}
       {...aria}
     >
       {children}

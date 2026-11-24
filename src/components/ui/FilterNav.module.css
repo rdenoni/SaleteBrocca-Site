@@ -39,6 +39,7 @@
 
 .count {
   padding: 2px 10px;
+  font-variant-numeric: tabular-nums;
   border-radius: var(--radius-pill);
   background: var(--light-blue);
   font-size: 13px;
@@ -47,6 +48,41 @@
 
 .filter[aria-current="page"] .count {
   background: var(--white);
+}
+
+/* Variante lateral: só a partir de 1100px; abaixo disso as pílulas quebram linha como no padrão. */
+@media (min-width: 1100px) {
+  .vertical {
+    margin-bottom: 0;
+  }
+
+  .vertical .list {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  .vertical .filter {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+/* Abaixo da barra lateral, as categorias da loja ficam numa linha só que rola de lado (empilhadas empurravam a grade). */
+@media (max-width: 1099px) {
+  .vertical .list {
+    /* relative: os rótulos .visually-hidden (absolutos) ficam presos aqui e não alargam a página. */
+    position: relative;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-inline: calc(-1 * var(--page-gutter));
+    /* 8px em cima e embaixo: o anel de foco (3px + 3px de afastamento) não é cortado pela rolagem. */
+    padding: var(--space-2) var(--page-gutter);
+    scrollbar-width: none;
+  }
+
+  .vertical .filter {
+    white-space: nowrap;
+  }
 }
 
 @media (max-width: 767px) {

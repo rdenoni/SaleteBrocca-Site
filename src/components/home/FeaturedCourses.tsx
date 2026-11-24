@@ -2,6 +2,7 @@ import { DrawRule } from "@/motion/DrawRule";
 import { CourseTrail } from "@/motion/gsap/CourseTrail";
 import { Reveal } from "@/motion/Reveal";
 import { TextReveal } from "@/motion/TextReveal";
+import { isCourseAvailable } from "@/lib/content/courses";
 import { HOME_COURSES, HOME_SECTION_IDS } from "@/lib/content/home";
 import type { Course } from "@/types/content";
 import { CourseCard } from "./CourseCard";
@@ -17,7 +18,8 @@ interface FeaturedCoursesProps {
    A banda da trilha é navy (a trilha usa texto branco) e NÃO tem nenhum ancestral com transform:
    o ScrollTrigger mede e fixa elementos, e um transform no ancestral quebraria isso. */
 export function FeaturedCourses({ courses }: FeaturedCoursesProps) {
-  const [featured] = courses;
+  /* A trilha usa o primeiro curso DISPONÍVEL; cursos "em breve" só ganham o card desabilitado. */
+  const featured = courses.find(isCourseAvailable);
   if (!featured) return null;
 
   return (

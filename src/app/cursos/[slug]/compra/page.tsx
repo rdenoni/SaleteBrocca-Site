@@ -52,7 +52,7 @@ export default async function PurchasePage({ params }: PurchasePageProps) {
         backHref={`/cursos/${course.slug}`}
         backLabel="Voltar ao curso"
         checkoutUrl={course.kiwify.checkoutUrl}
-        grantsCourseAccess
+        delivery="course-access"
       />
     </>
   );

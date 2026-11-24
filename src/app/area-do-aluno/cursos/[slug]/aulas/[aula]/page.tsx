@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ChevronLeft, FileText, Play } from "lucide-react";
+import { ChevronLeft, Download, FileText, Play } from "lucide-react";
 import { CompleteLessonButton } from "@/components/student/CompleteLessonButton";
+import { LessonNotes } from "@/components/student/LessonNotes";
+import { LessonVideo } from "@/components/student/LessonVideo";
 import { LessonTabs } from "@/components/student/LessonTabs";
 import { StudentModuleList } from "@/components/student/StudentModuleList";
-import { StudentShell } from "@/components/student/StudentShell";
-import { Button } from "@/components/ui/Button";
+import { StudentShell, studentContentStart } from "@/components/student/StudentShell";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { COURSES_PATH } from "@/lib/auth-paths";
 import { getCourse, getCourses } from "@/lib/content/courses";
 import {
   findLesson,
   getEnrolledCourse,
+  getLessonMaterials,
+  getLessonNote,
   getLessonRefs,
   getLessonStatus,
   getStudentProgress,
@@ -20,7 +23,37 @@ import {
   lessonHref,
   requireStudentSession,
 } from "@/lib/content/student";
+import { getLessonPlayback, type LessonPlaybackResult } from "@/lib/mux/lesson-playback";
+import { MotionButton } from "@/motion/MotionButton";
+import { MotionPace } from "@/motion/MotionPace";
+import { Reveal } from "@/motion/Reveal";
+import { Stagger, StaggerItem } from "@/motion/Stagger";
+import { TextReveal } from "@/motion/TextReveal";
+import { afterTitle } from "@/motion/timeline";
+import { motionTokens } from "@/motion/tokens";
+import materialStyles from "../../../../materiais/materiais.module.css";
 import styles from "./player.module.css";
+
+const SIDEBAR_TITLE = "Aulas do curso";
+const { duration, stagger } = motionTokens;
+/* O aluno abre aula atrás de aula: a mesma ordem de entrada em 40% do tempo (MotionPace). */
+const LESSON_PACE = 0.4;
+
+/* Falha ao buscar o vídeo não derruba a aula: o aluno ainda navega, conclui e lê as abas. */
+async function loadPlayback(slug: string, aula: string): Promise<LessonPlaybackResult> {
+  try {
+    return await getLessonPlayback(slug, aula);
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : "falha ao carregar o vídeo da aula");
+    return { ok: false, reason: "not-configured" };
+  }
+}
+
+function videoNotice(result: LessonPlaybackResult): string {
+  if (result.ok || isDemoMode()) return "O vídeo desta aula será exibido aqui.";
+  if (result.reason === "no-video") return "O vídeo desta aula ainda não foi publicado.";
+  return "O vídeo está indisponível no momento. Tente recarregar a página mais tarde.";
+}
 
 interface LessonPageProps {
   params: Promise<{ slug: string; aula: string }>;
@@ -42,112 +75,182 @@ export async function generateMetadata({ params }: LessonPageProps): Promise<Met
   return location ? { title: `${location.lesson.title} | Área do Aluno` } : {};
 }
 
+/* Movimento (ordem de leitura): banner (nome da aula) → barra de seções → "Voltar ao curso" → player (ao montar; só
+   uma entrada de opacidade curta, o player nunca fica escondido nem esperando) → a lista de aulas à direita (por
+   viewport: já está na tela no desktop e espera o topo; no celular entra quando chega) → abaixo da dobra: botões
+   (anterior, concluir, próxima), aviso, abas. Dentro da lista: título → módulos → aulas do módulo aberto.
+   Tudo no ritmo LESSON_PACE: tela aberta muitas vezes seguidas, a entrada tem de ser breve. */
 export default async function LessonPage({ params }: LessonPageProps) {
   const { slug, aula } = await params;
   const catalogCourse = getCourse(slug);
-  if (!catalogCourse || !findLesson(catalogCourse, aula)) notFound();
+  const catalogLesson = catalogCourse ? findLesson(catalogCourse, aula) : undefined;
+  if (!catalogCourse || !catalogLesson) notFound();
   await requireStudentSession(`/area-do-aluno/cursos/${slug}/aulas/${aula}`);
+  /* Em paralelo: o vídeo confere a matrícula de novo (mesma consulta, em cache), então não espera a da página. */
+  const [course, progress, playback, note] = await Promise.all([
+    getEnrolledCourse(slug),
+    getStudentProgress(),
+    loadPlayback(slug, aula),
+    getLessonNote(slug, catalogLesson.lesson.code),
+  ]);
   /* Sem matrícula ativa não há conteúdo de aula. */
-  const course = await getEnrolledCourse(slug);
   const location = course ? findLesson(course, aula) : undefined;
   if (!course || !location) redirect(COURSES_PATH);
-  const progress = await getStudentProgress();
 
   const { lesson, previous, next } = location;
+  const start = studentContentStart(lesson.title);
+  const materials = getLessonMaterials(course.slug, lesson.code);
   const position = `Módulo ${lesson.moduleNumber} · Aula ${lesson.numberInModule}`;
 
   return (
-    <StudentShell eyebrow={position} title={lesson.title} active="cursos" activeIsAncestor>
-      <Link href={`/area-do-aluno/cursos/${course.slug}`} className={styles.back}>
-        <ChevronLeft aria-hidden="true" />
-        Voltar ao curso
-      </Link>
+    <MotionPace pace={LESSON_PACE}>
+      <StudentShell eyebrow={position} title={lesson.title} active="cursos" activeIsAncestor>
+        <Reveal trigger="mount" delay={start}>
+          <Link href={`/area-do-aluno/cursos/${course.slug}`} className={styles.back}>
+            <ChevronLeft aria-hidden="true" size={18} />
+            Voltar ao curso
+          </Link>
+        </Reveal>
 
-      <div className={styles.layout}>
-        <div className={styles.main}>
-          {/* Placeholder do vídeo: o serviço de vídeo ainda não foi definido. */}
-          <figure className={styles.player} data-surface="dark">
-            <span className={styles.play} aria-hidden="true">
-              <Play />
-            </span>
-            <figcaption className={styles.screenText}>O vídeo desta aula será exibido aqui.</figcaption>
-          </figure>
+        <div className={styles.layout}>
+          <div className={styles.main}>
+            {playback.ok ? (
+              <Reveal variant="fade" trigger="mount" delay={start + stagger.cards}>
+                <LessonVideo playback={playback.playback} title={lesson.title} className={styles.video} />
+              </Reveal>
+            ) : (
+              /* Sem vídeo liberado (não publicado, indisponível ou modo de demonstração): espaço reservado. */
+              <Reveal
+                as="figure"
+                variant="fade"
+                trigger="mount"
+                delay={start + stagger.cards}
+                className={styles.player}
+                data-surface="dark"
+              >
+                <span className={styles.play} aria-hidden="true">
+                  <Play />
+                </span>
+                <figcaption className={styles.screenText}>{videoNotice(playback)}</figcaption>
+              </Reveal>
+            )}
 
-          <div className={styles.actions}>
-            {previous ? (
-              <Button href={lessonHref(course.slug, previous)} variant="outline">
-                Aula anterior
-              </Button>
-            ) : (
-              <span />
-            )}
-            <CompleteLessonButton
-              key={lesson.code}
-              courseSlug={course.slug}
-              lessonCode={lesson.code}
-              initialCompleted={getLessonStatus(course.slug, lesson.code, progress) === "completed"}
-              persist={!isDemoMode()}
-            />
-            {next ? (
-              <Button href={lessonHref(course.slug, next)} variant="primary">
-                Próxima aula
-              </Button>
-            ) : (
-              <span />
-            )}
+            <Stagger className={styles.actions} pace="items">
+              <StaggerItem>
+                {previous ? (
+                  <MotionButton href={lessonHref(course.slug, previous)} variant="outline">
+                    Aula anterior
+                  </MotionButton>
+                ) : null}
+              </StaggerItem>
+              <StaggerItem>
+                <CompleteLessonButton
+                  key={lesson.code}
+                  courseSlug={course.slug}
+                  lessonCode={lesson.code}
+                  initialCompleted={getLessonStatus(course.slug, lesson.code, progress) === "completed"}
+                  persist={!isDemoMode()}
+                />
+              </StaggerItem>
+              <StaggerItem>
+                {next ? (
+                  <MotionButton href={lessonHref(course.slug, next)} variant="primary">
+                    Próxima aula
+                  </MotionButton>
+                ) : null}
+              </StaggerItem>
+            </Stagger>
+            <Reveal as="p" delay={stagger.items * 3} className={styles.saveNote}>
+              {isDemoMode()
+                ? "O progresso será salvo automaticamente quando a Área do Aluno estiver ativa."
+                : "Seu progresso é salvo automaticamente."}
+            </Reveal>
+
+            <Reveal delay={stagger.items * 3 + duration.quick}>
+              <LessonTabs
+                label="Sobre a aula"
+                tabs={[
+                  {
+                    id: "descricao",
+                    label: "Descrição",
+                    content: (
+                      <>
+                        <p>
+                          Esta aula faz parte do <strong>Módulo {lesson.moduleNumber}: {lesson.moduleTitle}</strong>.
+                        </p>
+                        {lesson.moduleSummary && <p>No módulo: {lesson.moduleSummary}</p>}
+                      </>
+                    ),
+                  },
+                  {
+                    id: "materiais",
+                    label: "Materiais da aula",
+                    content:
+                      materials.length === 0 ? (
+                        <EmptyState
+                          icon={<FileText aria-hidden="true" />}
+                          title="Nenhum material nesta aula"
+                          text="Quando houver arquivos de apoio, eles aparecerão aqui."
+                        />
+                      ) : (
+                        <ul className={materialStyles.list}>
+                          {materials.map((material) => (
+                            <li key={material.id} className={materialStyles.item}>
+                              <span className={materialStyles.icon} aria-hidden="true">
+                                <FileText />
+                              </span>
+                              <span className={materialStyles.info}>
+                                <span className={materialStyles.title}>{material.title}</span>
+                                <span className={materialStyles.meta}>{material.format}</span>
+                              </span>
+                              <a href={material.href} className={materialStyles.download} download>
+                                <Download aria-hidden="true" size={18} />
+                                Baixar<span className="visually-hidden"> {material.title}</span>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      ),
+                  },
+                  {
+                    id: "anotacoes",
+                    label: "Anotações",
+                    content:
+                      note === null ? (
+                        <p>Não foi possível carregar a sua anotação desta aula. Recarregue a página para tentar de novo.</p>
+                      ) : (
+                        <LessonNotes
+                          key={lesson.code}
+                          courseSlug={course.slug}
+                          lessonCode={lesson.code}
+                          initialBody={note}
+                          persist={!isDemoMode()}
+                        />
+                      ),
+                  },
+                ]}
+              />
+            </Reveal>
           </div>
-          <p className={styles.saveNote}>
-            {isDemoMode()
-              ? "O progresso será salvo automaticamente quando a Área do Aluno estiver ativa."
-              : "Seu progresso é salvo automaticamente."}
-          </p>
 
-          <LessonTabs
-            label="Sobre a aula"
-            tabs={[
-              {
-                id: "descricao",
-                label: "Descrição",
-                content: (
-                  <>
-                    <p>
-                      Esta aula faz parte do <strong>Módulo {lesson.moduleNumber}: {lesson.moduleTitle}</strong>.
-                    </p>
-                    {lesson.moduleSummary && <p>No módulo: {lesson.moduleSummary}</p>}
-                  </>
-                ),
-              },
-              {
-                id: "materiais",
-                label: "Materiais da aula",
-                content: (
-                  <EmptyState
-                    icon={<FileText aria-hidden="true" />}
-                    title="Nenhum material nesta aula"
-                    text="Quando houver arquivos de apoio, eles aparecerão aqui."
-                  />
-                ),
-              },
-              {
-                id: "anotacoes",
-                label: "Anotações",
-                content: (
-                  <p>
-                    Espaço para as suas anotações durante a aula. <span className="pending">A confirmar</span>
-                  </p>
-                ),
-              },
-            ]}
-          />
+          <Reveal as="aside" variant="fade" className={styles.sidebar} aria-labelledby="lista-aulas">
+            <TextReveal
+              as="h2"
+              id="lista-aulas"
+              className={styles.sidebarTitle}
+              text={SIDEBAR_TITLE}
+              delay={duration.quick}
+            />
+            <StudentModuleList
+              course={course}
+              progress={progress}
+              currentSlug={lesson.slug}
+              compact
+              delay={duration.quick + afterTitle(motionTokens, SIDEBAR_TITLE)}
+            />
+          </Reveal>
         </div>
-
-        <aside className={styles.sidebar} aria-labelledby="lista-aulas">
-          <h2 id="lista-aulas" className={styles.sidebarTitle}>
-            Aulas do curso
-          </h2>
-          <StudentModuleList course={course} progress={progress} currentSlug={lesson.slug} compact />
-        </aside>
-      </div>
-    </StudentShell>
+      </StudentShell>
+    </MotionPace>
   );
 }

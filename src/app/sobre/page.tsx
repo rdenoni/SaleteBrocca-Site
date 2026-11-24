@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { AboutIntro } from "@/components/about/AboutIntro";
+import { AboutQuote } from "@/components/about/AboutQuote";
 import { ActivityGrid } from "@/components/about/ActivityGrid";
 import { FormationTimeline } from "@/components/about/FormationTimeline";
 import { FinalCta } from "@/components/home/FinalCta";
 import { PageBanner } from "@/components/layout/PageBanner";
-import { Button } from "@/components/ui/Button";
 import {
   PROFILE_ACTIVITIES,
   PROFILE_CRFA,
@@ -15,6 +15,11 @@ import {
   PROFILE_QUOTE,
   PROFILE_ROLE,
 } from "@/lib/content/profile";
+import { Stagger, StaggerItem } from "@/motion/Stagger";
+import { DrawRule } from "@/motion/DrawRule";
+import { TextReveal } from "@/motion/TextReveal";
+import { afterTitle } from "@/motion/timeline";
+import { motionTokens } from "@/motion/tokens";
 import styles from "./sobre.module.css";
 
 export const metadata: Metadata = {
@@ -28,88 +33,66 @@ const SECTIONS = [
   { id: "atuacao", label: "Atuação" },
 ] as const;
 
+const HISTORY_TITLE = "Da sala de aula à fonoaudiologia";
+const FORMATION_TITLE = "Formação acadêmica";
+const ACTIVITIES_TITLE = "Onde atua hoje";
+
+/* Movimento (MOTION-SYSTEM): banner e apresentação entram ao montar; daqui para baixo, cada seção entra ao chegar
+   à tela. Uma ousadia por tela: o encaixe das peças no retrato e o traço da linha do tempo. O resto só sobe.
+   Ordem por hierarquia em cada seção: o título primeiro, o conteúdo depois (afterTitle). */
 export default function AboutPage() {
   return (
     <>
       <PageBanner title={PROFILE_NAME} subtitle={`${PROFILE_ROLE}.`} />
 
-      <section className={styles.intro} aria-label="Apresentação">
-        <div className={`container ${styles.introGrid}`}>
-          <div className={styles.portrait}>
-            <Image
-              src="/images/about/salete-perfil.jpg"
-              alt="Maria Salete Brocca Denoni, de blazer azul-marinho e óculos, em seu escritório diante de uma estante de livros"
-              width={900}
-              height={1125}
-              priority
-              sizes="(max-width: 767px) 80vw, 340px"
-            />
-          </div>
-          <div className={styles.introText}>
-            <p className={styles.lead}>{PROFILE_INTRO}</p>
-            <nav aria-label="Nesta página" className={styles.toc}>
-              <p className={styles.tocLabel}>Nesta página</p>
-              <ul>
-                {SECTIONS.map((section) => (
-                  <li key={section.id}>
-                    <a href={`#${section.id}`}>{section.label}</a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </section>
+      <AboutIntro bannerTitle={PROFILE_NAME} intro={PROFILE_INTRO} sections={SECTIONS} />
 
-      <section id="historia" className={`${styles.history}`} aria-labelledby="historia-titulo">
+      <section id="historia" className={styles.history} aria-labelledby="historia-titulo">
         <div className={`container ${styles.historyGrid}`}>
           <header>
-            <h2 id="historia-titulo" className={`${styles.heading} ${styles.historyHeading}`}>
-              Da sala de aula à fonoaudiologia
-            </h2>
+            <TextReveal
+              as="h2"
+              id="historia-titulo"
+              className={`${styles.heading} ${styles.historyHeading}`}
+              text={HISTORY_TITLE}
+            />
           </header>
-          <div className={styles.historyText}>
-            {PROFILE_HISTORY.map((paragraph) => (
-              <p key={paragraph.slice(0, 32)}>{paragraph}</p>
-            ))}
+          {/* Leitura: título (esquerda) → filete ciano se desenha → parágrafos (direita), um a um. */}
+          <div>
+            <DrawRule className={styles.historyRule} delay={afterTitle(motionTokens, HISTORY_TITLE)} />
+            <Stagger
+              className={styles.historyText}
+              delay={afterTitle(motionTokens, HISTORY_TITLE) + motionTokens.duration.base}
+            >
+              {PROFILE_HISTORY.map((paragraph) => (
+                <StaggerItem key={paragraph.slice(0, 32)}>
+                  <p>{paragraph}</p>
+                </StaggerItem>
+              ))}
+            </Stagger>
           </div>
         </div>
       </section>
 
-      <section id="formacao" className={`${styles.formation}`} aria-labelledby="formacao-titulo">
+      <section id="formacao" className={styles.formation} aria-labelledby="formacao-titulo">
         <div className="container">
-          <h2 id="formacao-titulo" className={styles.heading}>
-            Formação acadêmica
-          </h2>
-          <FormationTimeline items={PROFILE_FORMATION} crfa={PROFILE_CRFA} />
+          <TextReveal as="h2" id="formacao-titulo" className={styles.heading} text={FORMATION_TITLE} />
+          <FormationTimeline
+            items={PROFILE_FORMATION}
+            crfa={PROFILE_CRFA}
+            delay={afterTitle(motionTokens, FORMATION_TITLE)}
+          />
         </div>
       </section>
 
-      <section id="atuacao" className={`${styles.activities}`} aria-labelledby="atuacao-titulo">
+      <section id="atuacao" className={styles.activities} aria-labelledby="atuacao-titulo">
         <div className="container">
-          <h2 id="atuacao-titulo" className={styles.heading}>
-            Onde atua hoje
-          </h2>
-          <ActivityGrid activities={PROFILE_ACTIVITIES} />
+          <TextReveal as="h2" id="atuacao-titulo" className={styles.heading} text={ACTIVITIES_TITLE} />
+          <ActivityGrid activities={PROFILE_ACTIVITIES} delay={afterTitle(motionTokens, ACTIVITIES_TITLE)} />
         </div>
       </section>
 
-      <section className={styles.quote} data-surface="dark" aria-label="Frase de Maria Salete Brocca">
-        <div className={`container ${styles.quoteInner}`}>
-          <span className={styles.quoteMark} aria-hidden="true">
-            “
-          </span>
-          <figure className={styles.quoteFigure}>
-            <blockquote className={styles.quoteText}>
-              <p>{PROFILE_QUOTE}</p>
-            </blockquote>
-            <figcaption className={styles.quoteAuthor}>{PROFILE_NAME}</figcaption>
-          </figure>
-          <Button href="/cursos" variant="accent">
-            Conhecer os cursos
-          </Button>
-        </div>
-      </section>
+      <AboutQuote quote={PROFILE_QUOTE} author={PROFILE_NAME} />
 
       <FinalCta />
     </>

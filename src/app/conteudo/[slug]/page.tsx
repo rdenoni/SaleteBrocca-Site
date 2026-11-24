@@ -18,6 +18,7 @@ import {
   getRelatedArticles,
 } from "@/lib/content/articles";
 import styles from "./artigo.module.css";
+import { Reveal } from "@/motion/Reveal";
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -74,7 +75,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </p>
         </div>
 
-        <figure className={styles.cover}>
+        <Reveal as="figure" variant="mask" className={styles.cover}>
           <Image
             src={article.image}
             alt={article.imageAlt}
@@ -83,7 +84,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             sizes="(max-width: 767px) 100vw, 720px"
             style={article.imagePosition ? { objectPosition: article.imagePosition } : undefined}
           />
-        </figure>
+        </Reveal>
 
         <div className={styles.column}>
           {article.body ? (

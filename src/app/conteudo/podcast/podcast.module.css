@@ -1,0 +1,237 @@
+/* Listagem de episódios. */
+.intro {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 640px;
+  margin-bottom: var(--space-12);
+}
+
+.lead {
+  font: 400 19px/30px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.lead strong {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+/* Página do episódio. */
+.page {
+  padding-block: var(--space-8) var(--space-24);
+}
+
+.column {
+  display: grid;
+  gap: var(--space-8);
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-top: calc(var(--space-6) * -1);
+  font: 400 16px/24px var(--font-sans);
+  color: var(--charcoal);
+}
+
+.meta strong {
+  color: var(--navy);
+}
+
+.summary {
+  font: 400 19px/30px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.section {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.heading {
+  font: 800 28px/36px var(--font-sans);
+  color: var(--navy);
+}
+
+.topics {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 400 17px/28px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.topics li {
+  position: relative;
+  padding-left: var(--space-6);
+}
+
+.topics li::before {
+  content: "";
+  position: absolute;
+  top: 11px;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+}
+
+/* Roteiro: fala a fala, com o nome de quem fala em negrito. */
+.script {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.line {
+  font: 400 17px/28px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.speaker {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  color: var(--navy);
+}
+
+/* Fala da Salete recebe um filete ciano à esquerda para o olho acompanhar quem fala. */
+.line[data-speaker="salete"] {
+  padding-left: var(--space-4);
+  border-left: 4px solid var(--cyan);
+}
+
+.course {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-8);
+  border-radius: var(--radius-md);
+  background: var(--light-blue);
+  color: var(--navy);
+}
+
+.course .heading {
+  font-size: 26px;
+  line-height: 32px;
+}
+
+.courseText {
+  font: 400 17px/28px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.lessons {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lessons li {
+  display: grid;
+  gap: var(--space-1);
+  padding-left: var(--space-4);
+  border-left: 4px solid var(--cyan);
+}
+
+.lessonTitle {
+  font: 700 17px/24px var(--font-sans);
+  color: var(--navy);
+}
+
+.lessonModule {
+  font: 400 14px/20px var(--font-sans);
+  color: var(--charcoal);
+}
+
+.notice {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--navy);
+  font: 400 15px/24px var(--font-serif);
+  color: var(--charcoal);
+}
+
+.courseActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* Episódio anterior / próximo. */
+.pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+.pagerLink {
+  display: grid;
+  gap: var(--space-1);
+  min-height: 48px;
+  padding: var(--space-4) var(--space-6);
+  border: 2px solid var(--navy);
+  border-radius: var(--radius-md);
+  color: var(--navy);
+  text-decoration: none;
+  transition: background var(--duration) var(--ease);
+}
+
+.pagerLink:hover {
+  background: var(--light-blue);
+}
+
+.pagerNext {
+  grid-column: 2;
+  text-align: right;
+}
+
+.pagerLabel {
+  font: 700 13px/16px var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+
+.pagerTitle {
+  font: 700 17px/24px var(--font-sans);
+  text-wrap: pretty;
+}
+
+.back {
+  margin-top: var(--space-8);
+}
+
+@media (max-width: 767px) {
+  .page {
+    padding-block: var(--space-6) var(--space-16);
+  }
+
+  .heading {
+    font-size: 24px;
+    line-height: 30px;
+  }
+
+  .course {
+    padding: var(--space-6);
+  }
+
+  .courseActions > * {
+    width: 100%;
+  }
+
+  .pager {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pagerNext {
+    grid-column: 1;
+  }
+}

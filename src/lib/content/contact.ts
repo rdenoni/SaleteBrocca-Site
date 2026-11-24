@@ -19,5 +19,8 @@ export const EMAIL: ContactChannel = {
 export const CLINIC_CITY: string | null = null;
 export const CLINIC_HOURS: string | null = null;
 
-export const CONTACT_SUBJECTS = ["Cursos", "Outro assunto"] as const;
+/* "Privacidade e dados pessoais (LGPD)" é o canal para a pessoa exercer os direitos do art. 18 da LGPD
+   (a política de privacidade aponta para /contato#formulario enquanto o e-mail do encarregado não é confirmado). */
+export const PRIVACY_SUBJECT = "Privacidade e dados pessoais (LGPD)";
+export const CONTACT_SUBJECTS = ["Cursos", PRIVACY_SUBJECT, "Outro assunto"] as const;
 export type ContactSubject = (typeof CONTACT_SUBJECTS)[number];

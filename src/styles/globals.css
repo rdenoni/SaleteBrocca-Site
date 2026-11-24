@@ -32,10 +32,23 @@ html {
   color: var(--navy);
 }
 
+/* Telas mais largas que --page-max: o site fica centralizado e as laterais mostram o fundo sólido. */
+html {
+  background: var(--page-backdrop);
+}
+
+/* position: relative prende o cabeçalho absoluto à largura do site. */
 body {
-  margin: 0;
+  position: relative;
+  max-width: var(--page-max);
+  margin: 0 auto;
   min-height: 100vh;
   background: var(--white);
+  /* Borda branca fina + sombra nas laterais. Por box-shadow não ocupa espaço no layout e,
+     com o site na largura da tela, fica fora dela (não aparece em telas menores que --page-max). */
+  box-shadow:
+    0 0 0 3px var(--white),
+    0 0 40px 8px rgba(0, 0, 0, 0.6);
   color: var(--navy);
   font-family: var(--font-sans);
   font-size: 17px;

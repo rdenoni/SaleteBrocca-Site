@@ -30,15 +30,20 @@ test("seções sem eyebrow redundante", async ({ page }) => {
 test("LinkArrow aceita toque 12px acima e abaixo do texto", async ({ page }) => {
   await page.goto("/sobre");
   const link = page.getByRole("link", { name: "Ver cursos" });
-  await link.scrollIntoViewIfNeeded();
-  const box = await link.boundingBox();
-  if (!box) throw new Error("LinkArrow sem caixa");
-  const hits = await page.evaluate(
-    ({ x, top, bottom }) =>
-      [top - 10, bottom + 10].map((y) => document.elementFromPoint(x, y)?.closest("a")?.textContent ?? ""),
-    { x: box.x + box.width / 2, top: box.y, bottom: box.y + box.height },
-  );
-  for (const text of hits) expect(text.toLowerCase()).toContain("ver cursos");
+  /* Centraliza (o ponto 12px abaixo precisa estar dentro da tela) e mede com o link parado. Repete se a hidratação
+     ou a entrada do item (que sobe ao chegar à tela) mexer na posição entre a rolagem e a medição. */
+  await expect(async () => {
+    await link.evaluate((el) => el.scrollIntoView({ block: "center", behavior: "instant" }));
+    await link.hover({ trial: true });
+    const box = await link.boundingBox();
+    if (!box) throw new Error("LinkArrow sem caixa");
+    const hits = await page.evaluate(
+      ({ x, top, bottom }) =>
+        [top - 10, bottom + 10].map((y) => document.elementFromPoint(x, y)?.closest("a")?.textContent ?? ""),
+      { x: box.x + box.width / 2, top: box.y, bottom: box.y + box.height },
+    );
+    for (const text of hits) expect(text.toLowerCase()).toContain("ver cursos");
+  }).toPass();
 });
 
 test("logo do header tem 48px de altura de toque", async ({ page }) => {

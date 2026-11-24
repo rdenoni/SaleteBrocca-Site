@@ -76,6 +76,26 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Produto "em breve": no lugar do preço, o estado; nenhuma ação de compra. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font: 800 24px/30px var(--font-sans);
+  color: var(--navy);
+}
+
+.status svg {
+  width: 24px;
+  height: 24px;
+  color: var(--blue-strong);
+}
+
+.soonText {
+  font: 400 16px/26px var(--font-serif);
+  color: var(--charcoal);
+}
+
 .facts {
   display: grid;
   gap: var(--space-3);

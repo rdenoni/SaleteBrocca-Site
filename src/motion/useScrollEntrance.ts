@@ -124,7 +124,8 @@ export function useEditorialScrollEntrance(
   const blockScale = useTransform(progress, RANGE_BLOCK, [0, 1], { ease: sweep });
   const letterOpacity = useTransform(progress, RANGE_LETTER, [0, 1], { ease: out });
   const letterX = useTransform(progress, RANGE_LETTER, [-t.distance.base, 0], { ease: out });
-  const photoY = useTransform(progress, RANGE_PHOTO, ["100%", "0%"], { ease: out });
+  /* A foto desce de cima para baixo dentro da moldura (como o desvelar das fotos no resto do site). */
+  const photoY = useTransform(progress, RANGE_PHOTO, ["-100%", "0%"], { ease: out });
   const photoScale = useTransform(progress, RANGE_PHOTO, [PHOTO_ZOOM_FROM, 1], { ease: out });
   const panelOpacity = useTransform(progress, RANGE_PANEL, [0, 1], { ease: out });
   const panelX = useTransform(progress, RANGE_PANEL, [PANEL_SLIDE_PX, 0], { ease: out });

@@ -1,23 +1,35 @@
 "use client";
 
-import { AnimatePresence, motion, type Variants } from "motion/react";
+import { AnimatePresence, motion, stagger, type TargetAndTransition, type Variants } from "motion/react";
 import { CircleAlert } from "lucide-react";
 import { useId, useState, type ChangeEvent, type FormEvent } from "react";
 import { flushSync } from "react-dom";
 import { AnimatedCheck } from "@/motion/icons";
 import { MotionButton } from "@/motion/MotionButton";
+import { useHoldInView } from "@/motion/pageSequence";
+import { revealVariants } from "@/motion/Reveal";
 import { TextReveal } from "@/motion/TextReveal";
+import { afterTitle } from "@/motion/timeline";
 import { TransitionLink } from "@/motion/transitions/TransitionLink";
+import { useEntranceReady } from "@/motion/transitions/useEntranceReady";
 import { useMotionTokens } from "@/motion/useMotionTokens";
-import { HOME_EVALUATION as EVALUATION } from "@/lib/content/home";
-import { compactErrors, validateName, validatePhone } from "@/lib/validation";
+import { HOME_EVALUATION } from "@/lib/content/home";
+import { compactErrors, validateConsent, validateName, validatePhone } from "@/lib/validation";
 import styles from "./EvaluationForm.module.css";
 
-type FieldName = "nome" | "telefone";
+/* Textos do formulário (home.ts) mais os do aviso de privacidade deste ponto de coleta (LGPD). */
+const EVALUATION = {
+  ...HOME_EVALUATION,
+  consentBefore: "Concordo com o uso dos meus dados para retornar este pedido de avaliação, conforme a ",
+  healthNotice: "Informe só os seus dados, como responsável. Não inclua dados de saúde da criança.",
+} as const;
+
+type TextFieldName = "nome" | "telefone";
+type FieldName = TextFieldName | "privacidade";
 type FormErrors = Partial<Record<FieldName, string>>;
 
-const FIELD_ORDER: readonly FieldName[] = ["nome", "telefone"];
-const VALIDATORS: Record<FieldName, (value: string) => string | undefined> = {
+const FIELD_ORDER: readonly FieldName[] = ["nome", "telefone", "privacidade"];
+const VALIDATORS: Record<TextFieldName, (value: string) => string | undefined> = {
   nome: validateName,
   telefone: validatePhone,
 };
@@ -81,9 +93,47 @@ function QuestionMark() {
 
 /* Sem backend nesta etapa: valida os campos e informa que o envio online ainda não está ativo.
    Integração prevista: rota de servidor + e-mail/CRM (ver docs/06-TECHNICAL-ARCHITECTURE.md). */
-export function EvaluationForm() {
+interface EvaluationFormProps {
+  /** "home": título em duas linhas com "?" (padrão). "page": título numa linha, rótulos visíveis e campos em cartão (/avaliacao). */
+  variant?: "home" | "page";
+  /** Só na página: quando o título começa (s), ao montar e depois da cortina de transição. */
+  entranceDelay?: number;
+}
+
+/* Passos da cascata da página, na ordem de leitura: nome, telefone, consentimento, enviar, aviso. */
+const PAGE_STEPS = 5;
+
+export function EvaluationForm({ variant = "home", entranceDelay = 0 }: EvaluationFormProps) {
+  const isPage = variant === "page";
   const id = useId();
   const t = useMotionTokens();
+  const ready = useEntranceReady();
+  const pageTitle = EVALUATION.titleLines.join(" ");
+
+  /* Página: título → cartão → campos, um a um. Na Home nada disso vale: a entrada vem da EvaluationSection. */
+  const step = (n: number): number => (t.reduced ? 0 : n);
+  const titleDelay = step(entranceDelay);
+  const cardDelay = step(entranceDelay + afterTitle(t, pageTitle));
+  const fieldsStart = step(entranceDelay + afterTitle(t, pageTitle) + t.duration.quick);
+  /* O que vem abaixo (retrato, Como funciona) espera o último passo já subindo (ordem de leitura). */
+  useHoldInView(
+    isPage ? step(fieldsStart + (PAGE_STEPS - 1) * t.stagger.items + t.duration.base) : 0,
+    isPage ? ready : true,
+  );
+  const rise = revealVariants("rise", t, cardDelay);
+  const riseVisible = rise.visible as TargetAndTransition;
+  const card: Variants = {
+    hidden: rise.hidden,
+    visible: {
+      ...riseVisible,
+      transition: {
+        ...riseVisible.transition,
+        delayChildren: stagger(step(t.stagger.items), { startDelay: fieldsStart }),
+      },
+    },
+  };
+  const pageForm = isPage ? { initial: "hidden", animate: ready ? "visible" : "hidden", variants: card } : {};
+  const pageStep = isPage ? { "data-reveal": "", variants: revealVariants("rise", t) } : {};
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
 
@@ -94,6 +144,7 @@ export function EvaluationForm() {
     const nextErrors = compactErrors({
       nome: VALIDATORS.nome(String(data.get("nome") ?? "")),
       telefone: VALIDATORS.telefone(String(data.get("telefone") ?? "")),
+      privacidade: validateConsent(data.get("privacidade") === "on"),
     });
     /* Confirma o DOM antes de focar: o campo já nasce com aria-invalid e aria-describedby. */
     flushSync(() => {
@@ -106,33 +157,62 @@ export function EvaluationForm() {
 
   /* Corrigir o campo limpa o erro dele na hora; o aviso de sucesso some ao voltar a editar. */
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    const name = event.target.name as FieldName;
+    const name = event.target.name as TextFieldName;
     setSubmitted(false);
     if (errors[name] && !VALIDATORS[name](event.target.value)) {
       setErrors((current) => ({ ...current, [name]: undefined }));
     }
   }
 
+  /* Marcar a caixa limpa o erro dela; qualquer mudança esconde o aviso de sucesso. */
+  function handleConsentChange(event: ChangeEvent<HTMLInputElement>) {
+    setSubmitted(false);
+    if (errors.privacidade && event.target.checked) {
+      setErrors((current) => ({ ...current, privacidade: undefined }));
+    }
+  }
+
   const titleId = `${id}-titulo`;
+  const privacidadeErrorId = `${id}-privacidade-erro`;
   const nomeErrorId = `${id}-nome-erro`;
   const telefoneErrorId = `${id}-telefone-erro`;
 
-  return (
-    <form
-      className={styles.form}
-      onSubmit={handleSubmit}
-      noValidate
-      aria-labelledby={titleId}
-      data-reduced={t.reduced ? "" : undefined}
-    >
-      <div className={styles.head}>
-        <QuestionMark />
-        {/* As duas linhas do título ficam como no site; leitores de tela recebem a frase numa linha só. */}
-        <TextReveal as="h2" id={titleId} className={styles.title} text={EVALUATION.titleLines.join("\n")} />
-      </div>
+  /* Na página o rótulo é visível; na Home continua só para leitor de tela. */
+  const labelClass = isPage ? styles.pageLabel : "visually-hidden";
 
-      <div className={styles.field} data-invalid={errors.nome ? "" : undefined}>
-        <label htmlFor={`${id}-nome`} className="visually-hidden">
+  return (
+    <>
+      {/* Na página o título fica fora do cartão; o form o referencia por aria-labelledby. */}
+      {isPage && (
+        <TextReveal
+          as="h2"
+          id={titleId}
+          className={styles.pageTitle}
+          text={pageTitle}
+          trigger="mount"
+          play={ready}
+          delay={titleDelay}
+        />
+      )}
+      <motion.form
+        className={isPage ? `${styles.form} ${styles.formPage}` : styles.form}
+        onSubmit={handleSubmit}
+        noValidate
+        aria-labelledby={titleId}
+        data-reduced={t.reduced ? "" : undefined}
+        data-reveal={isPage ? "" : undefined}
+        {...pageForm}
+      >
+      {!isPage && (
+        <div className={styles.head}>
+          <QuestionMark />
+          {/* As duas linhas do título ficam como no site; leitores de tela recebem a frase numa linha só. */}
+          <TextReveal as="h2" id={titleId} className={styles.title} text={EVALUATION.titleLines.join("\n")} />
+        </div>
+      )}
+
+      <motion.div className={styles.field} data-invalid={errors.nome ? "" : undefined} {...pageStep}>
+        <label htmlFor={`${id}-nome`} className={labelClass}>
           {EVALUATION.nameLabel}
         </label>
         <div className={styles.control}>
@@ -150,10 +230,10 @@ export function EvaluationForm() {
           <span className={styles.underline} aria-hidden="true" />
         </div>
         <FieldError id={nomeErrorId} message={errors.nome} />
-      </div>
+      </motion.div>
 
-      <div className={styles.field} data-invalid={errors.telefone ? "" : undefined}>
-        <label htmlFor={`${id}-telefone`} className="visually-hidden">
+      <motion.div className={styles.field} data-invalid={errors.telefone ? "" : undefined} {...pageStep}>
+        <label htmlFor={`${id}-telefone`} className={labelClass}>
           {EVALUATION.phoneLabel}
         </label>
         <div className={styles.control}>
@@ -173,18 +253,34 @@ export function EvaluationForm() {
           <span className={styles.underline} aria-hidden="true" />
         </div>
         <FieldError id={telefoneErrorId} message={errors.telefone} />
-      </div>
+      </motion.div>
 
-      <div className={styles.actions}>
-        <MotionButton type="submit" variant="outline">
+      <motion.div className={styles.consentWrap} {...pageStep}>
+        <label className={styles.consent}>
+          <input
+            type="checkbox"
+            name="privacidade"
+            aria-invalid={errors.privacidade ? true : undefined}
+            aria-describedby={errors.privacidade ? privacidadeErrorId : undefined}
+            onChange={handleConsentChange}
+          />
+          <span>
+            {EVALUATION.consentBefore}
+            <TransitionLink href={EVALUATION.privacyLink.href}>{EVALUATION.privacyLink.label}</TransitionLink>.
+          </span>
+        </label>
+        <FieldError id={privacidadeErrorId} message={errors.privacidade} />
+      </motion.div>
+
+      <motion.div className={styles.actions} {...pageStep}>
+        <MotionButton type="submit" variant={isPage ? "primary" : "outline"}>
           {EVALUATION.submit}
         </MotionButton>
-      </div>
+      </motion.div>
 
-      <p className={styles.privacy}>
-        {EVALUATION.privacyBefore}
-        <TransitionLink href={EVALUATION.privacyLink.href}>{EVALUATION.privacyLink.label}</TransitionLink>.
-      </p>
+      <motion.p className={styles.privacy} {...pageStep}>
+        {EVALUATION.healthNotice}
+      </motion.p>
 
       {/* Região viva sempre montada: o texto de sucesso entra nela e é anunciado. */}
       <div role="status" className={styles.statusSlot}>
@@ -203,6 +299,7 @@ export function EvaluationForm() {
           ) : null}
         </AnimatePresence>
       </div>
-    </form>
+      </motion.form>
+    </>
   );
 }

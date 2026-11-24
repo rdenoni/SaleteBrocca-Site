@@ -14,6 +14,13 @@ test.describe("Termos de uso", () => {
     await expect(page.getByRole("main").getByRole("link", { name: "página de contato" })).toHaveAttribute("href", "/contato");
   });
 
+  test("aponta a política de privacidade, sem cláusula nova", async ({ page }) => {
+    await expect(page.getByRole("main").getByRole("link", { name: "política de privacidade" })).toHaveAttribute(
+      "href",
+      "/privacidade",
+    );
+  });
+
   test("fica fora dos buscadores enquanto o texto não existir", async ({ page }) => {
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
   });

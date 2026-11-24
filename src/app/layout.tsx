@@ -5,6 +5,7 @@ import "@/styles/globals.css";
 import "@/styles/motion.css";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { CookieConsent } from "@/components/privacy/CookieConsent";
 import { getFooterColumns } from "@/lib/content/footer";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/content/site";
 import { SITE_URL } from "@/lib/site-url";
@@ -72,10 +73,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               Pular para o conteúdo
             </a>
             <Header />
-            <main id="conteudo">{children}</main>
+            {/* tabIndex -1: o link "Pular para o conteúdo" realmente leva o foco para cá (motion.css tira o contorno). */}
+            <main id="conteudo" tabIndex={-1}>
+              {children}
+            </main>
             <Footer columns={footerColumns} year={year} />
           </PageTransitionProvider>
         </MotionProvider>
+        {/* Fora do <main> e das transições de página: o aviso de cookies não some nem é recriado ao navegar. */}
+        <CookieConsent />
       </body>
     </html>
   );

@@ -15,11 +15,21 @@
   border-radius: var(--radius-md);
 }
 
+/* Contêiner de ícone da biblioteca: círculo ciano de 48px com o ícone navy de 26px. */
 .icon {
+  display: grid;
   flex: none;
-  width: 28px;
-  height: 28px;
-  color: var(--blue-strong);
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+  color: var(--navy);
+}
+
+.icon svg {
+  width: 26px;
+  height: 26px;
 }
 
 .info {
@@ -60,8 +70,7 @@
 }
 
 .download svg {
-  width: 20px;
-  height: 20px;
+  flex: none;
 }
 
 @media (max-width: 767px) {

@@ -32,13 +32,16 @@ const NOT_A_STUDENT = (
 );
 
 /* Sem Supabase: demonstração (o formulário só explica que o login não está ativo; a página continua estática).
-   Com Supabase: login real; quem já entrou vai direto para o destino. */
+   Com Supabase: login real; quem já entrou vai direto para o destino.
+   Entrada (AuthCard, ao montar): título → régua → texto → campos → botão → (aviso) → link "Esqueci minha senha" →
+   nota → privacidade → "Conheça os cursos". Cada formulário informa a AuthCard quantos itens tem em `formItems`. */
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   if (isDemoMode()) {
     return (
       <AuthCard
         title="Área do Aluno"
         lead="Entre com o e-mail usado na inscrição."
+        formItems={4}
         note="Recuperação de senha e criação de conta serão ativadas junto com o login."
         footer={NOT_A_STUDENT}
       >
@@ -56,6 +59,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     <AuthCard
       title="Área do Aluno"
       lead="Entre com o e-mail usado na compra."
+      formItems={6}
       note="A conta é criada automaticamente depois da compra. O e-mail de confirmação traz o link para você definir a sua senha."
       footer={NOT_A_STUDENT}
     >

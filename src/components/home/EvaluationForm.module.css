@@ -39,8 +39,8 @@
 }
 
 .field {
-  /* Borda de repouso com 3:1 contra o branco (mistura navy/branco), mantendo o fundo cinza claro. */
-  --field-border: color-mix(in srgb, var(--navy) 55%, var(--white));
+  /* Borda de repouso com 3:1 contra o branco e o light-blue (mistura navy/branco), mantendo o fundo cinza claro. */
+  --field-border: color-mix(in srgb, var(--navy) 60%, var(--white));
   display: grid;
 }
 
@@ -71,9 +71,8 @@
   border-color: var(--blue-strong);
 }
 
+/* O anel global de foco (3px, afastado 3px) continua valendo; borda, fundo branco e halo reforçam. */
 .input:focus {
-  /* Transparente (não "none"): continua visível em modo de alto contraste. */
-  outline: 2px solid transparent;
   background: var(--white);
   border-color: var(--blue-strong);
   box-shadow: 0 0 0 3px var(--light-blue);
@@ -168,6 +167,36 @@
   color: var(--charcoal);
 }
 
+/* Caixa de consentimento (LGPD): desmarcada por padrão, alvo de 48px, texto livre para quebrar em linhas. */
+.consentWrap {
+  display: grid;
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-height: 48px;
+  padding-block: 13px;
+  font: 400 14px/22px var(--font-sans);
+  color: var(--charcoal);
+  cursor: pointer;
+}
+
+.consent input {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--blue-strong);
+  cursor: pointer;
+}
+
+.consent a {
+  color: var(--blue-strong);
+  font-weight: 700;
+}
+
 .privacy a {
   display: inline-block;
   padding-block: 14px;
@@ -188,5 +217,59 @@
   .title {
     font-size: 28px;
     line-height: 34px;
+  }
+}
+
+/* ---------- Variante "page" (/avaliacao): título numa linha, rótulos visíveis, campos em cartão ---------- */
+
+.pageTitle {
+  max-width: 560px;
+  margin: 0 0 var(--space-6);
+  font: 800 40px/48px var(--font-sans);
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  color: var(--navy);
+  text-align: left;
+}
+
+.formPage {
+  gap: var(--space-6);
+  max-width: 560px;
+  padding: var(--space-8);
+  border-radius: var(--radius-lg);
+  background: var(--light-gray);
+}
+
+.pageLabel {
+  margin-bottom: var(--space-2);
+  font: 600 16px/24px var(--font-sans);
+  color: var(--navy);
+}
+
+.formPage .input {
+  min-height: 48px;
+  padding: 12px 20px;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+}
+
+/* O traço ciano é desenhado para o campo retangular da Home; no campo pílula o halo do foco basta. */
+.formPage .underline {
+  display: none;
+}
+
+.formPage .actions {
+  display: grid;
+  margin-top: 0;
+}
+
+@media (max-width: 767px) {
+  .pageTitle {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .formPage {
+    padding: var(--space-6);
   }
 }

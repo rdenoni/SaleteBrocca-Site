@@ -1,0 +1,67 @@
+.player {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-6) var(--space-8);
+  border-radius: var(--radius-md);
+  background: var(--navy);
+  color: var(--white);
+}
+
+.play {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 2px solid var(--on-navy-muted);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--on-navy-muted);
+  cursor: not-allowed;
+}
+
+.play svg {
+  width: 28px;
+  height: 28px;
+  /* Compensação óptica do triângulo. */
+  margin-left: 3px;
+}
+
+.info {
+  display: grid;
+  flex: 1;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.status {
+  font: 700 18px/24px var(--font-sans);
+  color: var(--white);
+}
+
+/* Trilho decorativo, sem tempos: não há áudio, então não há duração a mostrar. */
+.track {
+  display: block;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--navy-raised);
+}
+
+.audio {
+  width: 100%;
+  min-height: 48px;
+}
+
+@media (max-width: 767px) {
+  .player {
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-6);
+  }
+
+  .play {
+    width: 56px;
+    height: 56px;
+  }
+}

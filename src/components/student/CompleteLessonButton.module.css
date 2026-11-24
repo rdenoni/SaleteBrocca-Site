@@ -23,8 +23,9 @@
 }
 
 .button svg {
-  width: 20px;
-  height: 20px;
+  flex: none;
+  width: 18px;
+  height: 18px;
 }
 
 /* Concluída: verde de sucesso, sempre com o ícone de check (nunca só cor). */
@@ -49,7 +50,7 @@
   min-width: 100%;
   display: flex;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-2);
   font: 400 14px/20px var(--font-sans);
   color: var(--error);
   text-align: center;
@@ -62,7 +63,7 @@
 
 .error svg {
   flex: none;
-  width: 16px;
-  height: 16px;
-  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
 }

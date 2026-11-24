@@ -107,7 +107,7 @@ function entranceVariants(t: ResolvedMotionTokens, delay: number) {
       visible: { opacity: 1, x: 0, transition: enter(tLetter, t.duration.gentle, t.ease.out) },
     } satisfies Variants,
     photo: {
-      hidden: { clipPath: "inset(100% 0% 0% 0%)" },
+      hidden: { clipPath: "inset(0% 0% 100% 0%)" },
       visible: { clipPath: OPEN, transition: enter(tPhoto, t.duration.slow, t.ease.out) },
     } satisfies Variants,
     photoImage: {
@@ -231,7 +231,7 @@ function EditorialCardView({
           />
         </motion.div>
       </motion.div>
-      {/* O wrapper leva a entrada (x + opacidade) e o .panel dentro leva o hover (sobe 8px): transforms em elementos distintos. */}
+      {/* O wrapper leva a entrada (x + opacidade) e o .panel dentro sobe 8px só no foco por teclado (no hover não, para o link do card seguir cobrindo o card inteiro): transforms em elementos distintos. */}
       <motion.div
         ref={scroll?.refs.panel}
         className={styles.panelEnter}

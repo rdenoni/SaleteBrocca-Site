@@ -1,0 +1,44 @@
+/* Grafismo da marca no lugar da foto: fundo branco do padrão oficial, ícone da categoria à esquerda. */
+.graphic {
+  position: absolute;
+  inset: 0;
+  background: var(--white);
+}
+
+/* Seletor duplo vence as regras `img` de foto dos contêineres (tons de cinza e multiply). */
+.graphic .pattern {
+  object-fit: cover;
+  object-position: right center;
+  filter: none;
+  mix-blend-mode: normal;
+}
+
+.icon {
+  position: absolute;
+  left: 12%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: clamp(72px, 24%, 120px);
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+  border-radius: var(--radius-pill);
+  background: var(--navy);
+  color: var(--cyan);
+}
+
+.icon svg {
+  width: 48%;
+  height: 48%;
+}
+
+/* Produto "em breve": o grafismo perde a saturação, mas o texto do card não. */
+.graphic[data-muted="true"] .pattern {
+  filter: saturate(0.25);
+  opacity: 0.7;
+}
+
+.graphic[data-muted="true"] .icon {
+  background: var(--light-blue);
+  color: var(--blue-strong);
+}

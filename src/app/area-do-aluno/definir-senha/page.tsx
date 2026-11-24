@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Definir senha",
 };
 
+/* Entrada (AuthCard, ao montar): título → régua → texto → nova senha → repita → mostrar senhas → salvar → privacidade. */
 export default async function SetPasswordPage() {
   if (isDemoMode()) {
     return (
@@ -25,7 +26,11 @@ export default async function SetPasswordPage() {
   await requireStudentSession(SET_PASSWORD_PATH);
 
   return (
-    <AuthCard title="Definir senha" lead="Escolha a senha que você vai usar para entrar na Área do Aluno.">
+    <AuthCard
+      title="Definir senha"
+      lead="Escolha a senha que você vai usar para entrar na Área do Aluno."
+      formItems={4}
+    >
       <SetPasswordForm />
     </AuthCard>
   );

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Check, Lock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { validatedCheckoutUrl } from "@/lib/kiwify/checkout-url";
+import type { ProductDelivery } from "@/types/content";
 import styles from "./CheckoutView.module.css";
 
 export interface CheckoutItem {
@@ -20,14 +21,34 @@ interface CheckoutViewProps {
   backLabel: string;
   /** Link de checkout da Kiwify (`kiwify.checkoutUrl`); só é usado se for https em kiwify.com.br. */
   checkoutUrl: string | null;
-  /** true para curso (compra libera a Área do Aluno); false para produto da Loja, entregue pela própria Kiwify. */
-  grantsCourseAccess: boolean;
+  delivery: CheckoutDelivery;
 }
+
+/** "course-access": curso (a compra libera a Área do Aluno); os demais vêm de `Product.delivery`. */
+export type CheckoutDelivery = "course-access" | ProductDelivery;
 
 const STEPS = ["Resumo", "Pagamento na Kiwify", "Confirmação por e-mail"] as const;
 
 function Pending() {
   return <span className="pending">A confirmar</span>;
+}
+
+function DeliveryNote({ delivery }: { delivery: CheckoutDelivery }) {
+  if (delivery === "course-access") {
+    return <>Depois da confirmação, você recebe por e-mail o link para criar sua senha da Área do Aluno.</>;
+  }
+  if (delivery === "email") {
+    return <>Depois da confirmação, você recebe o produto pelo e-mail informado na compra.</>;
+  }
+  if (delivery === "download") {
+    return <>Depois da confirmação, o download fica disponível diretamente aqui no site.</>;
+  }
+  return (
+    <>
+      Depois da confirmação, o pedido é enviado pelos Correios, com frete grátis, para o endereço informado no
+      pagamento. O prazo de postagem está na página do produto e o código de rastreio chega por e-mail.
+    </>
+  );
 }
 
 /* O pagamento acontece no ambiente da Kiwify: este site não coleta nome, e-mail nem telefone do comprador.
@@ -38,7 +59,7 @@ export function CheckoutView({
   backHref,
   backLabel,
   checkoutUrl,
-  grantsCourseAccess,
+  delivery,
 }: CheckoutViewProps) {
   const paymentUrl = validatedCheckoutUrl(checkoutUrl);
 
@@ -87,10 +108,7 @@ export function CheckoutView({
             Pagamento
           </h2>
           <p className={styles.text}>
-            O pagamento é feito no ambiente seguro da Kiwify.
-            {grantsCourseAccess
-              ? " Depois da confirmação, você recebe por e-mail o link para criar sua senha da Área do Aluno."
-              : " Depois da confirmação, você recebe o produto pelo e-mail informado na compra."}
+            O pagamento é feito no ambiente seguro da Kiwify. <DeliveryNote delivery={delivery} />
           </p>
 
           {paymentUrl ? (
