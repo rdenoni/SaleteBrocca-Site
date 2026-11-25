@@ -20,6 +20,15 @@ Numeração R-NNNN sequencial, somando 1 ao maior número já existente.
 
 ## Entradas
 
+### R-0006 · 2026-11-25 00:09 · Gemini
+- Branch: gemini/admin-panel · Commit: pendente
+- Versão: 0.1.0 · Entrada anterior: R-0005
+- Tarefa: redesign completo de UI/UX do Painel Admin sem barra NAV/Footer públicos, criação do login dedicado /admin/login + botão exclusivo na Home para admins e tela /admin/integracoes para editar variáveis pendentes pelo painel.
+- Arquivos alterados: src/components/layout/PublicChrome.tsx, src/app/layout.tsx, src/components/admin/{AdminShell.tsx,AdminShell.module.css,AdminHomeShortcut.tsx,AdminHomeShortcut.module.css}, src/app/page.tsx, src/app/admin/layout.tsx, src/app/admin/(panel)/**, src/app/admin/login/{page.tsx,LoginClient.tsx,login.module.css,actions.ts}, src/app/admin/(panel)/integracoes/{page.tsx,IntegracoesClient.tsx,actions.ts}, src/lib/admin/{auth.ts,nav.ts,secrets.ts,finance.ts,backup-crypto.ts,backup.ts}, src/lib/mux/admin-metrics.ts, src/lib/supabase/proxy.ts, src/app/api/{hotmart/webhook,admin/emails/inbound}/route.ts, tests/admin.spec.ts, docs/11-REGISTRO-AGENTES.md
+- O que mudou e por quê: PublicChrome remove Header/Footer/CookieConsent em /admin/*; AdminShell redesenhado como app SaaS em tela cheia com sidebar navy, logo branco oficial, busca de módulos, topbar com breadcrumb e botão Sair; /admin/login criado em tela isolada exigindo role='admin' em user_roles; AdminHomeShortcut renderizado na Home apenas no servidor quando isCurrentUserAdmin() é true; tela /admin/integracoes adicionada com armazenamento criptografado (AES-256-GCM) em site_settings.integration_secrets e botão de geração de chave para Hotmart, Mux, Backup, GitHub, Meta Pixel/CAPI e Resend.
+- Validação: typecheck ok · build ok (80/80) · testes Playwright tests/admin.spec.ts ok em 1440/768/375 · prints admin-v2 1440/375 sim
+- Pendências / cuidados para o próximo agente: migrations das Etapas 0 a 10 já aplicadas no Supabase de produção (`dhshqcrcusuuiqlvikha`) com `rdenoni@gmail.com` como admin e 22/22 tabelas com RLS ativo.
+
 ### R-0005 · 2026-11-24 23:23 · Gemini
 - Branch: gemini/admin-panel · Commit: pendente
 - Versão: 0.1.0 · Entrada anterior: R-0004

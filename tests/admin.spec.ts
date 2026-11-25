@@ -1,11 +1,15 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("painel administrativo (Etapas 0 a 4)", () => {
-  test("Etapa 0: /admin renderiza dashboard, noindex e sidebar responsiva sem overflow", async ({ page }) => {
+  test("Etapa 0: /admin renderiza dashboard sem NAV/Footer públicos, com noindex e sidebar responsiva", async ({ page }) => {
     await page.goto("/admin");
 
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1, name: "Painel Administrativo" })).toBeVisible();
+
+    /* Sem barra NAV nem rodapé do site público dentro do painel ADM. */
+    await expect(page.locator('nav[aria-label="Principal"]')).toHaveCount(0);
+    await expect(page.locator("footer")).toHaveCount(0);
 
     const robots = await page.locator('meta[name="robots"]').getAttribute("content");
     expect(robots).toContain("noindex");
@@ -23,6 +27,10 @@ test.describe("painel administrativo (Etapas 0 a 4)", () => {
     }
 
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
+    if (width === 1440 || width === 375) {
+      await page.screenshot({ path: `tests/screenshots/current/admin-v2-${width}.png`, fullPage: true });
+    }
   });
 
   test("Etapa 1: /admin/hero e /admin/links renderizam formulários sem overflow", async ({ page }) => {
@@ -153,6 +161,34 @@ test.describe("painel administrativo (Etapas 0 a 4)", () => {
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1, name: /ADM — Verificar e Responder E-mails/i })).toBeVisible();
     await expect(page.getByRole("button", { name: "Enviar e-mail" })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  });
+
+  test("login admin: /admin/login renderiza formulário isolado e botão da Home fica oculto para visitantes", async ({
+    page,
+  }) => {
+    await page.goto("/admin/login");
+    await expect(page.locator("h1")).toHaveCount(1);
+    await expect(page.getByRole("heading", { level: 1, name: "Entrar no Painel Admin" })).toBeVisible();
+    await expect(page.getByLabel("E-mail")).toBeVisible();
+    await expect(page.locator('input[name="password"]')).toBeVisible();
+    await expect(page.getByRole("button", { name: "Entrar no painel" })).toBeVisible();
+    await expect(page.locator('nav[aria-label="Principal"]')).toHaveCount(0);
+    await expect(page.locator("footer")).toHaveCount(0);
+    await expect(page.locator("#admin-sidebar-nav")).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
+    await page.goto("/");
+    await expect(page.getByRole("link", { name: "Abrir Painel Administrativo" })).toHaveCount(0);
+  });
+
+  test("integracoes: /admin/integracoes renderiza campos de variáveis pendentes sem overflow", async ({ page }) => {
+    await page.goto("/admin/integracoes");
+    await expect(page.locator("h1")).toHaveCount(1);
+    await expect(page.getByRole("heading", { level: 1, name: "Variáveis & Chaves de Integração" })).toBeVisible();
+    await expect(page.getByLabel("Hotmart Webhook Token (HOTTOK)")).toBeVisible();
+    await expect(page.getByLabel("Chave de Criptografia AES-256-GCM")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Gerar chave" }).first()).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
 });

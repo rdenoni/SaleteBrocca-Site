@@ -13,7 +13,8 @@ export type AdminNavIcon =
   | "hard-drive"
   | "bar-chart"
   | "shield-check"
-  | "mail";
+  | "mail"
+  | "key-round";
 
 export interface AdminNavItem {
   id: string;
@@ -188,6 +189,15 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
         stage: 10,
         ready: true,
         description: "Relatório de conformidade LGPD nos 8 pilares de segurança.",
+      },
+      {
+        id: "integracoes",
+        label: "Variáveis & Chaves",
+        href: "/admin/integracoes",
+        icon: "key-round",
+        stage: 10,
+        ready: true,
+        description: "Configurar e editar variáveis pendentes (Hotmart, Mux, Backup, Meta, Resend).",
       },
     ],
   },

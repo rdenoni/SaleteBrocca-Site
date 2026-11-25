@@ -1,10 +1,37 @@
 import "server-only";
 import { redirect } from "next/navigation";
-import { loginPathWithNext } from "@/lib/auth-paths";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Json, UserRole } from "@/types/database";
+import { getRuntimeSecrets } from "./secrets";
+
+function adminLoginPath(nextPath: string): string {
+  return nextPath && nextPath !== "/admin"
+    ? `/admin/login?next=${encodeURIComponent(nextPath)}`
+    : "/admin/login";
+}
+
+/* Verifica silenciosamente se há um usuário logado com papel admin (usado na Home para exibir o botão exclusivo). */
+export async function isCurrentUserAdmin(): Promise<boolean> {
+  if (!isSupabaseConfigured()) return false;
+  try {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return false;
+    const { data: roleRow } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+    return Boolean(roleRow);
+  } catch {
+    return false;
+  }
+}
 
 export interface AdminSession {
   mode: "live" | "demo";
@@ -62,7 +89,7 @@ export async function requireAdmin(nextPath = "/admin"): Promise<AdminSession> {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect(loginPathWithNext(nextPath));
+    redirect(adminLoginPath(nextPath));
   }
 
   const { data: roleRow } = await supabase
@@ -73,7 +100,7 @@ export async function requireAdmin(nextPath = "/admin"): Promise<AdminSession> {
     .maybeSingle();
 
   if (!roleRow) {
-    redirect("/area-do-aluno");
+    redirect("/admin/login");
   }
 
   const metaName = typeof user.user_metadata?.full_name === "string" ? user.user_metadata.full_name.trim() : "";
@@ -114,15 +141,16 @@ export async function logAdminAction(params: {
 }
 
 export async function getAdminDashboardSnapshot(session: AdminSession): Promise<AdminDashboardSnapshot> {
+  const runtime = await getRuntimeSecrets();
   const supabaseOk = isSupabaseConfigured();
   const serviceRoleOk = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY?.trim());
   const kiwifyOk = Boolean(process.env.KIWIFY_WEBHOOK_TOKEN?.trim());
-  const hotmartOk = Boolean(process.env.HOTMART_WEBHOOK_TOKEN?.trim());
+  const hotmartOk = Boolean(runtime.HOTMART_WEBHOOK_TOKEN);
   const muxPlaybackOk = Boolean(process.env.MUX_SIGNING_KEY_ID?.trim() && process.env.MUX_SIGNING_PRIVATE_KEY?.trim());
-  const muxApiOk = Boolean(process.env.MUX_TOKEN_ID?.trim() && process.env.MUX_TOKEN_SECRET?.trim());
-  const backupKeyOk = Boolean(process.env.BACKUP_ENCRYPTION_KEY?.trim());
-  const metaPixelOk = Boolean(process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim());
-  const resendOk = Boolean(process.env.RESEND_API_KEY?.trim());
+  const muxApiOk = Boolean(runtime.MUX_TOKEN_ID && runtime.MUX_TOKEN_SECRET);
+  const backupKeyOk = Boolean(runtime.BACKUP_ENCRYPTION_KEY && runtime.BACKUP_ENCRYPTION_KEY.length >= 16);
+  const metaPixelOk = Boolean(runtime.NEXT_PUBLIC_META_PIXEL_ID);
+  const resendOk = Boolean(runtime.RESEND_API_KEY);
 
   const integrations: IntegrationStatus[] = [
     {

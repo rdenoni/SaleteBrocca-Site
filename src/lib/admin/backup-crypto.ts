@@ -12,10 +12,10 @@ export interface EncryptedBackupEnvelope {
   sha256: string;
 }
 
-function getInstanceKeyAndFingerprint(): { key: Buffer; fingerprint: string } {
-  const secret = process.env.BACKUP_ENCRYPTION_KEY?.trim();
+function getInstanceKeyAndFingerprint(secretOverride?: string): { key: Buffer; fingerprint: string } {
+  const secret = (secretOverride ?? process.env.BACKUP_ENCRYPTION_KEY)?.trim();
   if (!secret || secret.length < 16) {
-    throw new Error("BACKUP_ENCRYPTION_KEY não está configurada (mínimo 16 caracteres).");
+    throw new Error("BACKUP_ENCRYPTION_KEY não está configurada (configure em Variáveis & Chaves ou na Netlify).");
   }
   const instanceSalt = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || "local-instance";
   const key = createHash("sha256").update(`${secret}::${instanceSalt}`).digest();
@@ -23,8 +23,8 @@ function getInstanceKeyAndFingerprint(): { key: Buffer; fingerprint: string } {
   return { key, fingerprint };
 }
 
-export function encryptBackupPayload(plaintextJson: string): EncryptedBackupEnvelope {
-  const { key, fingerprint } = getInstanceKeyAndFingerprint();
+export function encryptBackupPayload(plaintextJson: string, secretOverride?: string): EncryptedBackupEnvelope {
+  const { key, fingerprint } = getInstanceKeyAndFingerprint(secretOverride);
   const iv = randomBytes(12);
   const cipher = createCipheriv("aes-256-gcm", key, iv);
   const encrypted = Buffer.concat([cipher.update(plaintextJson, "utf8"), cipher.final()]);
@@ -43,11 +43,11 @@ export function encryptBackupPayload(plaintextJson: string): EncryptedBackupEnve
   };
 }
 
-export function decryptBackupPayload(envelope: EncryptedBackupEnvelope): string {
+export function decryptBackupPayload(envelope: EncryptedBackupEnvelope, secretOverride?: string): string {
   if (envelope.format !== "salete-brocca-backup-v1" || envelope.algorithm !== "aes-256-gcm") {
     throw new Error("Formato de arquivo de backup não suportado.");
   }
-  const { key, fingerprint } = getInstanceKeyAndFingerprint();
+  const { key, fingerprint } = getInstanceKeyAndFingerprint(secretOverride);
   if (envelope.instanceFingerprint !== fingerprint) {
     throw new Error("Este backup pertence a outra instância e não pode ser restaurado aqui.");
   }

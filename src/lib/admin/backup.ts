@@ -3,6 +3,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Database } from "@/types/database";
 import { encryptBackupPayload, type EncryptedBackupEnvelope } from "./backup-crypto";
+import { getRuntimeSecret, getRuntimeSecrets } from "./secrets";
 
 export const BACKUP_TABLES = [
   "profiles",
@@ -51,9 +52,10 @@ export interface AdminBackupSnapshot {
 }
 
 export async function getAdminBackupSnapshot(): Promise<AdminBackupSnapshot> {
-  const encryptionReady = Boolean(process.env.BACKUP_ENCRYPTION_KEY?.trim() && process.env.BACKUP_ENCRYPTION_KEY.trim().length >= 16);
-  const githubRepo = process.env.GITHUB_BACKUP_REPO?.trim() ?? "";
-  const githubReady = Boolean(process.env.GITHUB_BACKUP_TOKEN?.trim() && githubRepo);
+  const runtime = await getRuntimeSecrets(["BACKUP_ENCRYPTION_KEY", "GITHUB_BACKUP_TOKEN", "GITHUB_BACKUP_REPO"]);
+  const encryptionReady = Boolean(runtime.BACKUP_ENCRYPTION_KEY && runtime.BACKUP_ENCRYPTION_KEY.length >= 16);
+  const githubRepo = runtime.GITHUB_BACKUP_REPO ?? "";
+  const githubReady = Boolean(runtime.GITHUB_BACKUP_TOKEN && githubRepo);
 
   if (!isSupabaseConfigured() || !process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()) {
     return {
@@ -116,7 +118,8 @@ export async function buildEncryptedSystemBackup(): Promise<{
     tables,
   });
 
-  const envelope = encryptBackupPayload(plaintext);
+  const encryptionKey = await getRuntimeSecret("BACKUP_ENCRYPTION_KEY");
+  const envelope = encryptBackupPayload(plaintext, encryptionKey);
   const serialized = JSON.stringify(envelope, null, 2);
   const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
   const filename = `salete-brocca-backup-${stamp}.sbbak.enc`;

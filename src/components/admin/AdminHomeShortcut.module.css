@@ -1,0 +1,58 @@
+.shortcut {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 18px 0 12px;
+  border-radius: var(--radius-pill);
+  background: var(--navy);
+  color: var(--white);
+  border: 1.5px solid rgba(24, 207, 213, 0.45);
+  box-shadow: 0 12px 30px rgba(15, 36, 56, 0.34);
+  font: 700 13px/18px var(--font-sans);
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.shortcut:hover {
+  transform: translateY(-2px);
+  border-color: var(--cyan);
+  box-shadow: 0 16px 36px rgba(15, 36, 56, 0.42);
+}
+
+.iconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--cyan);
+  color: var(--navy);
+}
+
+.label {
+  white-space: nowrap;
+}
+
+.arrow {
+  color: var(--cyan);
+  transition: transform 180ms ease;
+}
+
+.shortcut:hover .arrow {
+  transform: translateX(3px);
+}
+
+@media (max-width: 639px) {
+  .shortcut {
+    left: 12px;
+    bottom: 12px;
+    padding: 0 14px 0 10px;
+  }
+}

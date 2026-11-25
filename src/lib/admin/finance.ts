@@ -2,6 +2,7 @@ import "server-only";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Json, TransactionPlatform, TransactionStatus } from "@/types/database";
+import { getRuntimeSecret } from "./secrets";
 
 export interface FinanceTransactionRow {
   id: string;
@@ -53,7 +54,7 @@ function hasServerDb(): boolean {
 
 export async function getAdminFinanceSnapshot(): Promise<AdminFinanceSnapshot> {
   const kiwifyConfigured = Boolean(process.env.KIWIFY_WEBHOOK_TOKEN?.trim());
-  const hotmartConfigured = Boolean(process.env.HOTMART_WEBHOOK_TOKEN?.trim());
+  const hotmartConfigured = Boolean(await getRuntimeSecret("HOTMART_WEBHOOK_TOKEN"));
 
   if (!hasServerDb()) {
     return {

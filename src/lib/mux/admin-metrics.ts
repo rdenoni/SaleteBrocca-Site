@@ -1,4 +1,5 @@
 import "server-only";
+import { getRuntimeSecrets } from "@/lib/admin/secrets";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -23,8 +24,9 @@ export interface AdminStreamSnapshot {
 }
 
 export async function getAdminStreamSnapshot(): Promise<AdminStreamSnapshot> {
-  const tokenId = process.env.MUX_TOKEN_ID?.trim();
-  const tokenSecret = process.env.MUX_TOKEN_SECRET?.trim();
+  const runtime = await getRuntimeSecrets(["MUX_TOKEN_ID", "MUX_TOKEN_SECRET"]);
+  const tokenId = runtime.MUX_TOKEN_ID;
+  const tokenSecret = runtime.MUX_TOKEN_SECRET;
   const muxApiConfigured = Boolean(tokenId && tokenSecret);
   const muxPlaybackConfigured = Boolean(
     process.env.MUX_SIGNING_KEY_ID?.trim() && process.env.MUX_SIGNING_PRIVATE_KEY?.trim(),

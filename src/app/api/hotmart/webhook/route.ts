@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
+import { getRuntimeSecret } from "@/lib/admin/secrets";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { EnrollmentStatus, Json, TransactionStatus } from "@/types/database";
@@ -31,7 +32,7 @@ function mapHotmartEvent(event: string): { txStatus: TransactionStatus; enrollSt
 }
 
 export async function POST(request: Request) {
-  const expectedToken = process.env.HOTMART_WEBHOOK_TOKEN?.trim();
+  const expectedToken = await getRuntimeSecret("HOTMART_WEBHOOK_TOKEN");
   if (!expectedToken) {
     return NextResponse.json({ error: "HOTMART_WEBHOOK_TOKEN não configurado." }, { status: 503 });
   }

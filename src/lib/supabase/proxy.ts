@@ -45,9 +45,20 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
 
   const isPrivateStudentPath =
     (pathname === STUDENT_PREFIX || pathname.startsWith(`${STUDENT_PREFIX}/`)) && !isPublicStudentPath(pathname);
-  const isAdminPath = pathname === ADMIN_PREFIX || pathname.startsWith(`${ADMIN_PREFIX}/`);
+  const isAdminLoginPath = pathname === `${ADMIN_PREFIX}/login`;
+  const isPrivateAdminPath =
+    (pathname === ADMIN_PREFIX || pathname.startsWith(`${ADMIN_PREFIX}/`)) && !isAdminLoginPath;
 
-  if (!signedIn && (isPrivateStudentPath || isAdminPath)) {
+  if (!signedIn && isPrivateAdminPath) {
+    const nextUrl = `${pathname}${search}`;
+    const target = nextUrl === "/admin" ? "/admin/login" : `/admin/login?next=${encodeURIComponent(nextUrl)}`;
+    const redirect = NextResponse.redirect(new URL(target, request.url));
+    supabaseResponse.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    Object.entries(cacheHeaders).forEach(([header, headerValue]) => redirect.headers.set(header, headerValue));
+    return redirect;
+  }
+
+  if (!signedIn && isPrivateStudentPath) {
     const redirect = NextResponse.redirect(new URL(loginPathWithNext(`${pathname}${search}`), request.url));
     supabaseResponse.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
     Object.entries(cacheHeaders).forEach(([header, headerValue]) => redirect.headers.set(header, headerValue));

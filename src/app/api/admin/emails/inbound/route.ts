@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
+import { getRuntimeSecrets } from "@/lib/admin/secrets";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -10,7 +11,8 @@ function safeMatch(a: string, b: string): boolean {
 }
 
 export async function POST(request: Request) {
-  const expectedToken = process.env.ADMIN_EMAIL_INBOUND_TOKEN?.trim();
+  const runtime = await getRuntimeSecrets(["ADMIN_EMAIL_INBOUND_TOKEN", "ADMIN_FROM_EMAIL"]);
+  const expectedToken = runtime.ADMIN_EMAIL_INBOUND_TOKEN;
   if (expectedToken) {
     const token = request.headers.get("x-inbound-token")?.trim() ?? "";
     if (!token || !safeMatch(token, expectedToken)) {
@@ -26,7 +28,7 @@ export async function POST(request: Request) {
   }
 
   const fromEmail = String(body.from ?? body.from_email ?? "").trim();
-  const toEmail = String(body.to ?? body.to_email ?? process.env.ADMIN_FROM_EMAIL ?? "contato@saletebrocca.com").trim();
+  const toEmail = String(body.to ?? body.to_email ?? runtime.ADMIN_FROM_EMAIL ?? "contato@saletebrocca.com").trim();
   const subject = String(body.subject ?? "(sem assunto)").trim().slice(0, 200);
   const bodyText = String(body.text ?? body.body_text ?? "").trim().slice(0, 20000);
   const threadId = String(body.thread_id ?? `${fromEmail.toLowerCase()}::${subject.toLowerCase()}`).slice(0, 180);
