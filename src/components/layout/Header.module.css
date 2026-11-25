@@ -200,7 +200,9 @@
   z-index: 1;
   display: flex;
   align-items: flex-start;
-  padding: 44px clamp(10px, 1.35vw, 20px) 0;
+  justify-content: center;
+  min-width: clamp(92px, 7.6vw, 114px);
+  padding: 44px clamp(10px, 1.15vw, 16px) 0;
   font: 700 14px/20px var(--font-sans);
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -235,9 +237,10 @@
   pointer-events: none;
 }
 
-/* A camada da gota passa 6px da lista de cada lado (= GOTA_BLEED em HeaderNav): a gota é mais larga que o link. */
+/* A camada da gota passa 48px da lista de cada lado (= GOTA_LAYER_BLEED em HeaderNav): 6px do respiro visual
+   da gota + 42px de folga para o overshoot da mola nas extremidades (Cursos e Contato), evitando qualquer corte. */
 .gotaLayer {
-  inset: 0 -6px;
+  inset: 0 -48px;
 }
 
 /* Gota ciano: topo reto colado à borda superior do header, base arredondada (raio no clip-path). */
@@ -338,6 +341,7 @@
   }
 
   .navLink {
+    min-width: 86px;
     padding-inline: 10px;
   }
 

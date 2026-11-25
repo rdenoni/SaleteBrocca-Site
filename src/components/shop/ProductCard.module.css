@@ -18,17 +18,32 @@
   transform: translateY(-4px);
 }
 
-/* Foto fundida ao azul da marca, como nos cards de curso. */
+/* Foto fundida ao azul da marca nos cards de curso; fotos reais de produto aparecem em cor real sobre fundo claro. */
 .media {
   position: relative;
   aspect-ratio: 4 / 3;
+  overflow: hidden;
   background: var(--blue);
+}
+
+.media:has(img[data-product-photo="true"]) {
+  background: #eef1f2;
 }
 
 .media img {
   object-fit: cover;
   filter: grayscale(1) contrast(1.05);
   mix-blend-mode: multiply;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.media img[data-product-photo="true"] {
+  filter: none;
+  mix-blend-mode: normal;
+}
+
+.card[data-linked="true"]:hover .media img[data-product-photo="true"] {
+  transform: scale(1.04);
 }
 
 /* "Em breve": selo escuro sobre a mídia; foto real (curso) perde a cor, o texto não muda. */
@@ -47,6 +62,11 @@
 
 .card[data-status="coming-soon"] .media > img {
   filter: grayscale(1) contrast(1.05) opacity(0.8);
+}
+
+.card[data-status="coming-soon"] .media > img[data-product-photo="true"] {
+  filter: saturate(0.85);
+  opacity: 0.92;
 }
 
 .body {

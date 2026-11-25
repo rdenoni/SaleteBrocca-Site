@@ -75,8 +75,26 @@ const STANDALONE_PRODUCTS: readonly Product[] = [
       "O Brinqueletrando será um aplicativo educativo para brincar com letras, sons e palavras no início da alfabetização.",
       "Ele ainda está em desenvolvimento e não está disponível para compra nem para download. Quando houver novidades, elas serão divulgadas aqui na loja.",
     ],
-    image: null,
-    imageAlt: "Grafismo da marca representando o aplicativo Brinqueletrando",
+    image: "/images/products/brinqueletrando-app.jpg",
+    imageAlt: "Tablet exibindo a tela do aplicativo educativo Brinqueletrando com a carta da letra G e a ilustração do gato",
+    gallery: [
+      {
+        src: "/images/products/brinqueletrando-app.jpg",
+        alt: "Tablet exibindo a tela do aplicativo educativo Brinqueletrando",
+      },
+      {
+        src: "/images/products/brinqueletrando-carta-gato.jpg",
+        alt: "Carta da letra G com a ilustração do gato e palavras para treino de leitura",
+      },
+      {
+        src: "/images/products/brinqueletrando-carta-gralha.jpg",
+        alt: "Carta do encontro consonantal G+R com a ilustração da gralha azul",
+      },
+      {
+        src: "/images/products/brinqueletrando-verso.png",
+        alt: "Identidade visual e verso das cartas do Brinqueletrando",
+      },
+    ],
     price: "R$ 39,90",
     delivery: "download",
     facts: [
@@ -100,8 +118,26 @@ const STANDALONE_PRODUCTS: readonly Product[] = [
       "O Brinqueletrando Box é o jogo educativo físico do Brinqueletrando, pensado para tornar a alfabetização uma brincadeira que a criança pode viver com o corpo, as mãos e a companhia de quem a acompanha.",
       "Pode ser usado por famílias, professores e profissionais que acompanham crianças no início da leitura e da escrita. Faixa etária, componentes e dimensões serão informados assim que forem confirmados.",
     ],
-    image: null,
-    imageAlt: "Grafismo da marca representando o jogo Brinqueletrando Box",
+    image: "/images/products/brinqueletrando-box.jpg",
+    imageAlt: "Cartas físicas do jogo educativo Brinqueletrando Box: G+R Gralha Azul, G Gato e verso com a marca Salete Brocca",
+    gallery: [
+      {
+        src: "/images/products/brinqueletrando-box.jpg",
+        alt: "Cartas do jogo educativo Brinqueletrando Box dispostas em leque",
+      },
+      {
+        src: "/images/products/brinqueletrando-carta-gato.jpg",
+        alt: "Detalhe da carta G — Gato com palavras para treino fonológico",
+      },
+      {
+        src: "/images/products/brinqueletrando-carta-gralha.jpg",
+        alt: "Detalhe da carta G+R — Gralha Azul com palavras de encontro consonantal",
+      },
+      {
+        src: "/images/products/brinqueletrando-verso.png",
+        alt: "Verso das cartas do jogo Brinqueletrando com logo Salete Brocca",
+      },
+    ],
     price: "R$ 399,00",
     delivery: "correios",
     facts: [
@@ -128,8 +164,18 @@ const STANDALONE_PRODUCTS: readonly Product[] = [
       "Uma caneca personalizada, para o café da sala dos professores, o consultório ou o escritório de estudos.",
       "Material, capacidade e opções de personalização serão informados assim que forem confirmados.",
     ],
-    image: null,
-    imageAlt: "Grafismo da marca representando a caneca personalizada",
+    image: "/images/products/caneca-personalizada.png",
+    imageAlt: "Caneca personalizada branca com interior azul-marinho, letras minimalistas e marca Salete Brocca",
+    gallery: [
+      {
+        src: "/images/products/caneca-personalizada.png",
+        alt: "Caneca personalizada branca com interior azul-marinho e logo Salete Brocca",
+      },
+      {
+        src: "/images/products/xicara-personalizada.jpg",
+        alt: "Versão xícara com pires Salete Brocca sobre fundo ciano",
+      },
+    ],
     price: "R$ 59,90",
     delivery: "correios",
     facts: [
@@ -153,8 +199,18 @@ const STANDALONE_PRODUCTS: readonly Product[] = [
       "Uma agenda pensada para quem acompanha crianças em fase escolar e precisa registrar observações, planejar atividades e organizar a rotina em um só lugar.",
       "Formato, número de páginas e opções de personalização serão informados assim que forem confirmados.",
     ],
-    image: null,
-    imageAlt: "Grafismo da marca representando a agenda pedagógica personalizada",
+    image: "/images/products/agenda-pedagogica.jpg",
+    imageAlt: "Agenda pedagógica personalizada azul ciano com logo Salete Brocca acompanhada do bloco de anotações branco",
+    gallery: [
+      {
+        src: "/images/products/agenda-pedagogica.jpg",
+        alt: "Agenda pedagógica azul ciano com marca Salete Brocca e bloco de anotações",
+      },
+      {
+        src: "/images/products/agenda-pedagogica-angulo2.png",
+        alt: "Segundo ângulo da agenda pedagógica personalizada com bloco de anotações branco",
+      },
+    ],
     price: "R$ 89,90",
     delivery: "correios",
     facts: [
@@ -178,8 +234,26 @@ const STANDALONE_PRODUCTS: readonly Product[] = [
       "O Kit Educador reúne os itens personalizados da loja para quem ensina, acompanha ou cuida de crianças: caneca, agenda e bloco de anotações.",
       "É uma boa opção de presente para profissionais e equipes da educação. Detalhes de cada item serão informados assim que forem confirmados.",
     ],
-    image: null,
-    imageAlt: "Grafismo da marca representando o Kit Educador",
+    image: "/images/products/kit-educador.jpg",
+    imageAlt: "Kit Educador Salete Brocca completo: caneca personalizada branca com interior azul-marinho, agenda ciano e bloco de anotações branco",
+    gallery: [
+      {
+        src: "/images/products/kit-educador.jpg",
+        alt: "Kit Educador completo com caneca, agenda ciano e bloco de anotações",
+      },
+      {
+        src: "/images/products/caneca-personalizada.png",
+        alt: "Detalhe da caneca personalizada incluída no Kit Educador",
+      },
+      {
+        src: "/images/products/agenda-pedagogica.jpg",
+        alt: "Detalhe da agenda pedagógica e do bloco de anotações incluídos no Kit Educador",
+      },
+      {
+        src: "/images/products/agenda-pedagogica-angulo2.png",
+        alt: "Segundo ângulo da agenda pedagógica e do bloco de anotações",
+      },
+    ],
     price: "R$ 139,90",
     delivery: "correios",
     facts: [

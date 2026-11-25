@@ -1,18 +1,954 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><link rel="icon" href="/brand/logo/icone-app.png"><title>Biblioteca Salete Brocca</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martel:wght@700;800&family=Noto+Sans:wght@400;700&display=swap">
-<style>:root{color-scheme:light;--navy:#0f2438;--blue-strong:#2a6a9a;--cyan:#18cfd5;--light-blue:#d9e1e2;--charcoal:#24282b}
-*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--charcoal);font:400 16px/26px "Noto Sans",system-ui,sans-serif}
-main{max-width:880px;margin:0 auto;padding:64px 16px}h1{font:800 40px/48px Martel,serif;color:var(--navy);margin:0 0 12px}
-p{margin:0 0 40px;max-width:60ch}ul{list-style:none;padding:0;margin:0;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-a{display:block;min-height:48px;padding:28px;border-radius:16px;background:var(--light-blue);color:var(--navy);text-decoration:none;transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s}
-a:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(15,36,56,.14)}a:active{transform:scale(.97)}
-a:focus-visible{outline:3px solid var(--blue-strong);outline-offset:3px}
-a strong{display:block;font:700 22px/30px Martel,serif;margin-bottom:6px}a span{color:var(--blue-strong);font-size:15px}
-@media (prefers-reduced-motion:reduce){a{transition:none}a:hover,a:active{transform:none}}</style></head>
-<body><main><h1>Biblioteca Salete Brocca</h1><p>Referência interna da marca: componentes com todos os estados, a iconografia e os tokens do site.</p>
-<ul><li><a href="/biblioteca/manual-da-marca.html"><strong>Manual da Marca</strong><span>O manual de identidade de 2021 em versão interativa: símbolo, paleta para copiar, tipografia, versões, redução, fundos, proibições, pattern e aplicações.</span></a></li>
-<li><a href="/biblioteca/componentes.html"><strong>Componentes</strong><span>Botões, cards, formulários, menus, modais e mais, com os estados normal, hover, active, focus, disabled e loading.</span></a></li>
-<li><a href="/biblioteca/icones.html"><strong>Ícones</strong><span>Biblioteca interativa: busca, categorias, tamanhos e cópia do código.</span></a></li>
-<li><a href="/biblioteca/design-system.html"><strong>Design System</strong><span>Cores com teste de contraste, tipografia, espaço, raios, sombras, movimento e breakpoints, tudo clicável para copiar o token.</span></a></li>
-<li><a href="/motion"><strong>Motion Design System</strong><span>Princípios, tokens e demonstrações interativas de movimento, incluindo a Home com animações.</span></a></li></ul></main></body></html>
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex,nofollow" />
+    <link rel="icon" href="/brand/logo/icone-app.png" />
+    <title>Biblioteca Salete Brocca</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Martel:wght@700;800&family=Noto+Sans:wght@400;600;700&display=swap"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        /* Cores oficiais (src/styles/tokens.css) */
+        --navy: #0f2438;
+        --navy-raised: #18324c;
+        --blue: #337eb5;
+        --blue-strong: #2a6a9a;
+        --cyan: #18cfd5;
+        --light-blue: #d9e1e2;
+        --light-gray: #e8e7ea;
+        --charcoal: #24282b;
+        --text-muted: #5b6470;
+        --on-navy-muted: #a9b8c6;
+        --white: #ffffff;
+
+        --font-sans: "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+        --font-serif: "Martel", Georgia, "Times New Roman", serif;
+
+        --radius-sm: 8px;
+        --radius-md: 24px;
+        --radius-lg: 32px;
+        --radius-pill: 999px;
+
+        --shadow-card: 0 8px 24px rgba(15, 36, 56, 0.08);
+        --shadow-card-hover: 0 18px 40px rgba(15, 36, 56, 0.16);
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: var(--light-gray);
+        color: var(--charcoal);
+        font: 400 16px/26px var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .skip-link {
+        position: absolute;
+        left: 16px;
+        top: -80px;
+        z-index: 50;
+        padding: 12px 20px;
+        border-radius: var(--radius-pill);
+        background: var(--cyan);
+        color: var(--navy);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .skip-link:focus {
+        top: 16px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1120px;
+        margin: 0 auto;
+        padding-inline: 32px;
+      }
+
+      /* Hero editorial no padrão visual do site */
+      .hero {
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 88% 18%, rgba(24, 207, 213, 0.18), transparent 44%),
+          radial-gradient(circle at 12% 90%, rgba(51, 126, 181, 0.24), transparent 50%),
+          var(--navy);
+        color: var(--white);
+        padding: 28px 0 64px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding-bottom: 40px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        min-height: 48px;
+        text-decoration: none;
+      }
+
+      .brand img {
+        display: block;
+        height: 44px;
+        width: auto;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 48px;
+        padding: 0 22px;
+        border-radius: var(--radius-pill);
+        border: 1.5px solid rgba(255, 255, 255, 0.28);
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--white);
+        font: 700 14px/20px var(--font-sans);
+        letter-spacing: 0.02em;
+        text-decoration: none;
+        transition:
+          background-color 280ms var(--ease),
+          border-color 280ms var(--ease),
+          color 280ms var(--ease),
+          transform 280ms var(--ease);
+      }
+
+      .back-link:hover {
+        background: var(--cyan);
+        border-color: var(--cyan);
+        color: var(--navy);
+        transform: translateY(-1px);
+      }
+
+      .back-link:active {
+        transform: scale(0.98);
+      }
+
+      .back-link svg {
+        transition: transform 280ms var(--ease);
+      }
+
+      .back-link:hover svg {
+        transform: translateX(-3px);
+      }
+
+      .hero-body {
+        padding-top: 44px;
+        max-width: 720px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 14px;
+        font: 700 12px/16px var(--font-sans);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--cyan);
+      }
+
+      h1 {
+        margin: 0 0 18px;
+        font: 800 clamp(32px, 4.4vw, 48px)/1.18 var(--font-serif);
+        color: var(--white);
+      }
+
+      .rule {
+        display: block;
+        width: 120px;
+        height: 6px;
+        margin: 0 0 22px;
+        border-radius: var(--radius-pill);
+        background: var(--cyan);
+      }
+
+      .subtitle {
+        margin: 0;
+        max-width: 60ch;
+        font: 400 17px/28px var(--font-sans);
+        color: var(--on-navy-muted);
+      }
+
+      /* Conteúdo principal */
+      main {
+        flex: 1;
+        padding: 48px 0 72px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .section-title {
+        margin: 0;
+        font: 700 13px/20px var(--font-sans);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--blue-strong);
+      }
+
+      .section-count {
+        margin: 0;
+        font: 600 14px/20px var(--font-sans);
+        color: var(--text-muted);
+      }
+
+      /* Grid assimétrico: card destaque em cima + 2x2 equilibrado abaixo */
+      .cards {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .cards li {
+        display: flex;
+        opacity: 0;
+        transform: translateY(14px);
+        animation: cardEnter 520ms var(--ease) forwards;
+      }
+
+      .cards li:nth-child(1) { animation-delay: 40ms; }
+      .cards li:nth-child(2) { animation-delay: 100ms; }
+      .cards li:nth-child(3) { animation-delay: 160ms; }
+      .cards li:nth-child(4) { animation-delay: 220ms; }
+      .cards li:nth-child(5) { animation-delay: 280ms; }
+
+      @keyframes cardEnter {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .card-featured {
+        grid-column: 1 / -1;
+      }
+
+      .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 20px;
+        width: 100%;
+        min-height: 48px;
+        padding: 32px;
+        border-radius: var(--radius-md);
+        background: var(--white);
+        color: var(--navy);
+        text-decoration: none;
+        box-shadow: var(--shadow-card);
+        overflow: hidden;
+        transition:
+          transform 320ms var(--ease),
+          box-shadow 320ms var(--ease);
+      }
+
+      .card::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 4px;
+        background: var(--cyan);
+        transform: scaleX(0);
+        transform-origin: left center;
+        transition: transform 360ms var(--ease);
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-card-hover);
+      }
+
+      .card:hover::after {
+        transform: scaleX(1);
+      }
+
+      .card:active {
+        transform: translateY(-2px) scale(0.99);
+      }
+
+      /* Card destaque (Manual da Marca) */
+      .card-featured .card {
+        background:
+          radial-gradient(circle at 92% 20%, rgba(24, 207, 213, 0.2), transparent 42%),
+          linear-gradient(135deg, var(--navy) 0%, var(--navy-raised) 100%);
+        color: var(--white);
+        padding: 36px;
+      }
+
+      .card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .card-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: var(--light-blue);
+        color: var(--navy);
+        flex: none;
+        transition:
+          background-color 280ms var(--ease),
+          transform 320ms var(--ease);
+      }
+
+      .card:hover .card-icon {
+        background: var(--cyan);
+        transform: scale(1.06);
+      }
+
+      .card-featured .card-icon {
+        background: rgba(24, 207, 213, 0.18);
+        color: var(--cyan);
+      }
+
+      .card-featured .card:hover .card-icon {
+        background: var(--cyan);
+        color: var(--navy);
+      }
+
+      .card-num {
+        font: 700 12px/16px var(--font-sans);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      .card-featured .card-num {
+        padding: 5px 12px;
+        border-radius: var(--radius-pill);
+        background: var(--cyan);
+        color: var(--navy);
+      }
+
+      .card-content {
+        display: grid;
+        gap: 10px;
+      }
+
+      .card-title {
+        margin: 0;
+        font: 700 23px/31px var(--font-serif);
+        color: inherit;
+      }
+
+      .card-featured .card-title {
+        font-size: clamp(24px, 2.8vw, 30px);
+        line-height: 1.25;
+      }
+
+      .card-desc {
+        margin: 0;
+        font: 400 15px/24px var(--font-sans);
+        color: var(--text-muted);
+        max-width: 62ch;
+      }
+
+      .card-featured .card-desc {
+        color: var(--on-navy-muted);
+        font-size: 16px;
+        line-height: 26px;
+      }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 6px;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 12px;
+        border-radius: var(--radius-pill);
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--white);
+        font: 600 12px/18px var(--font-sans);
+      }
+
+      .card-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font: 700 14px/20px var(--font-sans);
+        color: var(--blue-strong);
+      }
+
+      .card-featured .card-cta {
+        color: var(--cyan);
+      }
+
+      .card-cta svg {
+        transition: transform 280ms var(--ease);
+      }
+
+      .card:hover .card-cta svg {
+        transform: translateX(5px);
+      }
+
+      /* Atalho rápido de paleta de cores */
+      .palette-section {
+        margin-top: 48px;
+        padding: 28px 32px;
+        border-radius: var(--radius-md);
+        background: var(--white);
+        box-shadow: var(--shadow-card);
+      }
+
+      .palette-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px 16px;
+        margin-bottom: 20px;
+      }
+
+      .palette-title {
+        margin: 0;
+        font: 700 18px/26px var(--font-serif);
+        color: var(--navy);
+      }
+
+      .palette-hint {
+        margin: 0;
+        font: 400 14px/20px var(--font-sans);
+        color: var(--text-muted);
+      }
+
+      .swatches {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .swatch {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        width: 100%;
+        min-height: 48px;
+        padding: 10px;
+        border: 1.5px solid var(--light-gray);
+        border-radius: 16px;
+        background: var(--white);
+        color: var(--navy);
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+        transition:
+          border-color 220ms var(--ease),
+          transform 220ms var(--ease),
+          box-shadow 220ms var(--ease);
+      }
+
+      .swatch:hover {
+        border-color: var(--blue-strong);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(15, 36, 56, 0.1);
+      }
+
+      .swatch:active {
+        transform: scale(0.98);
+      }
+
+      .swatch-color {
+        width: 100%;
+        height: 44px;
+        border-radius: 10px;
+        border: 1px solid rgba(15, 36, 56, 0.08);
+      }
+
+      .swatch-meta {
+        display: grid;
+        gap: 2px;
+        width: 100%;
+      }
+
+      .swatch-name {
+        font: 700 13px/18px var(--font-sans);
+        color: var(--navy);
+      }
+
+      .swatch-hex {
+        font: 600 12px/16px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        color: var(--text-muted);
+      }
+
+      .copy-status {
+        margin: 14px 0 0;
+        min-height: 20px;
+        font: 600 13px/20px var(--font-sans);
+        color: var(--blue-strong);
+      }
+
+      /* Rodapé simples */
+      footer {
+        border-top: 1px solid rgba(15, 36, 56, 0.1);
+        padding: 24px 0 36px;
+        color: var(--text-muted);
+        font: 400 14px/22px var(--font-sans);
+      }
+
+      .footer-inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px 24px;
+      }
+
+      .footer-link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 48px;
+        color: var(--blue-strong);
+        font-weight: 700;
+        text-decoration: underline;
+        text-underline-offset: 0.2em;
+      }
+
+      .footer-link:hover {
+        color: var(--navy);
+      }
+
+      /* Foco visível acessível */
+      a:focus-visible,
+      button:focus-visible {
+        outline: 3px solid var(--blue-strong);
+        outline-offset: 3px;
+      }
+
+      .hero a:focus-visible,
+      .card-featured a:focus-visible {
+        outline-color: var(--cyan);
+      }
+
+      /* Responsivo */
+      @media (max-width: 960px) {
+        .swatches {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 767px) {
+        .container {
+          padding-inline: 16px;
+        }
+
+        .hero {
+          padding: 20px 0 44px;
+        }
+
+        .topbar {
+          padding-bottom: 24px;
+        }
+
+        .brand img {
+          height: 36px;
+        }
+
+        .back-link {
+          padding: 0 16px;
+          font-size: 13px;
+        }
+
+        .hero-body {
+          padding-top: 28px;
+        }
+
+        main {
+          padding: 32px 0 56px;
+        }
+
+        .cards {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+
+        .card,
+        .card-featured .card {
+          padding: 24px;
+        }
+
+        .palette-section {
+          margin-top: 32px;
+          padding: 22px 20px;
+        }
+
+        .swatches {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        .cards li {
+          opacity: 1;
+          transform: none;
+          animation: none;
+        }
+
+        .card,
+        .card::after,
+        .card-icon,
+        .card-cta svg,
+        .back-link,
+        .back-link svg,
+        .swatch {
+          transition: none;
+        }
+
+        .card:hover,
+        .card:active,
+        .back-link:hover,
+        .back-link:active,
+        .swatch:hover,
+        .swatch:active,
+        .card:hover .card-icon,
+        .card:hover .card-cta svg,
+        .back-link:hover svg {
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+
+    <header class="hero">
+      <div class="container">
+        <div class="topbar">
+          <a href="/" class="brand" aria-label="Salete Brocca — voltar para a página inicial">
+            <img src="/brand/logo/logo-lateral-branco.png" alt="Salete Brocca" width="180" height="44" />
+          </a>
+          <a href="/" class="back-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 12H5" />
+              <path d="m12 19-7-7 7-7" />
+            </svg>
+            <span>Voltar ao site</span>
+          </a>
+        </div>
+
+        <div class="hero-body">
+          <p class="eyebrow">Referência interna da marca</p>
+          <h1>Biblioteca Salete Brocca</h1>
+          <span class="rule" aria-hidden="true"></span>
+          <p class="subtitle">
+            Referência interna da marca: manual de identidade, design system, componentes com todos os estados,
+            iconografia e sistema de movimento do site.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <main id="conteudo">
+      <div class="container">
+        <div class="section-head">
+          <h2 class="section-title">Guias interativos</h2>
+          <p class="section-count">5 recursos</p>
+        </div>
+
+        <ul class="cards">
+          <li class="card-featured">
+            <a class="card" href="/biblioteca/manual-da-marca.html">
+              <div class="card-top">
+                <span class="card-icon" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
+                  </svg>
+                </span>
+                <span class="card-num">01 · Principal</span>
+              </div>
+              <div class="card-content">
+                <h3 class="card-title">Manual da Marca</h3>
+                <p class="card-desc">
+                  O manual de identidade de 2021 em versão interativa: símbolo, paleta para copiar, tipografia, versões,
+                  redução, fundos, proibições, pattern e aplicações.
+                </p>
+                <div class="tags" aria-hidden="true">
+                  <span class="tag">Símbolo</span>
+                  <span class="tag">Paleta</span>
+                  <span class="tag">Tipografia</span>
+                  <span class="tag">Proibições</span>
+                  <span class="tag">Aplicações</span>
+                </div>
+              </div>
+              <span class="card-cta">
+                <span>Abrir manual</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </span>
+            </a>
+          </li>
+
+          <li>
+            <a class="card" href="/biblioteca/design-system.html">
+              <div class="card-top">
+                <span class="card-icon" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="13.5" cy="6.5" r="0.5" fill="currentColor" />
+                    <circle cx="17.5" cy="10.5" r="0.5" fill="currentColor" />
+                    <circle cx="8.5" cy="7.5" r="0.5" fill="currentColor" />
+                    <circle cx="6.5" cy="12.5" r="0.5" fill="currentColor" />
+                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
+                  </svg>
+                </span>
+                <span class="card-num">02 · Tokens</span>
+              </div>
+              <div class="card-content">
+                <h3 class="card-title">Design System</h3>
+                <p class="card-desc">
+                  Cores com teste de contraste, tipografia, espaço, raios, sombras, movimento e breakpoints, tudo
+                  clicável para copiar o token.
+                </p>
+              </div>
+              <span class="card-cta">
+                <span>Explorar tokens</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </span>
+            </a>
+          </li>
+
+          <li>
+            <a class="card" href="/biblioteca/componentes.html">
+              <div class="card-top">
+                <span class="card-icon" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="7" height="7" x="3" y="3" rx="1.5" />
+                    <rect width="7" height="7" x="14" y="3" rx="1.5" />
+                    <rect width="7" height="7" x="14" y="14" rx="1.5" />
+                    <rect width="7" height="7" x="3" y="14" rx="1.5" />
+                  </svg>
+                </span>
+                <span class="card-num">03 · Interface</span>
+              </div>
+              <div class="card-content">
+                <h3 class="card-title">Componentes</h3>
+                <p class="card-desc">
+                  Botões, cards, formulários, menus, modais e mais, com os estados normal, hover, active, focus,
+                  disabled e loading.
+                </p>
+              </div>
+              <span class="card-cta">
+                <span>Ver componentes</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </span>
+            </a>
+          </li>
+
+          <li>
+            <a class="card" href="/biblioteca/icones.html">
+              <div class="card-top">
+                <span class="card-icon" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z" />
+                  </svg>
+                </span>
+                <span class="card-num">04 · Símbolos</span>
+              </div>
+              <div class="card-content">
+                <h3 class="card-title">Ícones</h3>
+                <p class="card-desc">
+                  Biblioteca interativa: busca, categorias, tamanhos e cópia do código.
+                </p>
+              </div>
+              <span class="card-cta">
+                <span>Abrir iconografia</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </span>
+            </a>
+          </li>
+
+          <li>
+            <a class="card" href="/motion">
+              <div class="card-top">
+                <span class="card-icon" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12c2-4 5-6 8-6s6 2 8 6c-2 4-5 6-8 6s-6-2-8-6Z" />
+                    <circle cx="10" cy="12" r="2.5" />
+                    <path d="M18 6h4" />
+                    <path d="M19 12h3" />
+                    <path d="M18 18h4" />
+                  </svg>
+                </span>
+                <span class="card-num">05 · Movimento</span>
+              </div>
+              <div class="card-content">
+                <h3 class="card-title">Motion Design System</h3>
+                <p class="card-desc">
+                  Princípios, tokens e demonstrações interativas de movimento, incluindo a Home com animações.
+                </p>
+              </div>
+              <span class="card-cta">
+                <span>Abrir laboratório</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </span>
+            </a>
+          </li>
+        </ul>
+
+        <section class="palette-section" aria-labelledby="paleta-rapida">
+          <div class="palette-head">
+            <h2 id="paleta-rapida" class="palette-title">Paleta oficial de consulta rápida</h2>
+            <p class="palette-hint">Clique em qualquer cor para copiar o código hexadecimal.</p>
+          </div>
+
+          <div class="swatches">
+            <button type="button" class="swatch" data-hex="#0F2438" data-token="--navy">
+              <span class="swatch-color" style="background: #0f2438" aria-hidden="true"></span>
+              <span class="swatch-meta">
+                <span class="swatch-name">Navy</span>
+                <span class="swatch-hex">#0F2438</span>
+              </span>
+            </button>
+
+            <button type="button" class="swatch" data-hex="#337EB5" data-token="--blue">
+              <span class="swatch-color" style="background: #337eb5" aria-hidden="true"></span>
+              <span class="swatch-meta">
+                <span class="swatch-name">Blue</span>
+                <span class="swatch-hex">#337EB5</span>
+              </span>
+            </button>
+
+            <button type="button" class="swatch" data-hex="#2A6A9A" data-token="--blue-strong">
+              <span class="swatch-color" style="background: #2a6a9a" aria-hidden="true"></span>
+              <span class="swatch-meta">
+                <span class="swatch-name">Blue Strong</span>
+                <span class="swatch-hex">#2A6A9A</span>
+              </span>
+            </button>
+
+            <button type="button" class="swatch" data-hex="#18CFD5" data-token="--cyan">
+              <span class="swatch-color" style="background: #18cfd5" aria-hidden="true"></span>
+              <span class="swatch-meta">
+                <span class="swatch-name">Cyan</span>
+                <span class="swatch-hex">#18CFD5</span>
+              </span>
+            </button>
+
+            <button type="button" class="swatch" data-hex="#D9E1E2" data-token="--light-blue">
+              <span class="swatch-color" style="background: #d9e1e2" aria-hidden="true"></span>
+              <span class="swatch-meta">
+                <span class="swatch-name">Light Blue</span>
+                <span class="swatch-hex">#D9E1E2</span>
+              </span>
+            </button>
+
+            <button type="button" class="swatch" data-hex="#24282B" data-token="--charcoal">
+              <span class="swatch-color" style="background: #24282b" aria-hidden="true"></span>
+              <span class="swatch-meta">
+                <span class="swatch-name">Charcoal</span>
+                <span class="swatch-hex">#24282B</span>
+              </span>
+            </button>
+          </div>
+
+          <p class="copy-status" role="status" aria-live="polite" id="copy-status"></p>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container footer-inner">
+        <span>Uso interno · Identidade visual Salete Brocca (Noto Sans &amp; Martel)</span>
+        <a href="/" class="footer-link">Ir para saletebrocca.com</a>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var status = document.getElementById("copy-status");
+        var buttons = document.querySelectorAll(".swatch");
+        var timer = 0;
+
+        buttons.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var hex = btn.getAttribute("data-hex") || "";
+            var token = btn.getAttribute("data-token") || "";
+            if (!hex) return;
+
+            var announce = function () {
+              if (!status) return;
+              status.textContent = "Copiado: " + hex + " (" + token + ")";
+              window.clearTimeout(timer);
+              timer = window.setTimeout(function () {
+                status.textContent = "";
+              }, 2600);
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(hex).then(announce).catch(announce);
+            } else {
+              announce();
+            }
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -92,22 +92,24 @@ export default async function PodcastEpisodePage({ params }: PodcastEpisodePageP
             </ul>
           </section>
 
-          <section className={styles.section} aria-labelledby="roteiro">
-            <h2 id="roteiro" className={styles.heading}>
-              Roteiro
-            </h2>
-            <div className={styles.script}>
-              {episode.script.map((line, index) => (
-                <p
-                  key={`${index}-${line.speaker}`}
-                  className={styles.line}
-                  data-speaker={line.speaker === SALETE_SPEAKER ? "salete" : undefined}
-                >
-                  <strong className={styles.speaker}>{line.speaker}:</strong> {line.text}
-                </p>
-              ))}
-            </div>
-          </section>
+          {episode.script.length > 0 && (
+            <section className={styles.section} aria-labelledby="roteiro">
+              <h2 id="roteiro" className={styles.heading}>
+                Roteiro
+              </h2>
+              <div className={styles.script}>
+                {episode.script.map((line, index) => (
+                  <p
+                    key={`${index}-${line.speaker}`}
+                    className={styles.line}
+                    data-speaker={line.speaker === SALETE_SPEAKER ? "salete" : undefined}
+                  >
+                    <strong className={styles.speaker}>{line.speaker}:</strong> {line.text}
+                  </p>
+                ))}
+              </div>
+            </section>
+          )}
 
           {course && (
             <aside className={styles.course} aria-labelledby="do-curso">

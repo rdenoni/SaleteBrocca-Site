@@ -13,7 +13,16 @@ interface ProductMediaProps {
    com o ícone da categoria: nunca uma foto inventada. */
 export function ProductMedia({ product, sizes, priority = false }: ProductMediaProps) {
   if (product.image) {
-    return <Image src={product.image} alt={product.imageAlt} fill priority={priority} sizes={sizes} />;
+    return (
+      <Image
+        src={product.image}
+        alt={product.imageAlt}
+        fill
+        priority={priority}
+        sizes={sizes}
+        data-product-photo="true"
+      />
+    );
   }
 
   const Icon = CATEGORY_ICONS[product.category];

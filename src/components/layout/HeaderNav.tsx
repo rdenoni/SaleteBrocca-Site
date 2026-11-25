@@ -9,10 +9,12 @@ import { TransitionLink } from "@/motion/transitions/TransitionLink";
 import { useMotionTokens } from "@/motion/useMotionTokens";
 import styles from "./Header.module.css";
 
-/* A gota é 6px mais larga que o link de cada lado (24px de respiro contra os 18px do link, como no site).
-   A camada dela (.gotaLayer) também é 6px mais larga que a lista de cada lado: sem isso, na primeira e na última
-   posição o recorte passava da lista e o que sobrava (Cursos, Contato) ficava sem pintura, cortado. */
+/* A gota é 6px mais larga que o link de cada lado. A camada (.gotaLayer) se estende 48px para fora de cada lado
+   (6px do respiro visual + 42px de margem para o overshoot da mola), assim a gota nunca é cortada nas extremidades
+   quando reposiciona sobre Cursos (primeiro item) ou Contato (último item). */
 const GOTA_BLEED = 6;
+const GOTA_LAYER_BLEED = 48;
+const GOTA_OVERSHOOT_PAD = GOTA_LAYER_BLEED - GOTA_BLEED;
 /* Valor longo o bastante para recortar tudo antes da primeira medição (o servidor não mede nada). */
 const CLIPPED_AWAY = 9999;
 const GOTA_ROUND = "0px 0px var(--radius-xl) var(--radius-xl)";
@@ -121,9 +123,10 @@ export function HeaderNav({ currentHref, highlightedHref }: HeaderNavProps) {
       const tokens = tokensRef.current;
       const jump = instant || tokens.reduced || !gotaPlacedRef.current;
       gotaPlacedRef.current = true;
-      /* A camada começa GOTA_BLEED antes da lista: o recorte (já com o respiro de cada lado) fica igual ao do link. */
-      glide(gotaLeft, box.start, jump, tokens.spring.fit);
-      glide(gotaRight, box.width - box.end, jump, tokens.spring.fit);
+      /* A camada começa GOTA_LAYER_BLEED antes da lista: somar GOTA_OVERSHOOT_PAD mantém o respiro visual de 6px
+         de cada lado e deixa 42px de folga para a mola passar das extremidades sem ser recortada. */
+      glide(gotaLeft, box.start + GOTA_OVERSHOOT_PAD, jump, tokens.spring.fit);
+      glide(gotaRight, box.width - box.end + GOTA_OVERSHOOT_PAD, jump, tokens.spring.fit);
     },
     [gotaLeft, gotaRight, measure],
   );

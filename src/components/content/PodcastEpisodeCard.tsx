@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mic } from "lucide-react";
+import { Headphones, Mic } from "lucide-react";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { podcastEpisodeHref } from "@/lib/content/podcasts";
 import type { PodcastEpisode } from "@/types/content";
@@ -12,6 +12,7 @@ interface PodcastEpisodeCardProps {
 /* Bloco do episódio no estilo dos cards de artigo: fundo claro, numeral gigante translúcido e bloco inteiro clicável. */
 export function PodcastEpisodeCard({ episode }: PodcastEpisodeCardProps) {
   const href = podcastEpisodeHref(episode);
+  const hasAudio = Boolean(episode.audioUrl);
 
   return (
     <article className={styles.card}>
@@ -29,9 +30,16 @@ export function PodcastEpisodeCard({ episode }: PodcastEpisodeCardProps) {
       </h3>
       <p className={styles.summary}>{episode.summary}</p>
       <div className={styles.footer}>
-        {episode.simulated && <span className="pending">Episódio de exemplo</span>}
+        {hasAudio ? (
+          <span className={styles.audioBadge}>
+            <Headphones aria-hidden="true" size={15} />
+            Áudio disponível
+          </span>
+        ) : episode.simulated ? (
+          <span className="pending">Episódio de exemplo</span>
+        ) : null}
         <LinkArrow href={href} decorative className={styles.more}>
-          Ver roteiro
+          {hasAudio ? "Ouvir episódio" : "Ver roteiro"}
         </LinkArrow>
       </div>
     </article>

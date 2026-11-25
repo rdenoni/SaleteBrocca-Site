@@ -138,16 +138,16 @@ test("card da Home abre o artigo", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1, name: /^Gagueira:/ })).toBeVisible();
 });
 
-const PODCAST_EPISODE = "/conteudo/podcast/dislexia-o-que-e-e-o-que-nao-e";
+const PODCAST_EPISODE = "/conteudo/podcast/lentes-coloridas-na-sindrome-de-irlen";
 
 test.describe("Conteúdo — podcast", () => {
-  test("a biblioteca mostra a seção Podcast com 3 episódios de exemplo", async ({ page }) => {
+  test("a biblioteca mostra a seção Podcast com os 4 episódios publicados", async ({ page }) => {
     await page.goto("/conteudo");
     const section = page.getByRole("region", { name: "Podcast" });
     await expect(section.getByRole("heading", { level: 2, name: "Podcast" })).toBeVisible();
-    await expect(section.getByText("Podcast simulado")).toBeVisible();
-    await expect(section.getByRole("heading", { level: 3 })).toHaveCount(3);
-    await expect(section.getByText("Episódio de exemplo")).toHaveCount(3);
+    await expect(section.getByText("Podcast simulado")).toHaveCount(0);
+    await expect(section.getByRole("heading", { level: 3 })).toHaveCount(4);
+    await expect(section.getByText("Áudio disponível")).toHaveCount(4);
     await expect(section.getByRole("link", { name: "Ver todos os episódios" })).toHaveAttribute(
       "href",
       "/conteudo/podcast",
@@ -155,48 +155,43 @@ test.describe("Conteúdo — podcast", () => {
     await expectNoHorizontalScroll(page);
   });
 
-  test("a listagem tem 3 episódios, aviso de simulação e trilha", async ({ page }) => {
+  test("a listagem tem 4 episódios publicados e trilha", async ({ page }) => {
     await page.goto("/conteudo/podcast");
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1, name: "Podcast" })).toBeVisible();
     const trail = page.getByRole("navigation", { name: "Trilha de navegação" });
     await expect(trail.getByRole("link")).toHaveText(["Início", "Conteúdo"]);
     await expect(trail.locator("[aria-current='page']")).toHaveText("Podcast");
-    await expect(page.getByRole("note").filter({ hasText: "Podcast simulado." })).toBeVisible();
-    await expect(page.getByRole("heading", { level: 3 })).toHaveCount(3);
-    await expect(page.getByRole("heading", { level: 3, name: /^Dificuldade ou transtorno\?/ })).toBeVisible();
-    await expect(page.getByRole("heading", { level: 3, name: /^Dislexia:/ })).toBeVisible();
-    await expect(page.getByRole("heading", { level: 3, name: /^Atenção, memória/ })).toBeVisible();
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+    await expect(page.getByRole("heading", { level: 3 })).toHaveCount(4);
+    await expect(page.getByRole("heading", { level: 3, name: /^Como a hiperlexia/ })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 3, name: /^Lentes coloridas/ })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 3, name: /^O treino de processamento auditivo/ })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 3, name: /^Sinapses e redes neurais/ })).toBeVisible();
     await expectNoHorizontalScroll(page);
     await fullPageShot(page, "podcast");
   });
 
   test("o card leva ao episódio", async ({ page }) => {
     await page.goto("/conteudo/podcast");
-    await page.getByRole("link", { name: /^Dislexia:/ }).click();
+    await page.getByRole("link", { name: /^Lentes coloridas/ }).click();
     await expect(page).toHaveURL(PODCAST_EPISODE);
   });
 
-  test("o episódio mostra título, player desativado, roteiro e link para o curso", async ({ page }) => {
+  test("o episódio mostra título, player de áudio ativo e link para o curso", async ({ page }) => {
     await page.goto(PODCAST_EPISODE);
     await expect(page.locator("h1")).toHaveCount(1);
-    await expect(page.getByRole("heading", { level: 1, name: "Dislexia: o que é e o que não é" })).toBeVisible();
-    await expect(page.getByText("Áudio em produção", { exact: true })).toBeVisible();
-    await expect(page.locator("audio")).toHaveCount(0);
-    await expect(page.getByRole("button", { name: "Reproduzir" })).toHaveAttribute("aria-disabled", "true");
+    await expect(page.getByRole("heading", { level: 1, name: "Lentes coloridas na Síndrome de Irlen" })).toBeVisible();
+    const audio = page.locator("audio");
+    await expect(audio).toHaveCount(1);
+    await expect(audio).toHaveAttribute("src", "/audio/podcasts/lentes-coloridas-na-sindrome-de-irlen.m4a");
     await expect(page.getByRole("heading", { level: 2, name: "Neste episódio" })).toBeVisible();
-    await expect(page.getByRole("heading", { level: 2, name: "Roteiro" })).toBeVisible();
-    await expect(page.getByText("Salete:", { exact: true }).first()).toBeVisible();
     const course = page.getByRole("complementary", { name: "Do curso" });
-    await expect(course.getByText("Dislexia: história e definição atual")).toBeVisible();
     await expect(course.getByRole("link", { name: "Conhecer o curso" })).toHaveAttribute(
       "href",
       "/cursos/dificuldades-na-aprendizagem",
     );
     const trail = page.getByRole("navigation", { name: "Trilha de navegação" });
     await expect(trail.getByRole("link")).toHaveText(["Início", "Conteúdo", "Podcast"]);
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
   });
 
   test("anterior e próximo episódio", async ({ page }) => {
@@ -204,10 +199,7 @@ test.describe("Conteúdo — podcast", () => {
     const pager = page.getByRole("navigation", { name: "Outros episódios" });
     await expect(pager.getByRole("link")).toHaveCount(2);
     await pager.getByRole("link", { name: /Próximo episódio/ }).click();
-    await expect(page).toHaveURL("/conteudo/podcast/atencao-memoria-funcoes-executivas");
-    const last = page.getByRole("navigation", { name: "Outros episódios" });
-    await expect(last.getByRole("link")).toHaveCount(1);
-    await expect(last.getByRole("link", { name: /Episódio anterior/ })).toBeVisible();
+    await expect(page).toHaveURL("/conteudo/podcast/o-treino-de-processamento-auditivo-realmente-funciona");
   });
 
   test("episódio sem rolagem horizontal", async ({ page }) => {

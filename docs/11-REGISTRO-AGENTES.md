@@ -20,6 +20,15 @@ Numeração R-NNNN sequencial, somando 1 ao maior número já existente.
 
 ## Entradas
 
+### R-0004 · 2026-11-24 22:17 · Gemini
+- Branch: gemini/ajustes-ui-responsividade · Commit: pendente
+- Versão: 0.1.0 · Entrada anterior: R-0003
+- Tarefa: redesign da Biblioteca + botões voltar + iconografia completa (25 ícones personalizados animados do Manual + Compacto→Completo), fotos reais e galeria na Loja, upload dos 4 podcasts reais e ajuste de uniformidade/overshoot na seleção do menu.
+- Arquivos alterados: public/biblioteca/index.html, public/biblioteca/manual-da-marca.html, public/biblioteca/design-system.html, public/biblioteca/componentes.html, public/biblioteca/icones.html, public/images/products/* (10 imagens), public/audio/podcasts/* (4 arquivos .m4a), src/types/content.ts, src/lib/content/shop.ts, src/lib/content/podcasts.ts, src/components/shop/ProductMedia.tsx, src/components/shop/ProductCard.module.css, src/components/shop/ProductGallery.tsx, src/components/shop/ProductGallery.module.css, src/app/loja/loja.module.css, src/app/loja/[slug]/page.tsx, src/app/loja/[slug]/produto.module.css, src/components/content/PodcastEpisodeCard.tsx, src/components/content/PodcastEpisodeCard.module.css, src/components/content/PodcastEpisodeGrid.module.css, src/app/conteudo/podcast/[slug]/page.tsx, src/components/layout/Header.module.css, src/components/layout/HeaderNav.tsx, tests/biblioteca.spec.ts, tests/loja-galeria.spec.ts, tests/conteudo.spec.ts, tests/chrome.spec.ts, docs/11-REGISTRO-AGENTES.md
+- O que mudou e por quê: Biblioteca (/biblioteca) redesenhada com tokens da marca, paleta clicável e botão "← Voltar para a Biblioteca" em todas as subpáginas; icones.html sincronizado com todos os ícones Lucide em uso + 25 ícones duotone refinados do Manual da Marca (grade 32×32) com micro-animações individuais e showcase interativo "Compacto → Completo" (também em componentes.html); Loja atualizada com fotos reais de produtos, cores naturais e galeria multi-ângulo em /loja/[slug]; Podcasts atualizados com os 4 áudios reais (.m4a), cards com selo "Áudio disponível" e grade 2×2; Menu desktop ajustado com largura uniforme nos 6 itens e margem de 48px em .gotaLayer para evitar corte durante o overshoot da mola nas extremidades.
+- Validação: typecheck ok · build ok (75/75) · testes Playwright ok (biblioteca 9/9, loja-galeria 100%, conteudo podcast 21/21, chrome gota 13/13 em 1440/768/375) · prints 1440/768/375 sim
+- Pendências / cuidados para o próximo agente: vídeos curtos em looping para os 4 banners da Hero da Home ficaram aguardando os arquivos .mp4 gerados pelo usuário no Google Flow (para evitar custo extra na Gemini API).
+
 ### R-0003 · 2026-11-24 20:35 · Gemini
 - Branch: gemini/ajustes-ui-responsividade · Commit: pendente
 - Versão: 0.1.0 · Entrada anterior: R-0002

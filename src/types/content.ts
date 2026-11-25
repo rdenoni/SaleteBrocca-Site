@@ -158,6 +158,8 @@ export interface Product {
   /** Foto real do produto; null enquanto não houver (o card mostra o grafismo da marca, nunca foto inventada). */
   image: string | null;
   imageAlt: string;
+  /** Ângulos adicionais exibidos na galeria da página do produto (/loja/[slug]). */
+  gallery?: readonly { src: string; alt: string }[];
   /** null enquanto a cliente não confirmar. */
   price: string | null;
   /** Como o produto chega ao comprador. */

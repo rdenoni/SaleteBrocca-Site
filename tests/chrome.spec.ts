@@ -96,11 +96,16 @@ async function readGota(page: Page): Promise<GotaState> {
     if (!match) return { under: null, opacity };
     const right = Number(match[1]);
     const left = Number(match[2]);
+    /* A camada .gotaLayer tem folga extra nas laterais para o overshoot da mola; desconta a diferença entre
+       o bleed da camada (-layer.offsetLeft) e o respiro visual da gota (6px). */
+    const overshootPad = Math.max(0, -layer.offsetLeft - 6);
+    const visualLeft = left - overshootPad;
+    const visualRight = right - overshootPad;
     const links = Array.from(track.querySelectorAll<HTMLAnchorElement>("ul a"));
     const hit = links.find(
       (link) =>
-        Math.abs(link.offsetLeft - left) <= 1 &&
-        Math.abs(track.offsetWidth - (link.offsetLeft + link.offsetWidth) - right) <= 1,
+        Math.abs(link.offsetLeft - visualLeft) <= 1 &&
+        Math.abs(track.offsetWidth - (link.offsetLeft + link.offsetWidth) - visualRight) <= 1,
     );
     return { under: hit?.textContent?.trim() ?? null, opacity };
   });
@@ -168,6 +173,32 @@ test.describe("cabeçalho: gota do item ativo", () => {
     await page.goto("/area-do-aluno/login");
     await expect(banner(page).getByRole("link", { name: "Área do Aluno" })).toHaveAttribute("aria-current", "page");
     await expect.poll(async () => (await readGota(page)).opacity, { timeout: 15_000 }).toBe(0);
+  });
+
+  test("itens do menu têm largura uniforme e a gota tem folga contra corte nas extremidades", async ({ page }) => {
+    await page.goto("/cursos");
+    const nav = page.getByRole("navigation", { name: NAV_NAME, exact: true });
+    await expect.poll(() => readGota(page), { timeout: 15_000 }).toEqual({ under: "Cursos", opacity: 1 });
+
+    const metrics = await nav.evaluate((el) => {
+      const track = el.firstElementChild as HTMLElement;
+      const layer = track.firstElementChild as HTMLElement;
+      const gota = layer.firstElementChild as HTMLElement;
+      const widths = Array.from(track.querySelectorAll<HTMLAnchorElement>("ul a")).map((a) => a.offsetWidth);
+      const match = /inset\(\s*0px\s+(-?[\d.]+)px\s+0px\s+(-?[\d.]+)px/.exec(getComputedStyle(gota).clipPath);
+      return {
+        minWidth: Math.min(...widths),
+        maxWidth: Math.max(...widths),
+        clipLeft: match ? Number(match[2]) : -1,
+        layerOffsetLeft: layer.offsetLeft,
+      };
+    });
+
+    /* Todos os itens ficam praticamente do mesmo tamanho (diferença <= 16px em desktop). */
+    expect(metrics.maxWidth - metrics.minWidth).toBeLessThanOrEqual(16);
+    /* Folga suficiente na extremidade esquerda (Cursos) para o overshoot da mola não cortar a gota. */
+    expect(metrics.layerOffsetLeft).toBeLessThanOrEqual(-40);
+    expect(metrics.clipLeft).toBeGreaterThanOrEqual(40);
   });
 });
 

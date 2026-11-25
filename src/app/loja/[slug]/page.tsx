@@ -4,7 +4,7 @@ import { Check, Lock, Hourglass } from "lucide-react";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { ProductCard } from "@/components/shop/ProductCard";
-import { ProductMedia } from "@/components/shop/ProductMedia";
+import { ProductGallery } from "@/components/shop/ProductGallery";
 import { Button } from "@/components/ui/Button";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { StickyActionBar } from "@/components/ui/StickyActionBar";
@@ -64,9 +64,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         <div className={styles.top}>
           <figure className={styles.gallery}>
-            <span className={styles.galleryBlock} aria-hidden="true" />
-            <Reveal variant="mask" className={styles.galleryFrame}>
-              <ProductMedia product={product} sizes="(max-width: 1099px) 100vw, 640px" priority />
+            <Reveal variant="mask" className={styles.galleryWrap}>
+              <ProductGallery product={product} />
             </Reveal>
           </figure>
 
