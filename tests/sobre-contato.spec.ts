@@ -97,10 +97,20 @@ test.describe("Contato", () => {
     await expect(form.getByText("Não inclua dados de saúde de crianças ou adolescentes.")).toBeVisible();
   });
 
-  test("número e e-mail não confirmados não viram link", async ({ page }) => {
-    await expect(page.getByText("Número em confirmação")).toBeVisible();
+  test("WhatsApp conecta direto ao aplicativo ou WhatsApp Web e e-mail sem confirmação não vira link", async ({
+    page,
+  }) => {
+    const whatsappSection = page.locator("#whatsapp");
+    const directLinks = whatsappSection.locator('a[data-whatsapp-direct="true"]');
+    await expect(directLinks).toHaveCount(2);
+    for (let i = 0; i < 2; i += 1) {
+      const link = directLinks.nth(i);
+      await expect(link).toHaveAttribute("href", /^https:\/\/wa\.me\/55/);
+      await expect(link).toHaveAttribute("data-whatsapp-app", /^whatsapp:\/\/send\?phone=55/);
+      await expect(link).toHaveAttribute("data-whatsapp-web", /^https:\/\/web\.whatsapp\.com\/send\?phone=55/);
+    }
     await expect(page.getByText("E-mail em confirmação")).toBeVisible();
-    await expect(page.locator('a[href^="https://wa.me"], a[href^="mailto:"]')).toHaveCount(0);
+    await expect(page.locator('a[href^="mailto:"]')).toHaveCount(0);
   });
 
   test("WhatsApp vem primeiro no mobile", async ({ page }) => {

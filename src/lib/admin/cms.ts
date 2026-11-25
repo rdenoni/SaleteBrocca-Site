@@ -294,10 +294,11 @@ export async function getAdminSiteLinks(): Promise<AdminSiteLinks> {
 
 export async function getPublicSocialLinks(): Promise<readonly SocialLink[]> {
   const links = await getAdminSiteLinks();
+  const whatsappHref = links.social.whatsapp.trim() || links.whatsappHref.trim() || WHATSAPP.href || null;
   return [
     { network: "instagram", label: "Instagram", href: links.social.instagram.trim() || null },
     { network: "facebook", label: "Facebook", href: links.social.facebook.trim() || null },
     { network: "linkedin", label: "LinkedIn", href: links.social.linkedin.trim() || null },
-    { network: "whatsapp", label: "WhatsApp", href: links.social.whatsapp.trim() || null },
+    { network: "whatsapp", label: "WhatsApp", href: whatsappHref },
   ];
 }

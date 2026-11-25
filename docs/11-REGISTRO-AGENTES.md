@@ -20,6 +20,15 @@ Numeração R-NNNN sequencial, somando 1 ao maior número já existente.
 
 ## Entradas
 
+### R-0012 · 2026-11-25 14:15 · Gemini
+- Branch: gemini/admin-panel · Commit: pendente
+- Versão: 0.1.0 · Entrada anterior: R-0011
+- Tarefa: adicionar Centro de Custos & Assinaturas no Painel Admin (`/admin/custos`), conexão direta WhatsApp App + fallback WhatsApp Web em todos os ícones/botões, aumentar em 20% o intervalo da cascata dos cards de artigos na Home e adicionar curtidas persistentes em artigos e podcasts.
+- Arquivos alterados: src/lib/admin/{costs.ts,nav.ts,cms.ts}, src/components/admin/AdminShell.tsx, src/app/admin/(panel)/custos/{page.tsx,actions.ts,CostCenterClient.tsx,custos.module.css}, src/lib/whatsapp.ts, src/components/ui/WhatsAppLink.tsx, src/components/layout/SocialButton.tsx, src/lib/content/{contact.ts,site.ts}, src/app/contato/{page.tsx,contato.module.css}, src/components/home/FeaturedContent.tsx, src/app/api/content/likes/route.ts, src/components/content/{ContentLikeButton.tsx,ContentLikeButton.module.css}, src/app/conteudo/[slug]/page.tsx, src/app/conteudo/podcast/[slug]/page.tsx, tests/{admin,chrome,conteudo,sobre-contato}.spec.ts, docs/11-REGISTRO-AGENTES.md
+- O que mudou e por quê: (1) criado `/admin/custos` (Centro de Custos & Assinaturas) com verificação automática em tempo real dos serviços ativos (Netlify, Supabase, GoDaddy, Mux, Resend, Kiwify e Hotmart), KPIs mensais/anuais, conversão USD→BRL editável, barras por categoria e CRUD persistido em `site_settings` (`cost_center_config`) com auditoria; (2) criada conexão direta com o aplicativo do WhatsApp (`whatsapp://send`) com fallback automático para WhatsApp Web (`web.whatsapp.com` / `api.whatsapp.com`) no ícone do rodapé e no ícone/CTA de `/contato` (integrado a `/admin/links`); (3) aumentado `ROW_STEP` de `0.06` para `0.072` (+20%) na cascata dos cards de artigos na Home; (4) adicionadas curtidas em artigos e episódios de podcast (`/api/content/likes` + `ContentLikeButton`) com persistência em `site_settings` (`content_likes`), rate limit, atualização otimista e memória local do visitante.
+- Validação: typecheck ok · build ok · testes Playwright (`admin` Centro de Custos 3/3, `chrome` + `sobre-contato` 59/59, `home` 75/75, `conteudo` curtidas 3/3 em 1440/768/375) ok · prints 1440/768/375 sim
+- Pendências / cuidados para o próximo agente: consultar `docs/12-PENDENCIAS-JURIDICAS-LANCAMENTO.md` antes de campanhas pagas; confirmar se o número padrão do WhatsApp (`+55 (48) 9973-4469`) será mantido ou atualizado em `/admin/links`.
+
 ### R-0011 · 2026-11-25 12:46 · Gemini
 - Branch: gemini/admin-panel · Commit: pendente
 - Versão: 0.1.0 · Entrada anterior: R-0010

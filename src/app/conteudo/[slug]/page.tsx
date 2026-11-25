@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { FileText, Info } from "lucide-react";
 import { ArticleBody } from "@/components/content/ArticleBody";
 import { ArticleGrid } from "@/components/content/ArticleGrid";
+import { ContentLikeButton } from "@/components/content/ContentLikeButton";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { Button } from "@/components/ui/Button";
@@ -102,6 +103,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               }
             />
           )}
+
+          <ContentLikeButton type="article" slug={article.slug} title={articleTitle(article)} />
 
           <p className={styles.disclaimer} role="note">
             <Info aria-hidden="true" />

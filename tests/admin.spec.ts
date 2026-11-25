@@ -191,4 +191,16 @@ test.describe("painel administrativo (Etapas 0 a 4)", () => {
     await expect(page.getByRole("button", { name: "Gerar chave" }).first()).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
+
+  test("Centro de Custos: /admin/custos exibe assinaturas ativas, KPIs e formulário sem overflow", async ({ page }) => {
+    await page.goto("/admin/custos");
+    await expect(page.locator("h1")).toHaveCount(1);
+    await expect(page.getByRole("heading", { level: 1, name: /Centro de Custos/i })).toBeVisible();
+    await expect(page.getByText("Netlify", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("Supabase", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("GoDaddy · Domínio saletebrocca.com")).toBeVisible();
+    await expect(page.getByText("Mux Video / Stream")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Adicionar assinatura" })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  });
 });

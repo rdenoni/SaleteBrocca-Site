@@ -212,4 +212,64 @@ test.describe("Conteúdo — podcast", () => {
     const response = await page.goto("/conteudo/podcast/nao-existe");
     expect(response?.status()).toBe(404);
   });
+
+  test("permite curtir e descurtir artigos e episódios de podcast com persistência", async ({ page }) => {
+    /* Artigo */
+    await page.goto(ARTICLE);
+    const articleLike = page.locator('[data-content-like^="article:"] button');
+    await expect(articleLike).toBeVisible();
+    await expect(articleLike).toHaveAttribute("aria-pressed", "false");
+    const articleBox = await articleLike.boundingBox();
+    expect(articleBox?.height ?? 0).toBeGreaterThanOrEqual(48);
+
+    await expect(articleLike.locator("[data-like-count]")).toBeVisible();
+    const articlePost = page.waitForResponse(
+      (res) => res.url().includes("/api/content/likes") && res.request().method() === "POST",
+    );
+    await articleLike.click();
+    expect((await articlePost).status()).toBe(200);
+    await expect(articleLike).toHaveAttribute("aria-pressed", "true");
+    await expect
+      .poll(async () => Number((await articleLike.locator("[data-like-count]").textContent()) ?? "0"))
+      .toBeGreaterThanOrEqual(1);
+
+    await page.reload();
+    await expect(articleLike).toHaveAttribute("aria-pressed", "true");
+    const articleUnlike = page.waitForResponse(
+      (res) => res.url().includes("/api/content/likes") && res.request().method() === "POST",
+    );
+    await articleLike.click();
+    expect((await articleUnlike).status()).toBe(200);
+    await expect(articleLike).toHaveAttribute("aria-pressed", "false");
+    await expectNoHorizontalScroll(page);
+
+    /* Podcast */
+    await page.goto(PODCAST_EPISODE);
+    const podcastLike = page.locator('[data-content-like^="podcast:"] button');
+    await expect(podcastLike).toBeVisible();
+    await expect(podcastLike).toHaveAttribute("aria-pressed", "false");
+    const podcastBox = await podcastLike.boundingBox();
+    expect(podcastBox?.height ?? 0).toBeGreaterThanOrEqual(48);
+
+    await expect(podcastLike.locator("[data-like-count]")).toBeVisible();
+    const podcastPost = page.waitForResponse(
+      (res) => res.url().includes("/api/content/likes") && res.request().method() === "POST",
+    );
+    await podcastLike.click();
+    expect((await podcastPost).status()).toBe(200);
+    await expect(podcastLike).toHaveAttribute("aria-pressed", "true");
+    await expect
+      .poll(async () => Number((await podcastLike.locator("[data-like-count]").textContent()) ?? "0"))
+      .toBeGreaterThanOrEqual(1);
+
+    await page.reload();
+    await expect(podcastLike).toHaveAttribute("aria-pressed", "true");
+    const podcastUnlike = page.waitForResponse(
+      (res) => res.url().includes("/api/content/likes") && res.request().method() === "POST",
+    );
+    await podcastLike.click();
+    expect((await podcastUnlike).status()).toBe(200);
+    await expect(podcastLike).toHaveAttribute("aria-pressed", "false");
+    await expectNoHorizontalScroll(page);
+  });
 });

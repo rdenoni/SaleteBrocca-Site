@@ -4,8 +4,9 @@ import { Mail } from "lucide-react";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { SocialIcon } from "@/components/ui/SocialIcon";
+import { WhatsAppLink } from "@/components/ui/WhatsAppLink";
+import { getAdminSiteLinks, getPublicSocialLinks } from "@/lib/admin/cms";
 import { EMAIL, WHATSAPP } from "@/lib/content/contact";
-import { SOCIAL_LINKS } from "@/lib/content/site";
 import { MotionButton } from "@/motion/MotionButton";
 import { Reveal } from "@/motion/Reveal";
 import { afterBanner } from "@/motion/timeline";
@@ -30,9 +31,15 @@ const FORM_FIELDS_DELAY = panelDelay(2) + duration.quick;
 const CHANNELS_DELAY = FORM_FIELDS_DELAY + FORM_STEPS * stagger.items;
 
 /* Dados ausentes (null) ficam ocultos; dados existentes mas não confirmados ganham uma nota discreta. */
-export default function ContactPage() {
-  const profiles = SOCIAL_LINKS.filter((link) => link.network !== "whatsapp" && link.href);
-  const hasEmail = Boolean(EMAIL.display);
+export default async function ContactPage() {
+  const [siteLinks, socialLinks] = await Promise.all([getAdminSiteLinks(), getPublicSocialLinks()]);
+  const profiles = socialLinks.filter((link) => link.network !== "whatsapp" && link.href);
+  const whatsappDisplay = siteLinks.whatsappDisplay.trim() || WHATSAPP.display;
+  const whatsappHref =
+    siteLinks.whatsappHref.trim() || siteLinks.social.whatsapp.trim() || WHATSAPP.href || null;
+  const emailDisplay = siteLinks.emailDisplay.trim() || EMAIL.display;
+  const emailHref = siteLinks.emailHref.trim() || EMAIL.href || null;
+  const hasEmail = Boolean(emailDisplay);
   const hasChannels = hasEmail || profiles.length > 0;
 
   return (
@@ -53,17 +60,27 @@ export default function ContactPage() {
           data-surface="dark"
           aria-labelledby="whatsapp-titulo"
         >
-          <span className={styles.icon}>
-            <SocialIcon network="whatsapp" />
-          </span>
+          {whatsappHref ? (
+            <WhatsAppLink
+              href={whatsappHref}
+              className={styles.icon}
+              aria-label="Abrir conversa no WhatsApp (aplicativo ou WhatsApp Web)"
+            >
+              <SocialIcon network="whatsapp" />
+            </WhatsAppLink>
+          ) : (
+            <span className={styles.icon}>
+              <SocialIcon network="whatsapp" />
+            </span>
+          )}
           <h2 id="whatsapp-titulo" className={styles.sectionTitle}>
             WhatsApp
           </h2>
-          <p className={styles.phone}>{WHATSAPP.display}</p>
-          {WHATSAPP.href ? (
-            <MotionButton href={WHATSAPP.href} variant="accent" target="_blank" rel="noopener noreferrer">
+          <p className={styles.phone}>{whatsappDisplay}</p>
+          {whatsappHref ? (
+            <WhatsAppLink href={whatsappHref} className={styles.whatsappCta}>
               Chamar no WhatsApp
-            </MotionButton>
+            </WhatsAppLink>
           ) : (
             <p className={styles.note}>Número em confirmação</p>
           )}
@@ -112,13 +129,13 @@ export default function ContactPage() {
               {hasEmail && (
                 <li>
                   <Mail aria-hidden="true" />
-                  {EMAIL.href ? (
-                    <a href={EMAIL.href} className={styles.channelValue}>
-                      {EMAIL.display}
+                  {emailHref ? (
+                    <a href={emailHref} className={styles.channelValue}>
+                      {emailDisplay}
                     </a>
                   ) : (
                     <>
-                      <span className={styles.channelValue}>{EMAIL.display}</span>
+                      <span className={styles.channelValue}>{emailDisplay}</span>
                       <span className={styles.channelNote}>E-mail em confirmação</span>
                     </>
                   )}

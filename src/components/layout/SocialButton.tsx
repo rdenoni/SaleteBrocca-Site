@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { useEffect, useRef, useState, type FocusEvent, type PointerEvent } from "react";
 import { SocialIcon } from "@/components/ui/SocialIcon";
+import { buildWhatsAppTargets, openWhatsAppDirect } from "@/lib/whatsapp";
 import { useMotionTokens } from "@/motion/useMotionTokens";
 import type { SocialNetwork } from "@/types/content";
 import styles from "./Footer.module.css";
@@ -36,6 +37,7 @@ export function SocialButton({ network, label, href, onNoticeChange }: SocialBut
   const [tapped, setTapped] = useState(false);
   const tapTimerRef = useRef<number | undefined>(undefined);
   const pending = href === null;
+  const whatsappTargets = network === "whatsapp" && href ? buildWhatsAppTargets(href) : null;
 
   useEffect(() => () => window.clearTimeout(tapTimerRef.current), []);
 
@@ -112,10 +114,24 @@ export function SocialButton({ network, label, href, onNoticeChange }: SocialBut
         </motion.button>
       ) : (
         <motion.a
-          href={href}
+          href={whatsappTargets?.universalUrl ?? href}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={`${label} (abre em nova aba)`}
+          aria-label={
+            network === "whatsapp"
+              ? `${label} (abre no aplicativo ou WhatsApp Web)`
+              : `${label} (abre em nova aba)`
+          }
+          data-whatsapp-direct={network === "whatsapp" ? "true" : undefined}
+          data-whatsapp-app={whatsappTargets?.appUrl}
+          data-whatsapp-web={whatsappTargets?.webUrl}
+          onClick={
+            network === "whatsapp"
+              ? (event) => {
+                  openWhatsAppDirect(event, href);
+                }
+              : undefined
+          }
           {...sharedProps}
         >
           {content}

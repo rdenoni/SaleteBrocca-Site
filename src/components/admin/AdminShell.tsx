@@ -15,6 +15,7 @@ import {
   LogOut,
   Mail,
   Menu,
+  Receipt,
   Search,
   ShieldCheck,
   Target,
@@ -49,6 +50,7 @@ const ICONS: Record<AdminNavIcon, typeof LayoutDashboard> = {
   "shield-check": ShieldCheck,
   mail: Mail,
   "key-round": KeyRound,
+  receipt: Receipt,
 };
 
 interface AdminShellProps {

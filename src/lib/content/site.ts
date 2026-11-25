@@ -1,4 +1,5 @@
 import type { NavItem, SocialLink } from "@/types/content";
+import { WHATSAPP } from "./contact";
 
 export const SITE_NAME = "Salete Brocca";
 export const SITE_DESCRIPTION =
@@ -26,7 +27,7 @@ export const SOCIAL_LINKS: readonly SocialLink[] = [
   { network: "instagram", label: "Instagram", href: null },
   { network: "facebook", label: "Facebook", href: null },
   { network: "linkedin", label: "LinkedIn", href: null },
-  { network: "whatsapp", label: "WhatsApp", href: null },
+  { network: "whatsapp", label: "WhatsApp", href: WHATSAPP.href },
 ];
 
 export const LEGAL_LINKS: readonly NavItem[] = [

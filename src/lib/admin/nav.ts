@@ -14,7 +14,8 @@ export type AdminNavIcon =
   | "bar-chart"
   | "shield-check"
   | "mail"
-  | "key-round";
+  | "key-round"
+  | "receipt";
 
 export interface AdminNavItem {
   id: string;
@@ -111,6 +112,15 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
         stage: 4,
         ready: true,
         description: "Kiwify, Hotmart, receita bruta/líquida, licenças, estornos, logs e extrato.",
+      },
+      {
+        id: "custos",
+        label: "Centro de Custos",
+        href: "/admin/custos",
+        icon: "receipt",
+        stage: 4,
+        ready: true,
+        description: "Assinaturas ativas (Netlify, Supabase, GoDaddy, Mux, Resend) e custos mensais/anuais.",
       },
       {
         id: "crm",

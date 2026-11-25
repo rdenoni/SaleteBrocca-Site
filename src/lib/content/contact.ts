@@ -1,12 +1,11 @@
 import type { ContactChannel } from "@/types/content";
 
-/* Número e e-mail aparecem nos arquivos da cliente (Paleta.txt), mas não foram confirmados:
-   enquanto href for null, o dado é exibido com a nota "em confirmação" e não vira link.
-   Atenção: o número tem 8 dígitos depois do DDD; celulares atuais têm 9. */
+/* Número oficial do WhatsApp (editável também em /admin/links). E-mail segue aguardando confirmação
+   enquanto href for null. */
 export const WHATSAPP: ContactChannel = {
   label: "WhatsApp",
   display: "+55 (48) 9973-4469",
-  href: null,
+  href: "https://wa.me/554899734469",
 };
 
 export const EMAIL: ContactChannel = {

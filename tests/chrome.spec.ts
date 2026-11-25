@@ -340,22 +340,31 @@ test.describe("menu móvel", () => {
 });
 
 test.describe("rodapé", () => {
-  test("perfis sociais visíveis; sem endereço confirmado são botões que avisam", async ({ page }) => {
+  test("perfis sociais visíveis; WhatsApp abre app/web direto e perfis sem URL avisam", async ({ page }) => {
     await page.goto("/cursos");
     const footer = page.getByRole("contentinfo");
     await footer.scrollIntoViewIfNeeded();
 
-    /* Os 4 perfis aparecem mesmo sem URL: nenhum é link falso (sem href confirmado, nada abre em nova aba). */
-    const networks = ["Instagram", "Facebook", "LinkedIn", "WhatsApp"];
+    /* Instagram, Facebook e LinkedIn seguem sem URL confirmada (botões com aviso); WhatsApp conecta direto ao app/web. */
+    const pendingNetworks = ["Instagram", "Facebook", "LinkedIn"];
     const list = footer.getByRole("list", { name: "Redes sociais" });
     await expect(list).toBeVisible();
-    await expect(list.getByRole("button")).toHaveCount(networks.length);
-    await expect(footer.locator("a[target='_blank']")).toHaveCount(0);
+    await expect(list.getByRole("button")).toHaveCount(pendingNetworks.length);
     await expect(footer).not.toContainText("Perfis em confirmação");
     await expect(footer).not.toContainText("Professora e fonoaudióloga clínica");
 
-    for (const network of networks) {
-      const control = list.getByRole("button", { name: new RegExp(network) });
+    const whatsappLink = list.getByRole("link", { name: /WhatsApp/ });
+    await expect(whatsappLink).toBeVisible();
+    await expect(whatsappLink).toHaveAttribute("data-whatsapp-direct", "true");
+    await expect(whatsappLink).toHaveAttribute("data-whatsapp-app", /^whatsapp:\/\/send\?phone=55/);
+    await expect(whatsappLink).toHaveAttribute("data-whatsapp-web", /^https:\/\/web\.whatsapp\.com\/send\?phone=55/);
+    await expect(whatsappLink).toHaveAttribute("href", /^https:\/\/wa\.me\/55/);
+
+    const controls = [
+      ...pendingNetworks.map((network) => list.getByRole("button", { name: new RegExp(network) })),
+      whatsappLink,
+    ];
+    for (const control of controls) {
       await expect(control).toBeVisible();
       /* Alvo de toque: a célula do botão (o círculo visual tem 36px) precisa ter 48px; espera a entrada terminar. */
       const target = control.locator("xpath=..");

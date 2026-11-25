@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ContentLikeButton } from "@/components/content/ContentLikeButton";
 import { PodcastNotice } from "@/components/content/PodcastNotice";
 import { PodcastPlayer } from "@/components/content/PodcastPlayer";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
@@ -74,6 +75,8 @@ export default async function PodcastEpisodePage({ params }: PodcastEpisodePageP
           <p className={styles.summary}>{episode.summary}</p>
 
           <PodcastPlayer audioUrl={episode.audioUrl} title={episode.title} />
+
+          <ContentLikeButton type="podcast" slug={episode.slug} title={episode.title} />
 
           {episode.simulated && (
             <PodcastNotice>
