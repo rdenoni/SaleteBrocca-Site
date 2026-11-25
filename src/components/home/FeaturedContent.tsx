@@ -15,10 +15,10 @@ const TONES: readonly EditorialCardTone[] = ["light", "blue", "navy"];
 const LETTERS = ["B", "O", "G"] as const;
 /* A letra deriva só alguns por cento da própria altura (sobe e desce em torno do centro). */
 const LETTER_DRIFT = "7%";
-/* Cascata por rolagem: cada bloco seguinte começa 5% da altura da tela mais tarde (o terceiro vai de 62% a 22%:
-   termina ainda com o card bem visível, não colado no topo). Os três têm o mesmo topo na fileira, então a diferença é
-   visível no desktop. Empilhado (celular) os blocos já chegam em momentos diferentes, então sem atraso. */
-const ROW_STEP = 0.05;
+/* Cascata por rolagem: cada bloco seguinte começa 6% da altura da tela mais tarde, criando uma
+   cadência progressiva da esquerda para a direita sem atrasar demais o terceiro card. Empilhado
+   (celular/tablet) os blocos já chegam em momentos diferentes, então sem atraso adicional. */
+const ROW_STEP = 0.06;
 /* Mesma largura em que a grade do CSS passa de 3 colunas para 1. */
 const THREE_COLUMNS_QUERY = "(min-width: 1100px)";
 

@@ -5,6 +5,7 @@ import {
   useMotionValue,
   useMotionValueEvent,
   useScroll,
+  useSpring,
   useTransform,
   type EasingFunction,
   type MotionValue,
@@ -96,29 +97,39 @@ export function useScrollEntrance(ref: RefObject<HTMLElement | null>, { index = 
    useScrollEntrance acima (o CourseCard continua com a subida simples).
    --------------------------------------------------------------------------------------------------------------- */
 
-/* Começa mais tarde (topo do card a 72% da tela, já bem dentro) e termina com o topo a ~32%, ainda no terço de cima:
-   o trecho de 40% da tela dá espaço para a coreografia em camadas ser lida enquanto se rola. */
-const EDITORIAL_START = 0.72;
-const EDITORIAL_END = 0.32;
+/* Começa assim que o card entra na parte inferior da tela (topo a 90%) e termina a 26%:
+   a faixa ampla de 64% da altura da tela, combinada com a mola super-amortecida (EDITORIAL_SPRING),
+   evita que as camadas disparem rápido demais mesmo em rolagens curtas de roda de mouse. */
+const EDITORIAL_START = 0.9;
+const EDITORIAL_END = 0.26;
 
-/* Sub-faixas do progresso do PRÓPRIO card (0 → 1). Elas se sobrepõem de propósito: cada camada começa antes
-   de a anterior terminar, como na cascata por tempo do modo "time". Tudo termina em 1. */
-const RANGE_BLOCK: number[] = [0, 0.45]; // bloco de cor varre da esquerda
-const RANGE_LETTER: number[] = [0.1, 0.5]; // letra de fundo entra
-const RANGE_PHOTO: number[] = [0.18, 0.78]; // cortina da foto (sobe de baixo)
-const RANGE_PANEL: number[] = [0.45, 0.85]; // painel do título desliza e aparece, logo depois da foto
-const RANGE_MORE: number[] = [0.72, 1]; // "Ler artigo" por último
-const PANEL_SLIDE_PX = 32;
-const PHOTO_ZOOM_FROM = 1.15;
+/* Mola super-amortecida (sem overshoot): suaviza os passos discretos da roda do mouse e prolonga a
+   cadência de chegada das camadas para uma entrada contínua e orgânica. */
+const EDITORIAL_SPRING = {
+  stiffness: 55,
+  damping: 20,
+  mass: 0.8,
+  restDelta: 0.001,
+  restSpeed: 0.001,
+} as const;
+
+/* Sub-faixas amplas e sobrepostas do progresso do card (0 → 1): cada camada tem bastante curso
+   para deslizar sem solavancos e todas convergem suavemente até 1. */
+const RANGE_BLOCK: number[] = [0, 0.62]; // bloco de cor varre da esquerda com curso longo
+const RANGE_LETTER: number[] = [0.08, 0.68]; // letra de fundo deriva suavemente
+const RANGE_PHOTO: number[] = [0.12, 0.84]; // cortina da foto desce com zoom sutil
+const RANGE_PANEL: number[] = [0.32, 0.92]; // painel do título desliza pela direita
+const RANGE_MORE: number[] = [0.52, 1]; // "Ler artigo" assenta por último
+const PANEL_SLIDE_PX = 24;
+const PHOTO_ZOOM_FROM = 1.1;
 
 type Bezier = readonly [number, number, number, number];
 /* O `ease` do useTransform pede uma função: converte a curva dos tokens. */
 const bezier = (curve: Bezier): EasingFunction => cubicBezier(curve[0], curve[1], curve[2], curve[3]);
-/* Criadas uma vez (os tokens são constantes): o useTransform não recria o mapeamento a cada render. */
-/* Na rolagem o ease.out dos tokens (0,22 1 0,36 1) conclui quase tudo no primeiro terço do trecho e o resto parece parado;
-   um easeOutQuad suave aproveita melhor a faixa inteira. */
-const EASE_OUT = bezier([0.25, 0.46, 0.45, 0.94]);
-const EASE_SWEEP = bezier(ease.stroke);
+/* Criadas uma vez (os tokens são constantes): o useTransform não recria o mapeamento a cada render.
+   Curvas suaves sem rampa abrupta no meio, aproveitando toda a extensão da sub-faixa. */
+const EASE_OUT = bezier([0.22, 0.61, 0.36, 1]);
+const EASE_SWEEP = bezier([0.25, 0.8, 0.25, 1]);
 
 type Num = MotionValue<number> | number;
 type Str = MotionValue<string> | string;
@@ -154,7 +165,8 @@ export function useEditorialScrollEntrance(
       [0, EDITORIAL_END - shift],
     ],
   });
-  const progress = useLockedProgress(scrollYProgress);
+  const lockedProgress = useLockedProgress(scrollYProgress);
+  const progress = useSpring(lockedProgress, EDITORIAL_SPRING);
   const out = EASE_OUT;
   const sweep = EASE_SWEEP;
 

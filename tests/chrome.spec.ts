@@ -312,15 +312,30 @@ test.describe("menu móvel", () => {
     expect(await noHorizontalScroll(page)).toBe(true);
   });
 
-  test("o botão da Área do Aluno cabe em 48px e mantém o nome acessível", async ({ page }) => {
+  test("o botão da Área do Aluno e o menu hambúrguer cabem em 48px dentro da base branca (inclusive em iPhone com zoom 340px)", async ({ page }) => {
     await page.goto("/");
     await waitForEntrance(page);
     const student = banner(page).getByRole("link", { name: "Área do Aluno" });
+    const trigger = banner(page).getByRole("button", { name: "Abrir menu" });
     await expect(student).toBeVisible();
-    const box = await student.boundingBox();
-    expect(box?.width ?? 0).toBeGreaterThanOrEqual(48);
-    expect(box?.height ?? 0).toBeGreaterThanOrEqual(48);
+    await expect(trigger).toBeVisible();
+
+    const pillBox = await pill(page).boundingBox();
+    const studentBox = await student.boundingBox();
+    const triggerBox = await trigger.boundingBox();
+    expect(studentBox?.width ?? 0).toBe(48);
+    expect(studentBox?.height ?? 0).toBe(48);
+    expect(triggerBox?.width ?? 0).toBe(48);
+    expect(triggerBox?.height ?? 0).toBe(48);
     expect((await logoLink(page).boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(48);
+    /* O botão hambúrguer nunca pode vazar da borda direita da pílula branca (mínimo 12px de respiro interno). */
+    expect((pillBox?.x ?? 0) + (pillBox?.width ?? 0) - ((triggerBox?.x ?? 0) + (triggerBox?.width ?? 0))).toBeGreaterThanOrEqual(12);
+
+    /* Simula tela estreita de iPhone com zoom de tela (340px CSS) e garante que o hambúrguer permanece dentro da base. */
+    await page.setViewportSize({ width: 340, height: 812 });
+    const narrowPill = await pill(page).boundingBox();
+    const narrowTrigger = await trigger.boundingBox();
+    expect((narrowPill?.x ?? 0) + (narrowPill?.width ?? 0) - ((narrowTrigger?.x ?? 0) + (narrowTrigger?.width ?? 0))).toBeGreaterThanOrEqual(11);
   });
 });
 

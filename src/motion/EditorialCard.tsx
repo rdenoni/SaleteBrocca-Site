@@ -61,15 +61,17 @@ interface EditorialCardProps {
 
 const OPEN = "inset(0% 0% 0% 0%)";
 
-/* Cascata interna de um card (a partir do atraso dele, tudo em tokens; termina em ≈1,1 s):
+/* Cascata interna de um card no modo "time" (a partir do atraso dele, mais longa e fluida; termina em ≈1,6 s):
    bloco de cor varre da esquerda (0) → letra (instant) → foto se desvela (quick) → painel entra pela direita
-   (quick + quick) → título (+ instant) → "Ler artigo" (painel + base). */
+   (base) → título (+ instant) → "Ler artigo" (painel + base). */
 function entranceVariants(t: ResolvedMotionTokens, delay: number) {
   const tLetter = t.duration.instant;
   const tPhoto = t.duration.quick;
-  const tPanel = t.duration.quick + t.duration.quick;
+  const tPanel = t.duration.base;
   const tTitle = tPanel + t.duration.instant;
   const tMore = tPanel + t.duration.base;
+  const cardSweepDuration = (t.duration.slow + t.duration.gentle) * 0.75;
+  const layerDuration = t.duration.slow;
 
   /* Reduzido: só opacidade no card inteiro; as partes ficam neutras (a hidratação pode ter começado recortada). */
   if (t.reduced) {
@@ -100,31 +102,31 @@ function entranceVariants(t: ResolvedMotionTokens, delay: number) {
   return {
     card: {
       hidden: { clipPath: "inset(0% 100% 0% 0%)" },
-      visible: { clipPath: OPEN, transition: enter(0, t.duration.gentle, t.ease.stroke) },
+      visible: { clipPath: OPEN, transition: enter(0, cardSweepDuration, t.ease.out) },
     } satisfies Variants,
     letter: {
       hidden: { opacity: 0, x: -t.distance.base },
-      visible: { opacity: 1, x: 0, transition: enter(tLetter, t.duration.gentle, t.ease.out) },
+      visible: { opacity: 1, x: 0, transition: enter(tLetter, layerDuration, t.ease.out) },
     } satisfies Variants,
     photo: {
       hidden: { clipPath: "inset(0% 0% 100% 0%)" },
-      visible: { clipPath: OPEN, transition: enter(tPhoto, t.duration.slow, t.ease.out) },
+      visible: { clipPath: OPEN, transition: enter(tPhoto, t.duration.story * 0.85, t.ease.out) },
     } satisfies Variants,
     photoImage: {
-      hidden: { scale: 1.12 },
-      visible: { scale: 1, transition: enter(tPhoto, t.duration.slow, t.ease.out) },
+      hidden: { scale: 1.1 },
+      visible: { scale: 1, transition: enter(tPhoto, t.duration.story * 0.85, t.ease.out) },
     } satisfies Variants,
     panel: {
       hidden: { clipPath: "inset(0% 0% 0% 100%)" },
-      visible: { clipPath: OPEN, transition: enter(tPanel, t.duration.gentle, t.ease.out) },
+      visible: { clipPath: OPEN, transition: enter(tPanel, layerDuration, t.ease.out) },
     } satisfies Variants,
     title: {
       hidden: { opacity: 0, x: t.distance.base },
-      visible: { opacity: 1, x: 0, transition: enter(tTitle, t.duration.gentle, t.ease.out) },
+      visible: { opacity: 1, x: 0, transition: enter(tTitle, layerDuration, t.ease.out) },
     } satisfies Variants,
     more: {
       hidden: { opacity: 0, y: t.distance.small },
-      visible: { opacity: 1, y: 0, transition: enter(tMore, t.duration.base, t.ease.out) },
+      visible: { opacity: 1, y: 0, transition: enter(tMore, t.duration.gentle, t.ease.out) },
     } satisfies Variants,
   };
 }

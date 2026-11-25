@@ -53,11 +53,11 @@ export function Footer({ columns, year, socialLinks }: FooterProps) {
         <StaggerItem className={styles.brand}>
           <Reveal variant="fade" delay={t.duration.gentle} className={styles.logoWrap}>
             <Image
-              src="/brand/logo/logo-empilhado-branco.png"
+              src="/brand/logo/logo-lateral-branco.png"
               alt="Salete Brocca"
               width={500}
-              height={324}
-              sizes="128px"
+              height={154}
+              sizes="184px"
               className={styles.logo}
             />
           </Reveal>

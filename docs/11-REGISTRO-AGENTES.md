@@ -20,6 +20,15 @@ Numeração R-NNNN sequencial, somando 1 ao maior número já existente.
 
 ## Entradas
 
+### R-0009 · 2026-11-25 02:02 · Gemini
+- Branch: gemini/admin-panel · Commit: pendente
+- Versão: 0.1.0 · Entrada anterior: R-0008
+- Tarefa: corrigir o botão hambúrguer da barra NAV vazando da base branca no iPhone, suavizar a animação de entrada dos artigos na Home, gerar e aplicar os 4 vídeos curtos em looping na Hero da Home e usar a logo horizontal monocromática no rodapé.
+- Arquivos alterados: src/components/layout/Header.module.css, src/components/layout/MobileMenu.module.css, src/components/layout/Footer.tsx, src/components/layout/Footer.module.css, src/motion/useScrollEntrance.ts, src/motion/EditorialCard.tsx, src/components/home/FeaturedContent.tsx, src/motion/HeroSequence.tsx, src/lib/admin/cms.ts, public/videos/hero/{crianca-escrevendo.mp4,leitura-fluencia.mp4,avaliacao-fonoaudiologica.mp4,familia-e-escola.mp4}, tests/chrome.spec.ts, docs/11-REGISTRO-AGENTES.md
+- O que mudou e por quê: (1) corrigido `min-width: 52px` herdado em `.actions .studentButton` no mobile para `48x48px` reais e ajustados `padding`, `gap` e altura da logo em `@media (max-width: 767px)` e `@media (max-width: 359px)` para o botão hambúrguer permanecer sempre dentro da pílula branca mesmo em iPhones com Zoom de Tela; (2) adicionada mola super-amortecida (`useSpring`) e ampliada a janela de rolagem (`90%` -> `26%`) em `useEditorialScrollEntrance` para entrada fluida e contínua dos 3 artigos da Home; (3) gerados os 4 vídeos em looping (`public/videos/hero/*.mp4`, `6s`, `720p`, `30fps`, `H.264 +faststart`) a partir das fotos dos banners e aplicados em `HeroSequence.tsx` e `cms.ts` com fallback `poster` para `prefers-reduced-motion`; (4) atualizada a logo do rodapé para `/brand/logo/logo-lateral-branco.png` com filtro monocromático branco sobre `--navy` e contorno de foco `2px` nos links das colunas.
+- Validação: typecheck ok · testes Playwright tests/chrome.spec.ts, tests/regras-do-site.spec.ts e tests/home.spec.ts ok em 1440/768/375 (e 340px mobile) · prints 1440/768/375 sim
+- Pendências / cuidados para o próximo agente: nenhuma.
+
 ### R-0008 · 2026-11-25 00:53 · Gemini
 - Branch: gemini/admin-panel · Commit: pendente
 - Versão: 0.1.0 · Entrada anterior: R-0007

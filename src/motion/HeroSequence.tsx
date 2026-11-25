@@ -20,6 +20,7 @@ export interface HeroSlide {
   title: string;
   text: string;
   image: string;
+  poster?: string;
   mediaType?: "image" | "video";
   imagePosition?: string;
   tone: "blue" | "color";
@@ -33,7 +34,9 @@ const DEFAULT_SLIDES: readonly HeroSlide[] = [
     id: "cursos",
     title: "Conheça nossos cursos",
     text: "Formação, conhecimento e ferramentas para compreender as dificuldades de aprendizagem.",
-    image: "/images/hero/crianca-escrevendo.jpg",
+    image: "/videos/hero/crianca-escrevendo.mp4",
+    poster: "/images/hero/crianca-escrevendo.jpg",
+    mediaType: "video",
     imagePosition: "60% 40%",
     tone: "blue",
     ctaLabel: "Explorar cursos",
@@ -43,7 +46,9 @@ const DEFAULT_SLIDES: readonly HeroSlide[] = [
     id: "alfabetizacao",
     title: "Curso de Alfabetização",
     text: "Em breve. Curso em preparação para pais, professores e profissionais que acompanham crianças no início da alfabetização.",
-    image: "/images/articles/leitura-fluencia.jpg",
+    image: "/videos/hero/leitura-fluencia.mp4",
+    poster: "/images/articles/leitura-fluencia.jpg",
+    mediaType: "video",
     imagePosition: "55% 35%",
     tone: "blue",
     badge: "Em breve",
@@ -53,7 +58,9 @@ const DEFAULT_SLIDES: readonly HeroSlide[] = [
     id: "avaliacao",
     title: "Avaliação fonoaudiológica",
     text: "Atendimento clínico e orientação para famílias e escolas diante de dificuldades na aprendizagem.",
-    image: "/images/hero/avaliacao-fonoaudiologica.jpg",
+    image: "/videos/hero/avaliacao-fonoaudiologica.mp4",
+    poster: "/images/hero/avaliacao-fonoaudiologica.jpg",
+    mediaType: "video",
     imagePosition: "65% 30%",
     tone: "blue",
     ctaLabel: "Pedir avaliação",
@@ -63,7 +70,9 @@ const DEFAULT_SLIDES: readonly HeroSlide[] = [
     id: "conteudo",
     title: "Conteúdos e artigos",
     text: "Artigos, orientações práticas e reflexões sobre leitura, escrita, fala, audição e aprendizagem.",
-    image: "/images/articles/familia-e-escola.jpg",
+    image: "/videos/hero/familia-e-escola.mp4",
+    poster: "/images/articles/familia-e-escola.jpg",
+    mediaType: "video",
     imagePosition: "55% 35%",
     tone: "blue",
     ctaLabel: "Ver conteúdos",
@@ -125,7 +134,12 @@ export function HeroSequence({
             ...(text ? { text } : {}),
             ...(ctaLabel ? { ctaLabel } : {}),
             ...(ctaHref ? { ctaHref } : {}),
-            ...(imageSrc ? { image: imageSrc } : {}),
+            ...(imageSrc && imageSrc !== baseSlides[0].poster
+              ? {
+                  image: imageSrc,
+                  mediaType: /\.(mp4|webm|mov)$/i.test(imageSrc) ? "video" : "image",
+                }
+              : {}),
           },
           ...baseSlides.slice(1),
         ];
@@ -201,13 +215,15 @@ export function HeroSequence({
               animate={{ opacity: index === activeIndex ? 1 : 0 }}
               transition={{ duration: t.reduced ? 0 : CROSSFADE_SECONDS, ease: "easeInOut" }}
             >
-              {slide.mediaType === "video" ? (
+              {slide.mediaType === "video" && !(t.reduced && slide.poster) ? (
                 <video
                   src={slide.image}
+                  poster={slide.poster}
                   autoPlay={!t.reduced}
                   muted
                   loop
                   playsInline
+                  preload={index === 0 ? "auto" : "metadata"}
                   aria-hidden="true"
                   className={styles.photo}
                   style={
@@ -218,7 +234,7 @@ export function HeroSequence({
                 />
               ) : (
                 <Image
-                  src={slide.image}
+                  src={slide.poster ?? slide.image}
                   alt=""
                   fill
                   priority={index === 0}

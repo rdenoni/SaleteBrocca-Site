@@ -47,6 +47,13 @@ export interface AdminSiteLinks {
   fromFallback?: boolean;
 }
 
+const HERO_POSTER_BY_SLUG: Record<string, string> = {
+  cursos: "/images/hero/crianca-escrevendo.jpg",
+  alfabetizacao: "/images/articles/leitura-fluencia.jpg",
+  avaliacao: "/images/hero/avaliacao-fonoaudiologica.jpg",
+  conteudo: "/images/articles/familia-e-escola.jpg",
+};
+
 export const FALLBACK_HERO_SLIDES: readonly AdminHeroSlide[] = [
   {
     id: "fallback-cursos",
@@ -56,8 +63,8 @@ export const FALLBACK_HERO_SLIDES: readonly AdminHeroSlide[] = [
     badge: "",
     ctaLabel: "Explorar cursos",
     ctaHref: "/cursos",
-    mediaType: "image",
-    mediaUrl: "/images/hero/crianca-escrevendo.jpg",
+    mediaType: "video",
+    mediaUrl: "/videos/hero/crianca-escrevendo.mp4",
     imagePosition: "60% 40%",
     tone: "blue",
     sortOrder: 1,
@@ -72,8 +79,8 @@ export const FALLBACK_HERO_SLIDES: readonly AdminHeroSlide[] = [
     badge: "Em breve",
     ctaLabel: "Em breve",
     ctaHref: "",
-    mediaType: "image",
-    mediaUrl: "/images/articles/leitura-fluencia.jpg",
+    mediaType: "video",
+    mediaUrl: "/videos/hero/leitura-fluencia.mp4",
     imagePosition: "55% 35%",
     tone: "blue",
     sortOrder: 2,
@@ -88,8 +95,8 @@ export const FALLBACK_HERO_SLIDES: readonly AdminHeroSlide[] = [
     badge: "",
     ctaLabel: "Pedir avaliação",
     ctaHref: "/avaliacao",
-    mediaType: "image",
-    mediaUrl: "/images/hero/avaliacao-fonoaudiologica.jpg",
+    mediaType: "video",
+    mediaUrl: "/videos/hero/avaliacao-fonoaudiologica.mp4",
     imagePosition: "65% 30%",
     tone: "blue",
     sortOrder: 3,
@@ -104,8 +111,8 @@ export const FALLBACK_HERO_SLIDES: readonly AdminHeroSlide[] = [
     badge: "",
     ctaLabel: "Ver conteúdos",
     ctaHref: "/conteudo",
-    mediaType: "image",
-    mediaUrl: "/images/articles/familia-e-escola.jpg",
+    mediaType: "video",
+    mediaUrl: "/videos/hero/familia-e-escola.mp4",
     imagePosition: "55% 35%",
     tone: "blue",
     sortOrder: 4,
@@ -157,6 +164,7 @@ export async function getPublicHeroSlides(): Promise<readonly HeroSlide[]> {
     title: s.title,
     text: s.text,
     image: s.mediaUrl,
+    poster: HERO_POSTER_BY_SLUG[s.slug],
     mediaType: s.mediaType,
     imagePosition: s.imagePosition || "60% 40%",
     tone: s.tone,
