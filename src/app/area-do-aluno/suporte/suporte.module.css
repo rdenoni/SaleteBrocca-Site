@@ -62,10 +62,10 @@
   background: var(--white);
   border-radius: var(--radius-md);
   border: 1px solid color-mix(in srgb, var(--navy) 10%, transparent);
-  padding: var(--space-6);
+  padding: var(--space-8);
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-6);
   box-shadow: 0 10px 28px -16px color-mix(in srgb, var(--navy) 14%, transparent);
 }
 
@@ -111,7 +111,7 @@
 .replyForm {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-6);
 }
 
 .replyForm {
@@ -158,7 +158,8 @@
 .categoryGrid {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
 }
 
 .categoryChip {
@@ -248,9 +249,94 @@
   cursor: wait;
 }
 
+/* Botão expansível "Compacto → Completo" à direita do formulário: começa só com o ícone e expande revelando o texto. */
+.expandBtn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0 15px;
+  gap: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--cyan);
+  color: var(--navy);
+  font: 800 13px/18px var(--font-sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    padding 680ms cubic-bezier(0.22, 1, 0.36, 1),
+    gap 680ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color var(--duration) var(--ease),
+    color var(--duration) var(--ease),
+    transform var(--duration) var(--ease);
+}
+
+.expandIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.expandLabel {
+  display: inline-block;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    max-width 680ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 480ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.expandBtn:hover,
+.expandBtn:focus-visible,
+.expandBtn[data-busy="true"] {
+  padding-inline: 22px;
+  gap: 10px;
+}
+
+.expandBtn:hover:not(:disabled) {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.expandBtn:hover .expandLabel,
+.expandBtn:focus-visible .expandLabel,
+.expandBtn[data-busy="true"] .expandLabel {
+  max-width: 180px;
+  opacity: 1;
+}
+
+.expandBtn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.expandBtn:disabled {
+  opacity: 0.72;
+  cursor: wait;
+}
+
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .expandBtn {
+    padding-inline: 22px;
+    gap: 10px;
+  }
+
+  .expandLabel {
+    max-width: 180px;
+    opacity: 1;
+  }
+}
+
 .toolbar {
   display: grid;
-  gap: var(--space-3);
+  gap: var(--space-4);
 }
 
 .searchWrap {
@@ -397,7 +483,7 @@
   border-radius: var(--radius-md);
   border: 1.5px solid color-mix(in srgb, var(--navy) 10%, transparent);
   background: color-mix(in srgb, var(--light-gray) 55%, var(--white));
-  padding: var(--space-5);
+  padding: var(--space-6);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -588,7 +674,7 @@
   }
 
   .panel {
-    padding: var(--space-5);
+    padding: var(--space-6);
   }
 
   .formFooter {

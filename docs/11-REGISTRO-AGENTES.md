@@ -20,6 +20,15 @@ Numeração R-NNNN sequencial, somando 1 ao maior número já existente.
 
 ## Entradas
 
+### R-0011 · 2026-11-25 12:46 · Gemini
+- Branch: gemini/admin-panel · Commit: pendente
+- Versão: 0.1.0 · Entrada anterior: R-0010
+- Tarefa: ajustar espaçamento e motion da página de Suporte, adicionar botão expansível "Abrir chamado" à direita, animação de carregamento dentro dos botões "Entrar", barra mobile 20% maior com logo na escala dos botões, menu mobile em caixa alta/entrelinhas menor e expansão mais lenta nas Dúvidas frequentes.
+- Arquivos alterados: src/styles/tokens.css, src/components/layout/{Header.module.css,MobileMenu.module.css,PageBanner.module.css}, src/components/ui/FaqList.module.css, src/app/area-do-aluno/suporte/{page.tsx,StudentSupportClient.tsx,suporte.module.css}, src/components/student/{PasswordLoginForm.tsx,LoginForm.module.css}, src/app/admin/login/{LoginClient.tsx,login.module.css}, docs/11-REGISTRO-AGENTES.md
+- O que mudou e por quê: (1) corrigido token inexistente `--space-5` em `suporte.module.css` para tokens oficiais (`--space-8`/`--space-6`/`--space-4`/`--space-2`); (2) aplicada a partitura oficial de motion da Área do Aluno (`STUDENT_PACE`, `Stagger`/`StaggerItem`, `Reveal`, `AnimatePresence` nas conversas e `spring.press`) em `/area-do-aluno/suporte`, com botão expansível "Abrir chamado" (`Compacto → Completo`) à direita do formulário; (3) adicionada animação interna de carregamento (`Spinner` + varredura luminosa) nos botões "Entrar" da Área do Aluno e do Painel Admin; (4) mobile ajustado com barra de `96px` (+20%), `.logoImage` em `60px` (símbolo equivalente aos botões de `48px`), menu mobile em caixa alta (`22px/26px`) e abertura suave de `680ms` no acordeão das Dúvidas frequentes.
+- Validação: typecheck ok · testes Playwright (`area-do-aluno` Suporte/login 9/9, `chrome` + `faq` 35/35 em 1440/768/375 e 340px) ok · prints 1440/768/375 sim
+- Pendências / cuidados para o próximo agente: consultar `docs/12-PENDENCIAS-JURIDICAS-LANCAMENTO.md` antes de campanhas pagas.
+
 ### R-0010 · 2026-11-25 03:04 · Gemini
 - Branch: gemini/admin-panel · Commit: pendente
 - Versão: 0.1.0 · Entrada anterior: R-0009

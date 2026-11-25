@@ -149,6 +149,8 @@
 }
 
 .submitBtn {
+  position: relative;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -172,8 +174,24 @@
 }
 
 .submitBtn:disabled {
-  opacity: 0.6;
+  opacity: 0.82;
   cursor: wait;
+}
+
+.submitBtn[data-loading="true"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.45) 50%, transparent 100%);
+  animation: adminBtnSweep 1.15s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes adminBtnSweep {
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .footer {

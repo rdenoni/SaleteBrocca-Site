@@ -3,7 +3,6 @@ import { StudentShell, studentContentStart } from "@/components/student/StudentS
 import { isDemoMode, requireStudentSession } from "@/lib/content/student";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { MotionPace, STUDENT_PACE } from "@/motion/MotionPace";
-import { Reveal } from "@/motion/Reveal";
 import { StudentSupportClient, type StudentTicketItem, type StudentTicketMessage } from "./StudentSupportClient";
 
 export const metadata: Metadata = {
@@ -68,9 +67,7 @@ export default async function StudentSupportPage() {
         subtitle="Abra chamados sobre seu curso ou pedido e acompanhe todas as respostas por aqui."
         active="suporte"
       >
-        <Reveal variant="fade" trigger="mount" delay={START}>
-          <StudentSupportClient tickets={tickets} demoMode={demo} />
-        </Reveal>
+        <StudentSupportClient tickets={tickets} demoMode={demo} entranceDelay={START} />
       </StudentShell>
     </MotionPace>
   );

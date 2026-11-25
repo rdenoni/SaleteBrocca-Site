@@ -66,5 +66,8 @@
 }
 
 @media (max-width: 767px) {
-  :root { --page-gutter: var(--space-4); }
+  :root {
+    --page-gutter: var(--space-4);
+    --header-height-compact: 96px;
+  }
 }

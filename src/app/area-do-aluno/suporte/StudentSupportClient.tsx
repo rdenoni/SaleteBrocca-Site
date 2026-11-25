@@ -17,8 +17,13 @@ import {
   ShoppingBag,
   Wrench,
 } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useActionState, useMemo, useOptimistic, useState } from "react";
 import { Spinner } from "@/components/ui/Spinner";
+import { Reveal } from "@/motion/Reveal";
+import { Stagger, StaggerItem } from "@/motion/Stagger";
+import { motionTokens } from "@/motion/tokens";
+import { useMotionTokens } from "@/motion/useMotionTokens";
 import type { SupportTicketCategory, SupportTicketStatus } from "@/types/database";
 import {
   createStudentTicketAction,
@@ -46,6 +51,7 @@ export interface StudentTicketItem {
 }
 
 const INITIAL: StudentSupportActionState = { status: "idle", message: "" };
+const { duration } = motionTokens;
 
 const STATUS_LABEL: Record<SupportTicketStatus, string> = {
   open: "Aberto",
@@ -94,6 +100,7 @@ function TicketReplyForm({
   ticketId: string;
   onOptimisticReply: (ticketId: string, body: string) => void;
 }) {
+  const t = useMotionTokens();
   const [state, action, pending] = useActionState(
     async (prev: StudentSupportActionState, formData: FormData) => {
       const body = String(formData.get("body") ?? "").trim();
@@ -116,16 +123,32 @@ function TicketReplyForm({
         placeholder="Escreva sua resposta ou complemento..."
         required
       />
-      {state.status !== "idle" ? (
-        <p role="status" className={`${styles.feedback} ${state.status === "ok" ? styles.feedbackOk : styles.feedbackErr}`}>
-          {state.message}
-        </p>
-      ) : null}
+      <AnimatePresence initial={false}>
+        {state.status !== "idle" ? (
+          <motion.p
+            key="reply-feedback"
+            role="status"
+            initial={t.reduced ? { opacity: 0 } : { opacity: 0, y: t.distance.small }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: t.duration.base, ease: t.ease.out }}
+            className={`${styles.feedback} ${state.status === "ok" ? styles.feedbackOk : styles.feedbackErr}`}
+          >
+            {state.message}
+          </motion.p>
+        ) : null}
+      </AnimatePresence>
       <div className={styles.formActions}>
-        <button type="submit" className={styles.primaryBtn} disabled={pending}>
+        <motion.button
+          type="submit"
+          className={styles.primaryBtn}
+          disabled={pending}
+          whileTap={t.reduced ? undefined : { scale: 0.97 }}
+          transition={t.spring.press}
+        >
           {pending ? <Spinner size={15} /> : <Send size={15} aria-hidden="true" />}
           <span>{pending ? "Enviando..." : "Enviar resposta"}</span>
-        </button>
+        </motion.button>
       </div>
     </form>
   );
@@ -135,13 +158,20 @@ type OptimisticTicketAction =
   | { type: "create"; ticket: StudentTicketItem }
   | { type: "reply"; ticketId: string; message: StudentTicketMessage };
 
+/* Movimento (ordem de leitura, igual ao painel e Minha Conta na Área do Aluno):
+   banner + abas → 3 KPIs em cascata (esquerda para a direita) → painel esquerdo ("Abrir novo chamado",
+   campos em cascata) → painel direito ("Meus chamados", busca/filtros/lista em cascata).
+   Conversas expandem suavemente com AnimatePresence e botões têm resposta tátil (spring.press). */
 export function StudentSupportClient({
   tickets,
   demoMode,
+  entranceDelay = 0,
 }: {
   tickets: readonly StudentTicketItem[];
   demoMode: boolean;
+  entranceDelay?: number;
 }) {
+  const t = useMotionTokens();
   const [optimisticTickets, addOptimistic] = useOptimistic(
     tickets,
     (current: readonly StudentTicketItem[], update: OptimisticTicketAction): readonly StudentTicketItem[] => {
@@ -211,293 +241,362 @@ export function StudentSupportClient({
     let open = 0;
     let answered = 0;
     let closed = 0;
-    for (const t of optimisticTickets) {
-      if (t.status === "open") open++;
-      else if (t.status === "answered") answered++;
-      else if (t.status === "closed") closed++;
+    for (const ticket of optimisticTickets) {
+      if (ticket.status === "open") open++;
+      else if (ticket.status === "answered") answered++;
+      else if (ticket.status === "closed") closed++;
     }
     return { all: optimisticTickets.length, open, answered, closed };
   }, [optimisticTickets]);
 
   const filtered = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    return optimisticTickets.filter((t) => {
-      if (statusFilter !== "all" && t.status !== statusFilter) return false;
+    return optimisticTickets.filter((ticket) => {
+      if (statusFilter !== "all" && ticket.status !== statusFilter) return false;
       if (!q) return true;
-      const inSubject = t.subject.toLowerCase().includes(q);
-      const inNumber = `#${t.ticketNumber}`.includes(q);
-      const inMessages = t.messages.some((m) => m.body.toLowerCase().includes(q));
+      const inSubject = ticket.subject.toLowerCase().includes(q);
+      const inNumber = `#${ticket.ticketNumber}`.includes(q);
+      const inMessages = ticket.messages.some((m) => m.body.toLowerCase().includes(q));
       return inSubject || inNumber || inMessages;
     });
   }, [optimisticTickets, statusFilter, searchQuery]);
 
+  /* Cadência herdada de /area-do-aluno e /area-do-aluno/conta: KPIs → painel esquerdo → painel direito. */
+  const leftPanelStart = entranceDelay + duration.quick;
+  const rightPanelStart = leftPanelStart + duration.base;
+
   return (
     <div className={styles.wrapper}>
-      <div className={styles.statsStrip} aria-label="Resumo dos seus chamados">
-        <div className={styles.statCard}>
+      <Stagger trigger="mount" delay={entranceDelay} className={styles.statsStrip} aria-label="Resumo dos seus chamados">
+        <StaggerItem className={styles.statCard}>
           <span className={styles.statLabel}>Total de chamados</span>
           <strong className={styles.statValue}>{counts.all}</strong>
-        </div>
-        <div className={styles.statCard}>
+        </StaggerItem>
+        <StaggerItem className={styles.statCard}>
           <span className={styles.statLabel}>
             <span className={styles.dotOpen} aria-hidden="true" />
             Em atendimento
           </span>
           <strong className={styles.statValue}>{counts.open}</strong>
-        </div>
-        <div className={styles.statCard}>
+        </StaggerItem>
+        <StaggerItem className={styles.statCard}>
           <span className={styles.statLabel}>
             <span className={styles.dotAnswered} aria-hidden="true" />
             Respondidos
           </span>
           <strong className={styles.statValue}>{counts.answered}</strong>
-        </div>
-      </div>
+        </StaggerItem>
+      </Stagger>
 
       <div className={styles.layout}>
-        <section className={styles.panel} aria-labelledby="abrir-chamado-titulo">
-          <div className={styles.panelHead}>
-            <span className={styles.iconBadge} aria-hidden="true">
-              <Plus size={18} />
-            </span>
-            <div>
-              <h2 id="abrir-chamado-titulo" className={styles.panelTitle}>
-                Abrir novo chamado
-              </h2>
-              <p className={styles.panelDesc}>
-                Escolha o tema abaixo e descreva sua dúvida sobre o curso, acesso ou pedido da loja.
-              </p>
-            </div>
-          </div>
+        <Reveal as="section" variant="fade" trigger="mount" delay={leftPanelStart} className={styles.panel} aria-labelledby="abrir-chamado-titulo">
+          <Stagger trigger="mount" delay={leftPanelStart + duration.instant} className={styles.form}>
+            <StaggerItem>
+              <div className={styles.panelHead}>
+                <span className={styles.iconBadge} aria-hidden="true">
+                  <Plus size={18} />
+                </span>
+                <div>
+                  <h2 id="abrir-chamado-titulo" className={styles.panelTitle}>
+                    Abrir novo chamado
+                  </h2>
+                  <p className={styles.panelDesc}>
+                    Escolha o tema abaixo e descreva sua dúvida sobre o curso, acesso ou pedido da loja.
+                  </p>
+                </div>
+              </div>
+            </StaggerItem>
 
-          <form action={createAction} className={styles.form}>
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="suporte-categoria">
-                Categoria
-              </label>
-              <select
-                id="suporte-categoria"
-                className={styles.select}
-                name="category"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value as SupportTicketCategory)}
-              >
-                {CATEGORY_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-              <div className={styles.categoryGrid} role="group" aria-label="Seleção rápida de tema">
-                {CATEGORY_OPTIONS.map(({ value, label, Icon }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    className={styles.categoryChip}
-                    aria-pressed={selectedCategory === value}
-                    onClick={() => setSelectedCategory(value)}
+            <form action={createAction} className={styles.form}>
+              <StaggerItem>
+                <div className={styles.field}>
+                  <label className={styles.label} htmlFor="suporte-categoria">
+                    Categoria
+                  </label>
+                  <select
+                    id="suporte-categoria"
+                    className={styles.select}
+                    name="category"
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value as SupportTicketCategory)}
                   >
-                    <Icon size={14} aria-hidden="true" />
-                    <span>{label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <label className={styles.field}>
-              <span className={styles.label}>Assunto *</span>
-              <input
-                className={styles.input}
-                name="subject"
-                placeholder="Ex.: Dúvida sobre aula do módulo 2 ou entrega do produto"
-                required
-              />
-            </label>
-
-            <label className={styles.field}>
-              <span className={styles.label}>Mensagem *</span>
-              <textarea
-                className={styles.textarea}
-                name="body"
-                placeholder="Conte com detalhes como podemos ajudar..."
-                required
-              />
-            </label>
-
-            {createState.status !== "idle" ? (
-              <p
-                role="status"
-                className={`${styles.feedback} ${createState.status === "ok" ? styles.feedbackOk : styles.feedbackErr}`}
-              >
-                {createState.message}
-              </p>
-            ) : null}
-
-            <div className={styles.formFooter}>
-              <p className={styles.slaNote}>
-                <Clock size={14} aria-hidden="true" />
-                <span>O histórico completo fica salvo na sua conta.</span>
-              </p>
-              <button type="submit" className={styles.primaryBtn} disabled={createPending}>
-                {createPending ? <Spinner size={15} /> : <Send size={15} aria-hidden="true" />}
-                <span>{createPending ? "Enviando..." : "Abrir chamado"}</span>
-              </button>
-            </div>
-          </form>
-        </section>
-
-        <section className={styles.panel} aria-labelledby="meus-chamados-titulo">
-          <div className={styles.panelHeadRow}>
-            <div className={styles.panelHead}>
-              <span className={styles.iconBadge} aria-hidden="true">
-                <LifeBuoy size={18} />
-              </span>
-              <div>
-                <h2 id="meus-chamados-titulo" className={styles.panelTitle}>
-                  Meus chamados ({counts.all})
-                </h2>
-                <p className={styles.panelDesc}>Acompanhe o status e as respostas da equipe Salete Brocca.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.toolbar}>
-            <label className={styles.searchWrap}>
-              <Search size={16} aria-hidden="true" className={styles.searchIcon} />
-              <span className="visually-hidden">Buscar chamados</span>
-              <input
-                type="search"
-                className={styles.searchInput}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar por assunto, número ou mensagem..."
-              />
-            </label>
-
-            <div className={styles.filterPills} role="group" aria-label="Filtrar chamados por status">
-              {(["all", "open", "answered", "closed"] as const).map((status) => (
-                <button
-                  key={status}
-                  type="button"
-                  className={styles.filterBtn}
-                  aria-pressed={statusFilter === status}
-                  onClick={() => setStatusFilter(status)}
-                >
-                  <span>{status === "all" ? "Todos" : STATUS_LABEL[status]}</span>
-                  <span className={styles.filterCount}>{counts[status]}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {filtered.length === 0 ? (
-            <div className={styles.emptyBox}>
-              <span className={styles.emptyIcon} aria-hidden="true">
-                <MessageSquare size={22} />
-              </span>
-              <p className={styles.emptyTitle}>
-                {searchQuery.trim()
-                  ? "Nenhum chamado encontrado para esta busca"
-                  : demoMode
-                    ? "Seus chamados aparecerão aqui"
-                    : "Nenhum chamado neste filtro"}
-              </p>
-              <p className={styles.emptyDesc}>
-                {searchQuery.trim()
-                  ? "Tente buscar por outro termo ou limpe o filtro acima."
-                  : demoMode
-                    ? "Quando o login estiver ativo, todos os chamados e respostas da equipe ficarão centralizados nesta lista."
-                    : "Precisa de ajuda com alguma aula, material ou pedido? Use o formulário ao lado para falar conosco."}
-              </p>
-            </div>
-          ) : (
-            <div className={styles.ticketList}>
-              {filtered.map((ticket) => {
-                const isOpen = openTicketId === ticket.id;
-                const isOptimisticTicket = ticket.id.startsWith("optimistic-");
-                return (
-                  <article key={ticket.id} className={styles.ticketCard} data-open={isOpen ? "true" : undefined}>
-                    <div className={styles.ticketTop}>
-                      <div className={styles.ticketInfo}>
-                        <div className={styles.badgeRow}>
-                          <span className={styles.ticketNumber}>
-                            {isOptimisticTicket ? "Novo" : `#${ticket.ticketNumber}`}
-                          </span>
-                          <span className={styles.statusPill} data-status={ticket.status}>
-                            {STATUS_LABEL[ticket.status]}
-                          </span>
-                          <span className={styles.categoryPill}>{CATEGORY_LABEL[ticket.category]}</span>
-                        </div>
-                        <h3 className={styles.ticketTitle}>{ticket.subject}</h3>
-                        <p className={styles.ticketMeta}>
-                          Atualizado em {formatDateTime(ticket.updatedAt)} · {ticket.messages.length}{" "}
-                          {ticket.messages.length === 1 ? "mensagem" : "mensagens"}
-                        </p>
-                      </div>
-                      <button
+                    {CATEGORY_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  <div className={styles.categoryGrid} role="group" aria-label="Seleção rápida de tema">
+                    {CATEGORY_OPTIONS.map(({ value, label, Icon }) => (
+                      <motion.button
+                        key={value}
                         type="button"
-                        className={styles.toggleBtn}
-                        aria-expanded={isOpen}
-                        onClick={() => setOpenTicketId((cur) => (cur === ticket.id ? null : ticket.id))}
+                        className={styles.categoryChip}
+                        aria-pressed={selectedCategory === value}
+                        onClick={() => setSelectedCategory(value)}
+                        whileTap={t.reduced ? undefined : { scale: 0.96 }}
+                        transition={t.spring.press}
                       >
-                        <span>{isOpen ? "Ocultar" : "Ver conversa"}</span>
-                        {isOpen ? <ChevronUp size={16} aria-hidden="true" /> : <ChevronDown size={16} aria-hidden="true" />}
-                      </button>
-                    </div>
+                        <Icon size={14} aria-hidden="true" />
+                        <span>{label}</span>
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              </StaggerItem>
 
-                    {isOpen ? (
-                      <div className={styles.thread}>
-                        {ticket.messages.map((msg) => {
-                          const isSending = msg.id.startsWith("optimistic-");
-                          return (
-                            <div
-                              key={msg.id}
-                              className={styles.messageBubble}
-                              data-sender={msg.senderType}
-                              data-pending={isSending ? "true" : undefined}
-                            >
-                              <div className={styles.messageHead}>
-                                <span className={styles.senderBadge}>
-                                  {msg.senderType === "admin" ? (
-                                    <>
-                                      <CheckCircle2 size={14} aria-hidden="true" />
-                                      <strong>Equipe Salete Brocca</strong>
-                                    </>
-                                  ) : (
-                                    <strong>Você</strong>
-                                  )}
-                                </span>
-                                <span className={styles.timeMeta}>
-                                  {isSending ? (
-                                    <>
-                                      <Spinner size={12} />
-                                      <span>Enviando...</span>
-                                    </>
-                                  ) : (
-                                    <time dateTime={msg.createdAt}>{formatDateTime(msg.createdAt)}</time>
-                                  )}
-                                </span>
-                              </div>
-                              <p className={styles.messageBody}>{msg.body}</p>
+              <StaggerItem>
+                <label className={styles.field}>
+                  <span className={styles.label}>Assunto *</span>
+                  <input
+                    className={styles.input}
+                    name="subject"
+                    placeholder="Ex.: Dúvida sobre aula do módulo 2 ou entrega do produto"
+                    required
+                  />
+                </label>
+              </StaggerItem>
+
+              <StaggerItem>
+                <label className={styles.field}>
+                  <span className={styles.label}>Mensagem *</span>
+                  <textarea
+                    className={styles.textarea}
+                    name="body"
+                    placeholder="Conte com detalhes como podemos ajudar..."
+                    required
+                  />
+                </label>
+              </StaggerItem>
+
+              <AnimatePresence initial={false}>
+                {createState.status !== "idle" ? (
+                  <motion.p
+                    key="create-feedback"
+                    role="status"
+                    initial={t.reduced ? { opacity: 0 } : { opacity: 0, y: t.distance.small }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: t.duration.base, ease: t.ease.out }}
+                    className={`${styles.feedback} ${createState.status === "ok" ? styles.feedbackOk : styles.feedbackErr}`}
+                  >
+                    {createState.message}
+                  </motion.p>
+                ) : null}
+              </AnimatePresence>
+
+              <StaggerItem>
+                <div className={styles.formFooter}>
+                  <p className={styles.slaNote}>
+                    <Clock size={14} aria-hidden="true" />
+                    <span>O histórico completo fica salvo na sua conta.</span>
+                  </p>
+                  <motion.button
+                    type="submit"
+                    className={styles.expandBtn}
+                    disabled={createPending}
+                    aria-busy={createPending}
+                    data-busy={createPending ? "true" : undefined}
+                    whileTap={t.reduced ? undefined : { scale: 0.97 }}
+                    transition={t.spring.press}
+                  >
+                    <span className={styles.expandIcon} aria-hidden="true">
+                      {createPending ? <Spinner size={16} /> : <Send size={16} />}
+                    </span>
+                    <span className={styles.expandLabel}>{createPending ? "Enviando..." : "Abrir chamado"}</span>
+                  </motion.button>
+                </div>
+              </StaggerItem>
+            </form>
+          </Stagger>
+        </Reveal>
+
+        <Reveal as="section" variant="fade" trigger="mount" delay={rightPanelStart} className={styles.panel} aria-labelledby="meus-chamados-titulo">
+          <Stagger trigger="mount" delay={rightPanelStart + duration.instant} className={styles.form}>
+            <StaggerItem>
+              <div className={styles.panelHeadRow}>
+                <div className={styles.panelHead}>
+                  <span className={styles.iconBadge} aria-hidden="true">
+                    <LifeBuoy size={18} />
+                  </span>
+                  <div>
+                    <h2 id="meus-chamados-titulo" className={styles.panelTitle}>
+                      Meus chamados ({counts.all})
+                    </h2>
+                    <p className={styles.panelDesc}>Acompanhe o status e as respostas da equipe Salete Brocca.</p>
+                  </div>
+                </div>
+              </div>
+            </StaggerItem>
+
+            <StaggerItem>
+              <div className={styles.toolbar}>
+                <label className={styles.searchWrap}>
+                  <Search size={16} aria-hidden="true" className={styles.searchIcon} />
+                  <span className="visually-hidden">Buscar chamados</span>
+                  <input
+                    type="search"
+                    className={styles.searchInput}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Buscar por assunto, número ou mensagem..."
+                  />
+                </label>
+
+                <div className={styles.filterPills} role="group" aria-label="Filtrar chamados por status">
+                  {(["all", "open", "answered", "closed"] as const).map((status) => (
+                    <motion.button
+                      key={status}
+                      type="button"
+                      className={styles.filterBtn}
+                      aria-pressed={statusFilter === status}
+                      onClick={() => setStatusFilter(status)}
+                      whileTap={t.reduced ? undefined : { scale: 0.96 }}
+                      transition={t.spring.press}
+                    >
+                      <span>{status === "all" ? "Todos" : STATUS_LABEL[status]}</span>
+                      <span className={styles.filterCount}>{counts[status]}</span>
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+            </StaggerItem>
+
+            <StaggerItem>
+              {filtered.length === 0 ? (
+                <div className={styles.emptyBox}>
+                  <span className={styles.emptyIcon} aria-hidden="true">
+                    <MessageSquare size={22} />
+                  </span>
+                  <p className={styles.emptyTitle}>
+                    {searchQuery.trim()
+                      ? "Nenhum chamado encontrado para esta busca"
+                      : demoMode
+                        ? "Seus chamados aparecerão aqui"
+                        : "Nenhum chamado neste filtro"}
+                  </p>
+                  <p className={styles.emptyDesc}>
+                    {searchQuery.trim()
+                      ? "Tente buscar por outro termo ou limpe o filtro acima."
+                      : demoMode
+                        ? "Quando o login estiver ativo, todos os chamados e respostas da equipe ficarão centralizados nesta lista."
+                        : "Precisa de ajuda com alguma aula, material ou pedido? Use o formulário ao lado para falar conosco."}
+                  </p>
+                </div>
+              ) : (
+                <div className={styles.ticketList}>
+                  {filtered.map((ticket) => {
+                    const isOpen = openTicketId === ticket.id;
+                    const isOptimisticTicket = ticket.id.startsWith("optimistic-");
+                    return (
+                      <motion.article
+                        key={ticket.id}
+                        layout={!t.reduced}
+                        initial={t.reduced ? false : { opacity: 0, y: t.distance.small }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: t.duration.base, ease: t.ease.out }}
+                        className={styles.ticketCard}
+                        data-open={isOpen ? "true" : undefined}
+                      >
+                        <div className={styles.ticketTop}>
+                          <div className={styles.ticketInfo}>
+                            <div className={styles.badgeRow}>
+                              <span className={styles.ticketNumber}>
+                                {isOptimisticTicket ? "Novo" : `#${ticket.ticketNumber}`}
+                              </span>
+                              <span className={styles.statusPill} data-status={ticket.status}>
+                                {STATUS_LABEL[ticket.status]}
+                              </span>
+                              <span className={styles.categoryPill}>{CATEGORY_LABEL[ticket.category]}</span>
                             </div>
-                          );
-                        })}
+                            <h3 className={styles.ticketTitle}>{ticket.subject}</h3>
+                            <p className={styles.ticketMeta}>
+                              Atualizado em {formatDateTime(ticket.updatedAt)} · {ticket.messages.length}{" "}
+                              {ticket.messages.length === 1 ? "mensagem" : "mensagens"}
+                            </p>
+                          </div>
+                          <motion.button
+                            type="button"
+                            className={styles.toggleBtn}
+                            aria-expanded={isOpen}
+                            onClick={() => setOpenTicketId((cur) => (cur === ticket.id ? null : ticket.id))}
+                            whileTap={t.reduced ? undefined : { scale: 0.97 }}
+                            transition={t.spring.press}
+                          >
+                            <span>{isOpen ? "Ocultar" : "Ver conversa"}</span>
+                            {isOpen ? <ChevronUp size={16} aria-hidden="true" /> : <ChevronDown size={16} aria-hidden="true" />}
+                          </motion.button>
+                        </div>
 
-                        {ticket.status !== "closed" ? (
-                          <TicketReplyForm ticketId={ticket.id} onOptimisticReply={handleOptimisticReply} />
-                        ) : (
-                          <p className={styles.closedNote}>
-                            Este chamado foi encerrado. Caso precise de algo novo, abra um novo chamado.
-                          </p>
-                        )}
-                      </div>
-                    ) : null}
-                  </article>
-                );
-              })}
-            </div>
-          )}
-        </section>
+                        <AnimatePresence initial={false}>
+                          {isOpen ? (
+                            <motion.div
+                              key="thread"
+                              initial={t.reduced ? { opacity: 0 } : { opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={t.reduced ? { opacity: 0 } : { opacity: 0, height: 0 }}
+                              transition={{ duration: t.duration.base, ease: t.ease.out }}
+                              style={{ overflow: "hidden" }}
+                            >
+                              <div className={styles.thread}>
+                                {ticket.messages.map((msg) => {
+                                  const isSending = msg.id.startsWith("optimistic-");
+                                  return (
+                                    <motion.div
+                                      key={msg.id}
+                                      initial={t.reduced ? false : { opacity: 0, y: t.distance.small }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      transition={{ duration: t.duration.base, ease: t.ease.out }}
+                                      className={styles.messageBubble}
+                                      data-sender={msg.senderType}
+                                      data-pending={isSending ? "true" : undefined}
+                                    >
+                                      <div className={styles.messageHead}>
+                                        <span className={styles.senderBadge}>
+                                          {msg.senderType === "admin" ? (
+                                            <>
+                                              <CheckCircle2 size={14} aria-hidden="true" />
+                                              <strong>Equipe Salete Brocca</strong>
+                                            </>
+                                          ) : (
+                                            <strong>Você</strong>
+                                          )}
+                                        </span>
+                                        <span className={styles.timeMeta}>
+                                          {isSending ? (
+                                            <>
+                                              <Spinner size={12} />
+                                              <span>Enviando...</span>
+                                            </>
+                                          ) : (
+                                            <time dateTime={msg.createdAt}>{formatDateTime(msg.createdAt)}</time>
+                                          )}
+                                        </span>
+                                      </div>
+                                      <p className={styles.messageBody}>{msg.body}</p>
+                                    </motion.div>
+                                  );
+                                })}
+
+                                {ticket.status !== "closed" ? (
+                                  <TicketReplyForm ticketId={ticket.id} onOptimisticReply={handleOptimisticReply} />
+                                ) : (
+                                  <p className={styles.closedNote}>
+                                    Este chamado foi encerrado. Caso precise de algo novo, abra um novo chamado.
+                                  </p>
+                                )}
+                              </div>
+                            </motion.div>
+                          ) : null}
+                        </AnimatePresence>
+                      </motion.article>
+                    );
+                  })}
+                </div>
+              )}
+            </StaggerItem>
+          </Stagger>
+        </Reveal>
       </div>
     </div>
   );

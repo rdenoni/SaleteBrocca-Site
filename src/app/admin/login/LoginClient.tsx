@@ -87,7 +87,13 @@ export function AdminLoginClient({ nextPath, demoMode }: { nextPath: string; dem
             </p>
           ) : null}
 
-          <button type="submit" className={styles.submitBtn} disabled={pending}>
+          <button
+            type="submit"
+            className={styles.submitBtn}
+            disabled={pending}
+            aria-busy={pending}
+            data-loading={pending ? "true" : undefined}
+          >
             {pending ? <Spinner size={16} /> : <Lock size={16} aria-hidden="true" />}
             <span>{pending ? "Verificando..." : "Entrar no painel"}</span>
           </button>

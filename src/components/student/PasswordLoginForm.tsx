@@ -6,6 +6,7 @@ import { useActionState, useState } from "react";
 import { CircleAlert } from "lucide-react";
 import { signIn } from "@/app/area-do-aluno/auth-actions";
 import { Field } from "@/components/ui/Field";
+import { Spinner } from "@/components/ui/Spinner";
 import { MotionButton } from "@/motion/MotionButton";
 import { RECOVER_PATH } from "@/lib/auth-paths";
 import { INITIAL_AUTH_STATE } from "@/lib/auth-form-state";
@@ -73,8 +74,18 @@ export function PasswordLoginForm({ next, notice }: PasswordLoginFormProps) {
       </motion.label>
 
       <motion.div data-reveal="" variants={item}>
-        <MotionButton type="submit" variant="primary" className={styles.submit} disabled={pending} aria-busy={pending}>
-          {pending ? "Entrando…" : "Entrar"}
+        <MotionButton
+          type="submit"
+          variant="primary"
+          className={styles.submit}
+          disabled={pending}
+          aria-busy={pending}
+          data-loading={pending ? "true" : undefined}
+        >
+          <span className={styles.submitInner}>
+            {pending ? <Spinner size={16} /> : null}
+            <span>{pending ? "Entrando…" : "Entrar"}</span>
+          </span>
         </MotionButton>
       </motion.div>
 
