@@ -222,3 +222,20 @@ test.describe("Área do Aluno — materiais", () => {
     }
   });
 });
+
+test.describe("Área do Aluno — Suporte", () => {
+  test("renderiza formulário de chamado, lista de chamados e filtros sem rolagem horizontal", async ({ page }) => {
+    await page.goto("/area-do-aluno/suporte");
+    await expect(page.locator("h1")).toHaveCount(1);
+    await expect(page.getByRole("heading", { level: 1, name: "Suporte" })).toBeVisible();
+    await expect(
+      page.getByRole("navigation", { name: "Seções da Área do Aluno" }).getByRole("link", { name: "Suporte" }),
+    ).toHaveAttribute("aria-current", "page");
+    await expect(page.getByLabel("Categoria")).toBeVisible();
+    await expect(page.getByLabel("Assunto *")).toBeVisible();
+    await expect(page.getByLabel("Mensagem *")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Abrir chamado" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: /Meus chamados/i })).toBeVisible();
+    await expectNoHorizontalScroll(page);
+  });
+});

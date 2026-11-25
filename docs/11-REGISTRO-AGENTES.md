@@ -20,6 +20,15 @@ Numeração R-NNNN sequencial, somando 1 ao maior número já existente.
 
 ## Entradas
 
+### R-0008 · 2026-11-25 00:53 · Gemini
+- Branch: gemini/admin-panel · Commit: pendente
+- Versão: 0.1.0 · Entrada anterior: R-0007
+- Tarefa: adicionar área de Suporte do usuário (/area-do-aluno/suporte) integrada ao painel de tickets do admin.
+- Arquivos alterados: src/components/student/StudentShell.tsx, src/app/area-do-aluno/suporte/{page.tsx,StudentSupportClient.tsx,suporte.module.css,actions.ts}, tests/area-do-aluno.spec.ts, docs/11-REGISTRO-AGENTES.md
+- O que mudou e por quê: adicionada aba "Suporte" na sub-navegação da Área do Aluno e criada a página `/area-do-aluno/suporte` permitindo que usuários autenticados abram chamados por categoria, filtrem por status, acompanhem as respostas da equipe e enviem novas mensagens diretamente nas tabelas `support_tickets` e `support_messages` com isolamento por RLS e sincronização em tempo real com `/admin/suporte`.
+- Validação: typecheck ok · build ok (81/81) · testes Playwright tests/area-do-aluno.spec.ts -g "Suporte" ok (3/3 em 1440/768/375) · prints 1440/768/375 não
+- Pendências / cuidados para o próximo agente: nenhuma.
+
 ### R-0007 · 2026-11-25 00:18 · Gemini
 - Branch: gemini/admin-panel · Commit: pendente
 - Versão: 0.1.0 · Entrada anterior: R-0006
