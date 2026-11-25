@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getRuntimeSecrets } from "@/lib/admin/secrets";
 import { checkRateLimit, extractClientIp, isIpBlocked } from "@/lib/security/rate-limit";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -80,6 +81,61 @@ export async function POST(request: Request) {
 
   if (error) {
     return NextResponse.json({ error: "Não foi possível registrar o lead." }, { status: 500, headers: NO_STORE });
+  }
+
+  /* Também registra uma mensagem na caixa de entrada do Painel Admin (/admin/emails) para pedidos de avaliação e contato. */
+  if (source === "avaliacao" || source === "contato") {
+    try {
+      const runtime = await getRuntimeSecrets(["ADMIN_FROM_EMAIL", "RESEND_API_KEY"]);
+      const toEmail = runtime.ADMIN_FROM_EMAIL || "contato@saletebrocca.com";
+      const fromEmail = email || `${name} (${whatsapp})`;
+      const subject =
+        source === "avaliacao"
+          ? `Novo pedido de avaliação — ${name}`
+          : `Nova mensagem de contato — ${name}`;
+      const bodyLines = [
+        source === "avaliacao" ? "Novo pedido de avaliação recebido pelo site." : "Nova mensagem enviada pelo formulário de contato.",
+        "",
+        `Nome: ${name}`,
+        whatsapp ? `Telefone / WhatsApp: ${whatsapp}` : null,
+        email ? `E-mail: ${email}` : null,
+        `Origem: ${tags.join(", ") || source}`,
+        notes ? `\nDetalhes:\n${notes}` : null,
+      ].filter((line): line is string => line !== null);
+      const bodyText = bodyLines.join("\n").slice(0, 20000);
+      const threadId = `lead:${source}:${(email || whatsapp || name).toLowerCase()}`.slice(0, 180);
+
+      await admin.from("admin_emails").insert({
+        thread_id: threadId,
+        direction: "inbound",
+        from_email: fromEmail.slice(0, 200),
+        to_email: toEmail,
+        subject: subject.slice(0, 200),
+        body_text: bodyText,
+        status: "unread",
+        external_id: null,
+      });
+
+      /* Se a API da Resend estiver configurada, dispara também o alerta por e-mail sem bloquear a resposta. */
+      if (runtime.RESEND_API_KEY) {
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${runtime.RESEND_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: `Site Salete Brocca <${toEmail}>`,
+            to: [toEmail],
+            reply_to: email || undefined,
+            subject: subject.slice(0, 200),
+            text: bodyText,
+          }),
+        }).catch(() => null);
+      }
+    } catch {
+      /* Não falha o envio do usuário caso o registro secundário de e-mail oscile. */
+    }
   }
 
   return NextResponse.json({ ok: true }, { headers: NO_STORE });

@@ -20,6 +20,15 @@ Numeração R-NNNN sequencial, somando 1 ao maior número já existente.
 
 ## Entradas
 
+### R-0014 · 2026-11-25 14:51 · Gemini
+- Branch: gemini/admin-panel · Commit: pendente
+- Versão: 0.1.0 · Entrada anterior: R-0013
+- Tarefa: espelhar pedidos de avaliação e mensagens de contato recebidos em `POST /api/leads` na caixa de entrada do Painel Admin (`/admin/emails`).
+- Arquivos alterados: src/app/api/leads/route.ts, docs/11-REGISTRO-AGENTES.md
+- O que mudou e por quê: além de gravar o lead em `public.leads` (`/admin/crm`), o endpoint `POST /api/leads` agora insere automaticamente uma mensagem não lida (`direction: "inbound"`, `status: "unread"`) em `public.admin_emails` para `source` `"avaliacao"` ou `"contato"`, com nome, telefone/WhatsApp, e-mail, origem e detalhes, e dispara alerta via Resend caso `RESEND_API_KEY` esteja configurada.
+- Validação: typecheck ok · build ok · testes Playwright (`avaliacao` + `sobre-contato` 18/18 em 1440/768/375) ok · prints 1440/768/375 não
+- Pendências / cuidados para o próximo agente: consultar `docs/12-PENDENCIAS-JURIDICAS-LANCAMENTO.md` antes de campanhas pagas.
+
 ### R-0013 · 2026-11-25 14:34 · Gemini
 - Branch: gemini/admin-panel · Commit: pendente
 - Versão: 0.1.0 · Entrada anterior: R-0012
