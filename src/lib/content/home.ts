@@ -20,7 +20,7 @@ export const HOME_HERO = {
   image: "/images/hero/crianca-escrevendo.jpg",
 } as const;
 
-/* Formulário de avaliação. O envio online ainda não existe: só valida. */
+/* Formulário de avaliação conectado ao CRM (/api/leads). */
 export const HOME_EVALUATION = {
   titleLines: ["Quer marcar", "uma avaliação?"],
   nameLabel: "Nome completo",
@@ -30,7 +30,7 @@ export const HOME_EVALUATION = {
   submit: "Pedir avaliação",
   privacyBefore: "Saiba como seus dados são tratados na ",
   privacyLink: { label: "política de privacidade", href: "/privacidade" },
-  success: "Dados conferidos. O envio online será ativado em breve.",
+  success: "Pedido de avaliação enviado com sucesso! Nossa equipe entrará em contato em breve.",
 } as const;
 
 /* Marcação dos depoimentos simulados (src/lib/content/testimonials.ts). A nota só aparece enquanto houver

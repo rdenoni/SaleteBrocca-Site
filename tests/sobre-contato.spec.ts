@@ -121,7 +121,7 @@ test.describe("Contato", () => {
     expect(whatsappTop).toBeLessThan(formTop);
   });
 
-  test("formulário valida e não envia", async ({ page }) => {
+  test("formulário valida e envia para /api/leads", async ({ page }) => {
     const form = page.locator("#formulario");
     await form.getByRole("button", { name: "Enviar mensagem" }).click();
     await expect(form.getByText("Informe seu nome completo.")).toBeVisible();
@@ -133,8 +133,10 @@ test.describe("Contato", () => {
     await form.getByLabel("Assunto").selectOption("Cursos");
     await form.getByLabel("Mensagem", { exact: true }).fill("Gostaria de saber mais sobre o curso.");
     await form.getByRole("checkbox").check();
+    const post = page.waitForResponse((res) => res.url().includes("/api/leads") && res.request().method() === "POST");
     await form.getByRole("button", { name: "Enviar mensagem" }).click();
-    await expect(form.getByRole("status")).toContainText("O envio online será ativado em breve.");
+    expect((await post).status()).toBe(200);
+    await expect(form.getByRole("status")).toContainText("Mensagem enviada com sucesso");
     await expect(form.locator("[aria-invalid='true']")).toHaveCount(0);
   });
 

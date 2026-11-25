@@ -6,6 +6,7 @@ import { useId, useState, type ChangeEvent, type FormEvent } from "react";
 import { flushSync } from "react-dom";
 import { AnimatedCheck } from "@/motion/icons";
 import { MotionButton } from "@/motion/MotionButton";
+import { Spinner } from "@/components/ui/Spinner";
 import { useHoldInView } from "@/motion/pageSequence";
 import { revealVariants } from "@/motion/Reveal";
 import { TextReveal } from "@/motion/TextReveal";
@@ -136,23 +137,64 @@ export function EvaluationForm({ variant = "home", entranceDelay = 0 }: Evaluati
   const pageStep = isPage ? { "data-reveal": "", variants: revealVariants("rise", t) } : {};
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting) return;
     const form = event.currentTarget;
     const data = new FormData(form);
+    const nome = String(data.get("nome") ?? "").trim();
+    const telefone = String(data.get("telefone") ?? "").trim();
+    const website = String(data.get("website") ?? "").trim();
     const nextErrors = compactErrors({
-      nome: VALIDATORS.nome(String(data.get("nome") ?? "")),
-      telefone: VALIDATORS.telefone(String(data.get("telefone") ?? "")),
+      nome: VALIDATORS.nome(nome),
+      telefone: VALIDATORS.telefone(telefone),
       privacidade: validateConsent(data.get("privacidade") === "on"),
     });
+    const isValid = Object.keys(nextErrors).length === 0;
     /* Confirma o DOM antes de focar: o campo já nasce com aria-invalid e aria-describedby. */
     flushSync(() => {
       setErrors(nextErrors);
-      setSubmitted(Object.keys(nextErrors).length === 0);
+      setSubmitted(false);
+      setSubmitError(null);
     });
     const firstInvalid = FIELD_ORDER.find((name) => nextErrors[name]);
-    if (firstInvalid) form.querySelector<HTMLInputElement>(`[name="${firstInvalid}"]`)?.focus();
+    if (firstInvalid) {
+      form.querySelector<HTMLInputElement>(`[name="${firstInvalid}"]`)?.focus();
+      return;
+    }
+    if (!isValid) return;
+
+    setSubmitting(true);
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: nome,
+          whatsapp: telefone,
+          source: "avaliacao",
+          tags: ["avaliacao", isPage ? "pagina-avaliacao" : "home"],
+          notes: isPage
+            ? "Pedido de avaliação enviado pela página /avaliacao."
+            : "Pedido de avaliação enviado pela página inicial.",
+          website,
+        }),
+      });
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        setSubmitError(payload?.error || "Não foi possível enviar seu pedido agora. Tente novamente em instantes.");
+        return;
+      }
+      form.reset();
+      setSubmitted(true);
+    } catch {
+      setSubmitError("Erro de conexão ao enviar seu pedido. Verifique sua internet e tente novamente.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   /* Corrigir o campo limpa o erro dele na hora; o aviso de sucesso some ao voltar a editar. */
@@ -273,8 +315,28 @@ export function EvaluationForm({ variant = "home", entranceDelay = 0 }: Evaluati
       </motion.div>
 
       <motion.div className={styles.actions} {...pageStep}>
-        <MotionButton type="submit" variant={isPage ? "primary" : "outline"}>
-          {EVALUATION.submit}
+        <input
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          className="visually-hidden"
+        />
+        <MotionButton
+          type="submit"
+          variant={isPage ? "primary" : "outline"}
+          disabled={submitting}
+          aria-busy={submitting || undefined}
+        >
+          {submitting ? (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+              <Spinner size={16} />
+              Enviando...
+            </span>
+          ) : (
+            EVALUATION.submit
+          )}
         </MotionButton>
       </motion.div>
 
@@ -282,7 +344,7 @@ export function EvaluationForm({ variant = "home", entranceDelay = 0 }: Evaluati
         {EVALUATION.healthNotice}
       </motion.p>
 
-      {/* Região viva sempre montada: o texto de sucesso entra nela e é anunciado. */}
+      {/* Região viva sempre montada: o texto de sucesso ou erro entra nela e é anunciado. */}
       <div role="status" className={styles.statusSlot}>
         <AnimatePresence initial={false}>
           {submitted ? (
@@ -295,6 +357,17 @@ export function EvaluationForm({ variant = "home", entranceDelay = 0 }: Evaluati
             >
               <AnimatedCheck size={24} />
               {EVALUATION.success}
+            </motion.p>
+          ) : submitError ? (
+            <motion.p
+              key="erro-envio"
+              className={styles.error}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transition: { duration: t.duration.base, ease: t.ease.out } }}
+              exit={{ opacity: 0, transition: { duration: t.duration.instant, ease: t.ease.in } }}
+            >
+              <CircleAlert aria-hidden="true" />
+              {submitError}
             </motion.p>
           ) : null}
         </AnimatePresence>

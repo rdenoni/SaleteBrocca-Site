@@ -20,6 +20,15 @@ Numeração R-NNNN sequencial, somando 1 ao maior número já existente.
 
 ## Entradas
 
+### R-0013 · 2026-11-25 14:34 · Gemini
+- Branch: gemini/admin-panel · Commit: pendente
+- Versão: 0.1.0 · Entrada anterior: R-0012
+- Tarefa: conectar os formulários "Pedir avaliação" (Home e `/avaliacao`) e "Contato" (`/contato`) ao `POST /api/leads` (CRM Supabase) e corrigir o flicker no hover do botão expansível "Abrir chamado" em `/area-do-aluno/suporte`.
+- Arquivos alterados: src/lib/content/home.ts, src/components/home/EvaluationForm.tsx, src/components/contact/ContactForm.tsx, src/app/area-do-aluno/suporte/suporte.module.css, tests/{avaliacao,home,sobre-contato}.spec.ts, docs/11-REGISTRO-AGENTES.md
+- O que mudou e por quê: (1) `EvaluationForm` e `ContactForm` deixaram o modo provisório e passaram a enviar via `POST /api/leads` com honeypot anti-bot (`website`), `<Spinner size={16} />` no botão durante o envio, reset do formulário e confirmação real (ou mensagem de erro), gravando diretamente na tabela `leads` do Supabase (`/admin/crm`); (2) corrigido o loop de flicker no hover do botão expansível "Abrir chamado" em `suporte.module.css` alterando `.formFooter` para `flex-wrap: nowrap` no desktop com espaço reservado (`max-width: calc(100% - 204px)`) em `.slaNote` e `flex: none` em `.expandBtn` (empilhando apenas em `<= 520px`).
+- Validação: typecheck ok · build ok · testes Playwright (`avaliacao` + `home` + `sobre-contato` 24/24, `area-do-aluno` Suporte 3/3 em 1440/768/375) ok · prints 1440/768/375 não
+- Pendências / cuidados para o próximo agente: consultar `docs/12-PENDENCIAS-JURIDICAS-LANCAMENTO.md` antes de campanhas pagas.
+
 ### R-0012 · 2026-11-25 14:15 · Gemini
 - Branch: gemini/admin-panel · Commit: pendente
 - Versão: 0.1.0 · Entrada anterior: R-0011

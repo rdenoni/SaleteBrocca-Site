@@ -158,8 +158,10 @@ test.describe("Home", () => {
     await form.getByLabel("Nome completo").fill("Maria da Silva");
     await form.getByLabel("Telefone").fill("(48) 99999-0000");
     await form.getByRole("checkbox").check();
+    const post = page.waitForResponse((res) => res.url().includes("/api/leads") && res.request().method() === "POST");
     await form.getByRole("button", { name: "Pedir avaliação" }).click();
-    await expect(form.getByRole("status")).toContainText("Dados conferidos");
+    expect((await post).status()).toBe(200);
+    await expect(form.getByRole("status")).toContainText("Pedido de avaliação enviado com sucesso");
     await expect(form.getByText("Informe seu nome completo.")).toHaveCount(0);
   });
 

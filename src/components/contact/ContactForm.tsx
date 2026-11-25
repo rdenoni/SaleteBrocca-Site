@@ -6,6 +6,7 @@ import { useState, type FormEvent } from "react";
 import { flushSync } from "react-dom";
 import { CircleAlert } from "lucide-react";
 import { Field, SelectField, TextAreaField } from "@/components/ui/Field";
+import { Spinner } from "@/components/ui/Spinner";
 import { CONTACT_SUBJECTS } from "@/lib/content/contact";
 import { AnimatedCheck } from "@/motion/icons";
 import { MotionButton } from "@/motion/MotionButton";
@@ -60,23 +61,64 @@ export function ContactForm({ entranceDelay = 0 }: ContactFormProps) {
   const item = revealVariants("rise", t);
   const [errors, setErrors] = useState<ContactErrors>({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const errorCount = Object.keys(errors).length;
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting) return;
     const form = event.currentTarget;
-    const nextErrors = readErrors(new FormData(form));
+    const data = new FormData(form);
+    const nextErrors = readErrors(data);
     const [firstInvalid] = Object.keys(nextErrors);
     /* flushSync: o foco só vai ao campo depois de o React aplicar aria-invalid/aria-describedby,
        senão o leitor de tela anuncia o campo sem o erro. */
     flushSync(() => {
       setErrors(nextErrors);
-      setSubmitted(firstInvalid === undefined);
+      setSubmitted(false);
+      setSubmitError(null);
     });
     /* Os erros seguem a ordem dos campos: leva o foco ao primeiro a corrigir. */
     if (firstInvalid) {
       const field = form.elements.namedItem(firstInvalid);
       if (field instanceof HTMLElement) field.focus();
+      return;
+    }
+
+    const name = String(data.get("nome") ?? "").trim();
+    const whatsapp = String(data.get("telefone") ?? "").trim();
+    const email = String(data.get("email") ?? "").trim();
+    const assunto = String(data.get("assunto") ?? "Contato").trim();
+    const mensagem = String(data.get("mensagem") ?? "").trim();
+    const website = String(data.get("website") ?? "").trim();
+
+    setSubmitting(true);
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          whatsapp,
+          email,
+          source: "contato",
+          tags: ["contato", assunto],
+          notes: `[${assunto}] ${mensagem}`,
+          website,
+        }),
+      });
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        setSubmitError(payload?.error || "Não foi possível enviar sua mensagem agora. Tente novamente em instantes.");
+        return;
+      }
+      form.reset();
+      setSubmitted(true);
+    } catch {
+      setSubmitError("Erro de conexão ao enviar sua mensagem. Tente novamente em instantes.");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -155,21 +197,42 @@ export function ContactForm({ entranceDelay = 0 }: ContactFormProps) {
       </motion.div>
 
       <motion.div className={styles.actions} data-reveal="" variants={item}>
-        <MotionButton type="submit" variant="primary">
-          Enviar mensagem
+        <input
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          className="visually-hidden"
+        />
+        <MotionButton type="submit" variant="primary" disabled={submitting} aria-busy={submitting || undefined}>
+          {submitting ? (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+              <Spinner size={16} />
+              Enviando...
+            </span>
+          ) : (
+            "Enviar mensagem"
+          )}
         </MotionButton>
-        <p className={errorCount > 0 ? styles.error : styles.status} role="status">
+        <p className={errorCount > 0 || submitError ? styles.error : styles.status} role="status">
           {errorCount > 0 && (
             <>
               <CircleAlert aria-hidden="true" />
               {errorCount === 1 ? "Corrija o campo destacado." : `Corrija os ${errorCount} campos destacados.`}
             </>
           )}
+          {submitError && (
+            <>
+              <CircleAlert aria-hidden="true" />
+              {submitError}
+            </>
+          )}
           {submitted && (
             <>
-              {/* O check se desenha (o traço) a cada envio conferido. */}
+              {/* O check se desenha (o traço) a cada envio confirmado. */}
               <AnimatedCheck size={18} />
-              Dados conferidos. O envio online será ativado em breve.
+              Mensagem enviada com sucesso! Retornaremos em breve.
             </>
           )}
         </p>

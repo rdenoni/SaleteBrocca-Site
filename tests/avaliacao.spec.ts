@@ -59,7 +59,7 @@ test.describe("Avaliação", () => {
     await expect(form.locator('[aria-hidden="true"]', { hasText: /^\?$/ })).toHaveCount(0);
   });
 
-  test("formulário valida nome e telefone e não envia", async ({ page }) => {
+  test("formulário valida nome e telefone e envia para /api/leads", async ({ page }) => {
     const form = page.locator("#formulario form");
     await form.getByRole("button", { name: "Pedir avaliação" }).click();
     await expect(form.getByText("Informe seu nome completo.")).toBeVisible();
@@ -71,8 +71,10 @@ test.describe("Avaliação", () => {
     await form.getByLabel("Nome completo").fill("Maria da Silva");
     await form.getByLabel("Telefone").fill("(48) 99999-0000");
     await form.getByRole("checkbox").check();
+    const post = page.waitForResponse((res) => res.url().includes("/api/leads") && res.request().method() === "POST");
     await form.getByRole("button", { name: "Pedir avaliação" }).click();
-    await expect(form.getByRole("status")).toContainText("Dados conferidos");
+    expect((await post).status()).toBe(200);
+    await expect(form.getByRole("status")).toContainText("Pedido de avaliação enviado com sucesso");
     await expect(form.getByText("Informe seu nome completo.")).toHaveCount(0);
     await expect(form.getByText("É preciso aceitar a política de privacidade.")).toHaveCount(0);
   });
@@ -88,7 +90,7 @@ test.describe("Avaliação", () => {
     await form.getByRole("button", { name: "Pedir avaliação" }).click();
     await expect(form.getByRole("checkbox")).toBeFocused();
     await expect(form.getByRole("checkbox")).toHaveAttribute("aria-invalid", "true");
-    await expect(form.getByRole("status")).not.toContainText("Dados conferidos");
+    await expect(form.getByRole("status")).not.toContainText("Pedido de avaliação enviado com sucesso");
   });
 
   test("formulário aponta a política de privacidade", async ({ page }) => {
