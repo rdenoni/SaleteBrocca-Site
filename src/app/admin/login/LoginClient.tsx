@@ -4,6 +4,7 @@ import { ArrowLeft, Eye, EyeOff, Lock, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useActionState, useState } from "react";
+import { Spinner } from "@/components/ui/Spinner";
 import { adminLoginAction, type AdminLoginState } from "./actions";
 import styles from "./login.module.css";
 
@@ -87,7 +88,7 @@ export function AdminLoginClient({ nextPath, demoMode }: { nextPath: string; dem
           ) : null}
 
           <button type="submit" className={styles.submitBtn} disabled={pending}>
-            <Lock size={16} aria-hidden="true" />
+            {pending ? <Spinner size={16} /> : <Lock size={16} aria-hidden="true" />}
             <span>{pending ? "Verificando..." : "Entrar no painel"}</span>
           </button>
         </form>

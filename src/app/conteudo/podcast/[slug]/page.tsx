@@ -8,6 +8,7 @@ import { PageBanner } from "@/components/layout/PageBanner";
 import { Button } from "@/components/ui/Button";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { getCourse } from "@/lib/content/courses";
+import { PROFILE_CRFA, PROFILE_NAME } from "@/lib/content/profile";
 import {
   PODCAST_NAME,
   getPodcastEpisode,
@@ -137,6 +138,13 @@ export default async function PodcastEpisodePage({ params }: PodcastEpisodePageP
               </div>
             </aside>
           )}
+
+          <PodcastNotice>
+            <strong>Aviso informativo:</strong> Este episódio tem caráter exclusivamente educacional e informativo e não
+            substitui avaliação, diagnóstico ou acompanhamento fonoaudiológico ou médico individualizado. Responsável
+            técnica: {PROFILE_NAME}
+            {PROFILE_CRFA ? ` · ${PROFILE_CRFA}` : ""}.
+          </PodcastNotice>
 
           {(previous || next) && (
             <nav className={styles.pager} aria-label="Outros episódios">

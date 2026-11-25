@@ -3,6 +3,7 @@ import { getKiwifyWebhookTokens } from "@/lib/kiwify/config";
 import { handleKiwifyWebhook, type KiwifyStore } from "@/lib/kiwify/handler";
 import { resolveCourseSlugByProductId } from "@/lib/kiwify/product-map";
 import { createSupabaseKiwifyStore } from "@/lib/kiwify/supabase-store";
+import { checkRateLimit, extractClientIp } from "@/lib/security/rate-limit";
 
 /* Webhook da Kiwify (docs/08-VENDAS-KIWIFY.md). Nunca em cache, sem redirecionamento. */
 export const dynamic = "force-dynamic";
@@ -29,6 +30,12 @@ function openStore(): KiwifyStore | null {
 }
 
 export async function POST(request: Request) {
+  const ip = extractClientIp(request.headers);
+  const rl = checkRateLimit(`webhook-kiwify:${ip}`, 60, 60 * 1000);
+  if (!rl.allowed) {
+    return json(429, { error: "muitas requisições" }, { "Retry-After": String(rl.retryAfterSeconds) });
+  }
+
   const tokens = getKiwifyWebhookTokens();
   if (tokens.length === 0) return notConfigured();
   const store = openStore();

@@ -38,6 +38,25 @@
   object-fit: cover;
 }
 
+.disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-sm);
+  background: var(--light-blue);
+  font: 400 14px/22px var(--font-sans);
+  color: var(--navy);
+}
+
+.disclaimer svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  color: var(--blue-strong);
+}
+
 .cta {
   display: grid;
   gap: var(--space-4);

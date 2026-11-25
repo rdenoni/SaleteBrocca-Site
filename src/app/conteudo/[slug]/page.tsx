@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { FileText } from "lucide-react";
+import { FileText, Info } from "lucide-react";
 import { ArticleBody } from "@/components/content/ArticleBody";
 import { ArticleGrid } from "@/components/content/ArticleGrid";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { PROFILE_CRFA } from "@/lib/content/profile";
 import {
   ARTICLE_AUTHOR,
   ARTICLES_ARE_EXAMPLES,
@@ -64,6 +65,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <p className={styles.meta}>
             <span className={styles.author}>
               Por <strong>{ARTICLE_AUTHOR}</strong>
+              {PROFILE_CRFA ? ` (${PROFILE_CRFA})` : ""}
             </span>
             {article.publishedAt && (
               <>
@@ -100,6 +102,16 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               }
             />
           )}
+
+          <p className={styles.disclaimer} role="note">
+            <Info aria-hidden="true" />
+            <span>
+              <strong>Aviso informativo:</strong> Este conteúdo tem caráter exclusivamente educacional e informativo e
+              não substitui avaliação, diagnóstico ou acompanhamento fonoaudiológico ou médico individualizado.
+              Responsável técnica: {ARTICLE_AUTHOR}
+              {PROFILE_CRFA ? ` · ${PROFILE_CRFA}` : ""}.
+            </span>
+          </p>
 
           <aside className={styles.cta} data-surface="dark" aria-labelledby="entender-melhor">
             <h2 id="entender-melhor" className={styles.ctaTitle}>

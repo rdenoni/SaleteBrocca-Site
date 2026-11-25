@@ -15,7 +15,7 @@ export interface KiwifyEvent {
 const MAX_FIELD_LENGTH = 200;
 const MAX_EMAIL_LENGTH = 254;
 const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-export const ABANDONED_CART_EVENT = "abandoned_cart";
+const ABANDONED_CART_EVENT = "abandoned_cart";
 
 type JsonObject = Record<string, unknown>;
 

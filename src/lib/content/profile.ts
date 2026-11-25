@@ -22,8 +22,8 @@ export const PROFILE_FORMATION: readonly FormationItem[] = [
   { year: null, title: "Especialização em Dificuldade de Aprendizagem" },
 ];
 
-/** Número do registro profissional: null até a cliente confirmar. */
-export const PROFILE_CRFA: string | null = null;
+/** Número do registro profissional confirmado pela titular (Resolução CFFa nº 640/2021). */
+export const PROFILE_CRFA: string | null = "CRFa/RJ 8589";
 
 export const PROFILE_ACTIVITIES: readonly Activity[] = [
   {

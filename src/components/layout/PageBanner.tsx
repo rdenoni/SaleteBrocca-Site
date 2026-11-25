@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { getLqip } from "@/lib/images/lqip";
 import { DrawRule } from "@/motion/DrawRule";
 import { useHoldInView } from "@/motion/pageSequence";
 import { afterBanner, heroTimeline } from "@/motion/timeline";
@@ -50,6 +51,8 @@ export function PageBanner({
           alt=""
           fill
           priority
+          placeholder="blur"
+          blurDataURL={getLqip(image)}
           sizes="100vw"
           className={styles.photo}
           style={imagePosition ? { objectPosition: imagePosition } : undefined}

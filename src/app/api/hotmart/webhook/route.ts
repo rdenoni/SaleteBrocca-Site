@@ -1,11 +1,13 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getRuntimeSecret } from "@/lib/admin/secrets";
+import { checkRateLimit, extractClientIp } from "@/lib/security/rate-limit";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { EnrollmentStatus, Json, TransactionStatus } from "@/types/database";
 
 const MAX_BODY_BYTES = 256 * 1024;
+const NO_STORE = { "Cache-Control": "no-store" } as const;
 
 function safeTokenMatch(received: string, expected: string): boolean {
   const a = Buffer.from(received, "utf8");
@@ -32,14 +34,23 @@ function mapHotmartEvent(event: string): { txStatus: TransactionStatus; enrollSt
 }
 
 export async function POST(request: Request) {
+  const ip = extractClientIp(request.headers);
+  const rl = checkRateLimit(`webhook-hotmart:${ip}`, 60, 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Muitas requisições." },
+      { status: 429, headers: { ...NO_STORE, "Retry-After": String(rl.retryAfterSeconds) } },
+    );
+  }
+
   const expectedToken = await getRuntimeSecret("HOTMART_WEBHOOK_TOKEN");
   if (!expectedToken) {
-    return NextResponse.json({ error: "HOTMART_WEBHOOK_TOKEN não configurado." }, { status: 503 });
+    return NextResponse.json({ error: "Serviço indisponível." }, { status: 503, headers: NO_STORE });
   }
 
   const receivedToken = request.headers.get("x-hotmart-hottok")?.trim() ?? "";
   if (!receivedToken || !safeTokenMatch(receivedToken, expectedToken)) {
-    return NextResponse.json({ error: "Assinatura Hotmart inválida." }, { status: 401 });
+    return NextResponse.json({ error: "Não autorizado." }, { status: 401, headers: NO_STORE });
   }
 
   const contentLength = Number(request.headers.get("content-length") ?? "0");

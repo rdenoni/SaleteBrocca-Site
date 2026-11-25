@@ -40,9 +40,9 @@ test.describe("Sobre", () => {
     await expect(page.locator("blockquote")).toContainText("Toda criança, independente da dificuldade");
   });
 
-  test("dados ausentes ficam ocultos (nunca inventados nem marcados na página)", async ({ page }) => {
+  test("exibe o registro profissional CRFa confirmado e oculta dados ainda ausentes", async ({ page }) => {
     await expect(page.getByText(/a confirmar/i)).toHaveCount(0);
-    await expect(page.getByText(/CRFa/)).toHaveCount(0);
+    await expect(page.getByText("CRFa/RJ 8589").first()).toBeVisible();
   });
 
   test("chamada final leva a /avaliacao", async ({ page }) => {

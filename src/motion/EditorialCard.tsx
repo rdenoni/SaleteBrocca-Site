@@ -5,6 +5,7 @@ import { motion, type MotionValue, type Variants } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, type ComponentProps } from "react";
+import { getLqip } from "@/lib/images/lqip";
 import styles from "./EditorialCard.module.css";
 import { TransitionLink } from "./transitions/TransitionLink";
 import { useMotionTokens, type ResolvedMotionTokens } from "./useMotionTokens";
@@ -228,6 +229,8 @@ function EditorialCardView({
             alt={article.imageAlt}
             fill
             priority={priority}
+            placeholder="blur"
+            blurDataURL={getLqip(article.image)}
             sizes="(max-width: 1099px) 60vw, 420px"
             style={article.imagePosition ? { objectPosition: article.imagePosition } : undefined}
           />

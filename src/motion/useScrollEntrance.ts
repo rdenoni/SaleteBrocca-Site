@@ -12,7 +12,6 @@ import {
 } from "motion/react";
 import { useEffect, useRef, type RefObject } from "react";
 import { useScrollWillChange } from "./useScrollWillChange";
-import { ease } from "./tokens";
 import { useMotionTokens } from "./useMotionTokens";
 
 /* Limiar a partir do qual uma animação guiada por scroll é considerada concluída e trava em 1 (não reverte ao subir). */

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { isDemoMode, requireStudentSession } from "@/lib/content/student";
+import { checkRateLimit } from "@/lib/security/rate-limit";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { SupportTicketCategory } from "@/types/database";
 
@@ -38,6 +39,16 @@ export async function createStudentTicketAction(
       status: "error",
       message: "Modo demonstração: faça login com sua conta para abrir chamados reais de suporte.",
     };
+  }
+
+  /* Proteção contra spam e race condition por duplo clique rápido. */
+  const dedupe = checkRateLimit(`ticket-dedupe:${session.userId}:${subject.toLowerCase()}`, 1, 10 * 1000);
+  if (!dedupe.allowed) {
+    return { status: "error", message: "Este chamado já está sendo processado. Aguarde alguns segundos." };
+  }
+  const rl = checkRateLimit(`ticket-create:${session.userId}`, 5, 10 * 60 * 1000);
+  if (!rl.allowed) {
+    return { status: "error", message: "Limite temporário de novos chamados atingido. Tente novamente em alguns minutos." };
   }
 
   const supabase = await createSupabaseServerClient();
@@ -95,6 +106,11 @@ export async function replyStudentTicketAction(
       status: "error",
       message: "Modo demonstração: faça login com sua conta para enviar respostas.",
     };
+  }
+
+  const rl = checkRateLimit(`ticket-reply:${session.userId}`, 15, 5 * 60 * 1000);
+  if (!rl.allowed) {
+    return { status: "error", message: "Muitas mensagens enviadas em seguida. Aguarde alguns instantes." };
   }
 
   const supabase = await createSupabaseServerClient();

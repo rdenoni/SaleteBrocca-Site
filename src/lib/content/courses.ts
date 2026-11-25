@@ -138,10 +138,6 @@ export function getCatalogCourses(): readonly Course[] {
   return [...COURSES.filter(isCourseAvailable), ...COURSES.filter((course) => !isCourseAvailable(course))];
 }
 
-export function getCatalogCourse(slug: string): Course | undefined {
-  return COURSES.find((course) => course.slug === slug);
-}
-
 export function countLessons(course: Course): number {
   return course.modules.reduce((total, module) => total + module.lessons.length, 0);
 }

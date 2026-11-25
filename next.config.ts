@@ -51,14 +51,30 @@ const nextConfig: NextConfig = {
       { source: "/motion/:path([^.]+)", destination: "/motion/:path.html" },
     ];
   },
-  /* Cabeçalhos de segurança globais + noindex no laboratório de movimento + cache HTTP longo em assets locais. */
+  /* Cabeçalhos de segurança globais (incluindo CSP) + noindex no laboratório de movimento + cache HTTP longo em assets locais. */
   async headers() {
+    const csp = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.mux.com https://cdn.jsdelivr.net",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: blob: https://*.supabase.co https://image.mux.com",
+      "media-src 'self' blob: https://*.mux.com https://stream.mux.com https://*.supabase.co",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.mux.com https://*.litix.io",
+      "font-src 'self' data:",
+      "frame-ancestors 'self'",
+      "base-uri 'self'",
+      "form-action 'self' https://pay.kiwify.com.br",
+      "object-src 'none'",
+    ].join("; ");
+
     return [
       {
         source: "/:path*",
         headers: [
+          { key: "Content-Security-Policy", value: csp },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "X-DNS-Prefetch-Control", value: "off" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
           { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { getLqip } from "@/lib/images/lqip";
 import type { Product } from "@/types/content";
 import { ProductMedia } from "./ProductMedia";
 import styles from "./ProductGallery.module.css";
@@ -43,6 +44,8 @@ export function ProductGallery({ product }: ProductGalleryProps) {
             alt={active.alt}
             fill
             priority={activeIndex === 0}
+            placeholder="blur"
+            blurDataURL={getLqip(active.src)}
             sizes="(max-width: 1099px) 100vw, 640px"
             className={styles.photo}
           />
@@ -60,7 +63,15 @@ export function ProductGallery({ product }: ProductGalleryProps) {
               aria-pressed={index === activeIndex}
               onClick={() => setActiveIndex(index)}
             >
-              <Image src={item.src} alt="" fill sizes="96px" className={styles.thumbImg} />
+              <Image
+                src={item.src}
+                alt=""
+                fill
+                placeholder="blur"
+                blurDataURL={getLqip(item.src)}
+                sizes="96px"
+                className={styles.thumbImg}
+              />
             </button>
           ))}
         </div>

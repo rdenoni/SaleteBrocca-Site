@@ -5,7 +5,7 @@ import type { Database } from "@/types/database";
 import { encryptBackupPayload, type EncryptedBackupEnvelope } from "./backup-crypto";
 import { getRuntimeSecret, getRuntimeSecrets } from "./secrets";
 
-export const BACKUP_TABLES = [
+const BACKUP_TABLES = [
   "profiles",
   "user_roles",
   "enrollments",

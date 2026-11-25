@@ -138,7 +138,7 @@ export function sealSecretValue(plaintext: string): string {
   return `enc:v1:${iv.toString("base64")}:${tag.toString("base64")}:${enc.toString("base64")}`;
 }
 
-export function unsealSecretValue(stored: string): string {
+function unsealSecretValue(stored: string): string {
   if (!stored.startsWith("enc:v1:")) return stored;
   const parts = stored.split(":");
   if (parts.length !== 5) return "";

@@ -70,12 +70,25 @@ export const DATA_FLOWS: readonly DataFlow[] = [
     legalBasis: "Execução de contrato (art. 7º, V).",
   },
   {
-    id: "acesso",
-    title: "Acesso ao site",
-    fields: ["Dados técnicos de conexão, como endereço IP, data e hora e página acessada"],
+    id: "suporte-aluno",
+    title: "Suporte da Área do Aluno",
+    href: "/area-do-aluno/suporte",
+    fields: ["Assunto", "Categoria do chamado", "Mensagens e respostas trocadas com a equipe"],
     status:
-      "Como em qualquer site, o provedor de hospedagem pode registrar esses dados para o site funcionar e se manter seguro. O site não usa ferramenta de análise de visitas.",
-    purpose: "Manter o site no ar, evitar abusos e investigar falhas.",
+      "Os chamados abertos na Área do Aluno são armazenados no Supabase com isolamento por usuário (Row Level Security): cada aluno visualiza apenas os próprios chamados.",
+    purpose: "Prestar atendimento sobre cursos, acesso, pedidos e solicitações de reembolso ou dados pessoais.",
+    legalBasis: "Execução de contrato (art. 7º, V) e cumprimento de obrigação legal (art. 7º, II).",
+  },
+  {
+    id: "acesso",
+    title: "Acesso ao site e segurança de sessão",
+    fields: [
+      "Dados técnicos de conexão, como endereço IP, data, hora e página acessada",
+      "Na Área do Aluno: dispositivo/navegador e localização aproximada para prevenção de acessos indevidos",
+    ],
+    status:
+      "O provedor de hospedagem registra dados técnicos para segurança e estabilidade. Na Área do Aluno, o sistema mantém registro das sessões ativas para permitir revogação e prevenir compartilhamento indevido. O site não usa ferramenta de análise de visitas sem o seu consentimento.",
+    purpose: "Manter o site no ar, proteger sua conta, evitar abusos e investigar falhas.",
     legalBasis: "Legítimo interesse (art. 7º, IX), limitado ao que é necessário para a segurança e o funcionamento.",
   },
 ];
@@ -89,22 +102,37 @@ export interface DataOperator {
   policyUrl?: string;
 }
 
-/* Só fornecedores ativos ou já integrados no código. O provedor de vídeo ainda não foi integrado (docs/09). */
+/* Fornecedores ativos ou integrados no código. */
 export const DATA_OPERATORS: readonly DataOperator[] = [
   {
     name: "Kiwify",
-    role: "Plataforma de pagamento e venda dos cursos; avisa o site de cada compra.",
+    role: "Plataforma de pagamento e venda dos cursos e produtos; avisa o site de cada compra.",
     data: "Dados de pagamento e de cadastro do comprador (ficam na Kiwify). O site recebe o e-mail, o número e a situação do pedido e o produto.",
   },
   {
+    name: "Hotmart",
+    role: "Plataforma alternativa de pagamento e venda, quando utilizada em produtos específicos.",
+    data: "Dados de pagamento e cadastro permanecem na Hotmart; o site recebe apenas os eventos de pedido para liberação ou estorno de acesso.",
+  },
+  {
     name: "Supabase",
-    role: "Contas de acesso, banco de dados da Área do Aluno e envio dos e-mails de convite e de recuperação de senha.",
-    data: "E-mail, senha criptografada, matrículas e aulas concluídas.",
+    role: "Contas de acesso, banco de dados da Área do Aluno, chamados de suporte e envio dos e-mails de convite e de recuperação de senha.",
+    data: "E-mail, senha criptografada, matrículas, aulas concluídas, chamados de suporte e sessões de segurança.",
+  },
+  {
+    name: "Mux",
+    role: "Hospedagem e transmissão protegida das videoaulas da Área do Aluno com tokens temporários assinados.",
+    data: "Dados técnicos de reprodução e conexão necessários para entregar o vídeo de forma segura ao aluno autenticado.",
   },
   {
     name: "Netlify",
     role: "Hospedagem do site e das funções de servidor.",
     data: "Dados técnicos de conexão e o conteúdo das requisições que passam pelo servidor do site (por exemplo, o login).",
+  },
+  {
+    name: "Resend",
+    role: "Serviço de envio e recebimento de e-mails transacionais e administrativos, quando ativado.",
+    data: "Endereço de e-mail e conteúdo das mensagens enviadas ao canal de atendimento.",
   },
 ];
 

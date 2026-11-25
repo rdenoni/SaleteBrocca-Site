@@ -102,6 +102,36 @@
   color: var(--blue-strong);
 }
 
+.guaranteeBox {
+  max-width: 60ch;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border: 1px solid var(--light-gray);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  font: 400 14px/22px var(--font-sans);
+  color: var(--charcoal);
+}
+
+.guaranteeBox svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  color: var(--success);
+}
+
+.guaranteeBox strong {
+  color: var(--navy);
+}
+
+.guaranteeBox a {
+  color: var(--blue-strong);
+  font-weight: 700;
+}
+
 .summary {
   grid-area: summary;
   position: sticky;

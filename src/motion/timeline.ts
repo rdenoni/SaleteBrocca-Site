@@ -55,7 +55,7 @@ export function bannerTextStart(t: TimingTokens, title: string, hasExtra = false
 }
 
 /* Telas de ritmo curto (Loja, Conteúdo, Área do Aluno): o conjunto seguinte entra com o anterior 30% formado. */
-export const OVERLAP = 0.3;
+const OVERLAP = 0.3;
 
 /** Quanto depois do início de um movimento (de `duration` s) ele está 30% formado. */
 export function overlapAfter(duration: number): number {

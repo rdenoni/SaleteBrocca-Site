@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { Circle, CircleAlert, CircleCheck } from "lucide-react";
 import { setLessonCompleted } from "@/app/area-do-aluno/lesson-actions";
+import { Spinner } from "@/components/ui/Spinner";
 import { AnimatedCheck } from "@/motion/icons";
 import styles from "./CompleteLessonButton.module.css";
 
@@ -50,7 +51,8 @@ export function CompleteLessonButton({ courseSlug, lessonCode, initialCompleted,
     <div className={styles.wrap}>
       <button type="button" className={styles.button} aria-pressed={completed} disabled={pending} onClick={toggle}>
         {icon}
-        Marcar como concluída
+        <span>Marcar como concluída</span>
+        {pending ? <Spinner size={14} /> : null}
       </button>
       <p className={styles.error} role="alert">
         {error && (

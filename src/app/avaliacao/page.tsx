@@ -14,6 +14,7 @@ import { EVALUATION_PAGE } from "@/lib/content/evaluation";
 import { HOME_TESTIMONIALS } from "@/lib/content/home";
 import {
   PROFILE_ACTIVITIES,
+  PROFILE_CRFA,
   PROFILE_FORMATION,
   PROFILE_INTRO,
   PROFILE_NAME,
@@ -97,7 +98,10 @@ export default function EvaluationPage() {
               className={styles.portraitCaption}
             >
               <span className={styles.portraitName}>{PROFILE_NAME}</span>
-              <span className={styles.portraitRole}>{PROFILE_ROLE}</span>
+              <span className={styles.portraitRole}>
+                {PROFILE_ROLE}
+                {PROFILE_CRFA ? ` · ${PROFILE_CRFA}` : ""}
+              </span>
             </Reveal>
           </figure>
         </div>

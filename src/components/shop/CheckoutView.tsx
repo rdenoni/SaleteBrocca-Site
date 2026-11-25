@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Check, Lock } from "lucide-react";
+import { Check, Lock, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { validatedCheckoutUrl } from "@/lib/kiwify/checkout-url";
 import type { ProductDelivery } from "@/types/content";
@@ -117,7 +117,8 @@ export function CheckoutView({
                 Ir para o pagamento
               </Button>
               <p className={styles.small}>
-                O pagamento abre no site da Kiwify. Veja como tratamos seus dados na{" "}
+                O pagamento abre no site da Kiwify. Ao continuar, você concorda com os{" "}
+                <Link href="/termos-de-uso">termos de uso</Link> e a{" "}
                 <Link href="/privacidade">política de privacidade</Link>.
               </p>
             </div>
@@ -130,6 +131,15 @@ export function CheckoutView({
               </p>
             </div>
           )}
+
+          <div className={styles.guaranteeBox} role="note">
+            <ShieldCheck aria-hidden="true" />
+            <p>
+              <strong>Direito de arrependimento (Art. 49 do CDC):</strong> reembolso integral em até 7 dias corridos
+              após a compra (cursos e digitais) ou após o recebimento (produtos físicos).{" "}
+              <Link href="/termos-de-uso#reembolso">Ver política de reembolso e garantia</Link>.
+            </p>
+          </div>
         </section>
       </div>
     </div>

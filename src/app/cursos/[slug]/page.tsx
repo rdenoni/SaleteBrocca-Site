@@ -49,7 +49,6 @@ export default async function CoursePage({ params }: CoursePageProps) {
   const ABOUT_START = afterTitle(motionTokens, "Sobre o curso");
   const LEARN_START = afterTitle(motionTokens, "Você estará mais preparado para");
   const MODULES_START = afterTitle(motionTokens, "Módulos e aulas");
-  const FAQ_START = afterTitle(motionTokens, FAQ_TITLE);
 
   return (
     <>

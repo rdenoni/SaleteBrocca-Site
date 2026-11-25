@@ -11,7 +11,7 @@ export const ACCOUNT_PATH = "/area-do-aluno/conta";
 export const CONFIRM_PATH = "/auth/confirmar";
 
 /** Tipos de link de e-mail do Supabase aceitos. "invite" e "recovery" levam a pessoa a definir a senha. */
-export const CONFIRM_TYPES = ["invite", "recovery", "email", "signup"] as const;
+const CONFIRM_TYPES = ["invite", "recovery", "email", "signup"] as const;
 export type ConfirmType = (typeof CONFIRM_TYPES)[number];
 const SET_PASSWORD_TYPES: readonly ConfirmType[] = ["invite", "recovery"];
 

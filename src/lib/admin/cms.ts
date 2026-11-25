@@ -54,7 +54,7 @@ const HERO_POSTER_BY_SLUG: Record<string, string> = {
   conteudo: "/images/articles/familia-e-escola.jpg",
 };
 
-export const FALLBACK_HERO_SLIDES: readonly AdminHeroSlide[] = [
+const FALLBACK_HERO_SLIDES: readonly AdminHeroSlide[] = [
   {
     id: "fallback-cursos",
     slug: "cursos",

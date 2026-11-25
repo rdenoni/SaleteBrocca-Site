@@ -1,8 +1,11 @@
 import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
+import { checkRateLimit, extractClientIp } from "@/lib/security/rate-limit";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+
+const NO_STORE = { "Cache-Control": "no-store" } as const;
 
 function parseDevice(ua: string): string {
   const browser = /Edg\//.test(ua)
@@ -68,11 +71,17 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: "Não autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Não autenticado." }, { status: 401, headers: NO_STORE });
   }
 
-  const forwarded = request.headers.get("x-forwarded-for") ?? request.headers.get("x-nf-client-connection-ip") ?? "";
-  const ipAddress = forwarded.split(",")[0]?.trim() || "desconhecido";
+  const ipAddress = extractClientIp(request.headers);
+  const rl = checkRateLimit(`heartbeat:${user.id}:${ipAddress}`, 30, 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Limite de atualizações excedido." },
+      { status: 429, headers: { ...NO_STORE, "Retry-After": String(rl.retryAfterSeconds) } },
+    );
+  }
   const userAgent = request.headers.get("user-agent") ?? "";
   const deviceLabel = parseDevice(userAgent);
   const geo = parseNetlifyGeo(request.headers.get("x-nf-geo"));

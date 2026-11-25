@@ -7,7 +7,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
    da matrícula no banco (defesa em profundidade). */
 
 const SIGNED_URL_SECONDS = 60;
-export const MATERIALS_BUCKET = "materiais";
+const MATERIALS_BUCKET = "materiais";
 
 export type MaterialDownloadDenial = "not-found" | "not-configured" | "unauthenticated" | "not-enrolled" | "unavailable";
 

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getLqip } from "@/lib/images/lqip";
 import type { Product } from "@/types/content";
 import { CATEGORY_ICONS } from "./category-icons";
 import styles from "./ProductMedia.module.css";
@@ -19,6 +20,8 @@ export function ProductMedia({ product, sizes, priority = false }: ProductMediaP
         alt={product.imageAlt}
         fill
         priority={priority}
+        placeholder="blur"
+        blurDataURL={getLqip(product.image)}
         sizes={sizes}
         data-product-photo="true"
       />

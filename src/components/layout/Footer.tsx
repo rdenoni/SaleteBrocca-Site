@@ -8,6 +8,7 @@ import { TransitionLink } from "@/motion/transitions/TransitionLink";
 import { useMotionTokens } from "@/motion/useMotionTokens";
 import type { FooterColumn, SocialLink } from "@/types/content";
 import { CookiePreferencesButton } from "@/components/privacy/CookiePreferencesButton";
+import { PROFILE_CRFA } from "@/lib/content/profile";
 import { copyrightLine, LEGAL_LINKS } from "@/lib/content/site";
 import { BackToTop } from "./BackToTop";
 import { SocialProfiles } from "./SocialProfiles";
@@ -67,7 +68,10 @@ export function Footer({ columns, year, socialLinks }: FooterProps) {
 
       <div className={styles.bar}>
         <div className={styles.barInner}>
-          <p>{copyrightLine(year)}</p>
+          <p>
+            {copyrightLine(year)}
+            {PROFILE_CRFA ? ` · ${PROFILE_CRFA}` : ""}
+          </p>
           {LEGAL_LINKS.map((link) => (
             <TransitionLink key={link.href} href={link.href} className={styles.legal}>
               {link.label}

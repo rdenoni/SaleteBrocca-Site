@@ -25,7 +25,12 @@ test.describe("Privacidade", () => {
     const dados = page.locator("#dados");
     await expect(dados.getByRole("link", { name: "Pedido de avaliação" })).toHaveAttribute("href", "/avaliacao#formulario");
     await expect(dados.getByRole("link", { name: "Formulário de contato" })).toHaveAttribute("href", "/contato#formulario");
-    await expect(dados.getByRole("link", { name: "Área do Aluno" })).toHaveAttribute("href", "/area-do-aluno/login");
+    await expect(dados.getByRole("link", { name: "Área do Aluno", exact: true })).toHaveAttribute("href", "/area-do-aluno/login");
+    await expect(dados.getByRole("link", { name: "Suporte da Área do Aluno", exact: true })).toHaveAttribute(
+      "href",
+      "/area-do-aluno/suporte",
+    );
+    await expect(page.locator("#quem")).toContainText("CRFa/RJ 8589");
     /* O site não coleta dados na compra: quem coleta é a Kiwify. */
     await expect(dados.getByText("O site não coleta nome, telefone, endereço nem dados de cartão.", { exact: false })).toBeVisible();
     await expect(dados.getByText("só confere os campos no seu navegador", { exact: false }).first()).toBeVisible();

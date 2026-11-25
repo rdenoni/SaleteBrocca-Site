@@ -1,0 +1,117 @@
+/* Skeleton Loader com efeito Shimmer (tokens da marca, respeita prefers-reduced-motion). */
+.skeleton {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--light-gray);
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--white) 68%, transparent) 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.45s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.pill {
+  border-radius: var(--radius-pill);
+}
+
+.card {
+  border-radius: var(--radius-md);
+}
+
+.circle {
+  border-radius: 50%;
+}
+
+/* Layouts de carregamento de rotas (loading.tsx) */
+.pageWrap {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding: calc(var(--header-height) + var(--space-12)) var(--page-gutter) var(--space-16);
+  display: grid;
+  gap: var(--space-8);
+}
+
+.adminWrap {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.headerRow {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+.cardShell {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  box-shadow: var(--shadow-card);
+}
+
+.listShell {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  box-shadow: var(--shadow-card);
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 1099px) {
+  .kpiGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .pageWrap {
+    padding-top: calc(var(--header-height-compact) + var(--space-8));
+  }
+
+  .kpiGrid,
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+    display: none;
+  }
+}

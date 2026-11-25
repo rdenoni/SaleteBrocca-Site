@@ -4,7 +4,7 @@ import { Check, Info } from "lucide-react";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { CookiePreferencesButton } from "@/components/privacy/CookiePreferencesButton";
 import { EMAIL, PRIVACY_SUBJECT } from "@/lib/content/contact";
-import { PROFILE_NAME } from "@/lib/content/profile";
+import { PROFILE_CRFA, PROFILE_NAME } from "@/lib/content/profile";
 import {
   COOKIE_CATEGORIES,
   DATA_FLOWS,
@@ -98,6 +98,12 @@ export default function PrivacyPage() {
                 <dt>Nome</dt>
                 <dd>{PROFILE_NAME}</dd>
               </div>
+              {PROFILE_CRFA && (
+                <div>
+                  <dt>Registro profissional</dt>
+                  <dd>{PROFILE_CRFA}</dd>
+                </div>
+              )}
               <div>
                 <dt>CPF ou CNPJ</dt>
                 <dd>

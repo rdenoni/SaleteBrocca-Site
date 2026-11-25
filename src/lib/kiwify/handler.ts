@@ -87,7 +87,7 @@ function errorMessage(error: unknown): string {
 }
 
 /** Só o necessário para auditoria e idempotência: sem nome, telefone, CPF nem e-mail (o e-mail fica em `enrollments`). */
-export function minimalEventPayload(event: KiwifyEvent): Record<string, string | null> {
+function minimalEventPayload(event: KiwifyEvent): Record<string, string | null> {
   return {
     order_id: event.orderId,
     order_status: event.orderStatus,

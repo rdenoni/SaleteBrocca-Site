@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
 import { useEffect, useId, useRef, useState, type MouseEventHandler } from "react";
+import { getLqip } from "@/lib/images/lqip";
 import { DrawRule } from "./DrawRule";
 import styles from "./HeroSequence.module.css";
 import { TextReveal } from "./TextReveal";
@@ -239,6 +240,8 @@ export function HeroSequence({
                   fill
                   priority={index === 0}
                   loading={index === 0 ? "eager" : "lazy"}
+                  placeholder="blur"
+                  blurDataURL={getLqip(slide.poster ?? slide.image)}
                   sizes="100vw"
                   className={styles.photo}
                   style={slide.imagePosition ? { objectPosition: slide.imagePosition } : undefined}

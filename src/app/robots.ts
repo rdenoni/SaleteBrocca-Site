@@ -6,7 +6,11 @@ import { absoluteUrl } from "@/lib/site-url";
    endereço ainda poderia ser indexado a partir de links. */
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", allow: "/" },
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      disallow: ["/admin", "/api", "/motion"],
+    },
     sitemap: absoluteUrl("/sitemap.xml"),
   };
 }
