@@ -8,6 +8,7 @@ type SetCookieOptions = Parameters<NextResponse["cookies"]["set"]>[2];
 type CacheHeaders = Record<string, string>;
 
 const STUDENT_PREFIX = "/area-do-aluno";
+const ADMIN_PREFIX = "/admin";
 
 /* Renova a sessão do Supabase (cookies) e, nas páginas privadas da Área do Aluno, manda quem não entrou para o login.
    O proxy é só a primeira barreira: páginas e Server Actions conferem o usuário de novo no servidor.
@@ -44,8 +45,9 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
 
   const isPrivateStudentPath =
     (pathname === STUDENT_PREFIX || pathname.startsWith(`${STUDENT_PREFIX}/`)) && !isPublicStudentPath(pathname);
+  const isAdminPath = pathname === ADMIN_PREFIX || pathname.startsWith(`${ADMIN_PREFIX}/`);
 
-  if (!signedIn && isPrivateStudentPath) {
+  if (!signedIn && (isPrivateStudentPath || isAdminPath)) {
     const redirect = NextResponse.redirect(new URL(loginPathWithNext(`${pathname}${search}`), request.url));
     supabaseResponse.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
     Object.entries(cacheHeaders).forEach(([header, headerValue]) => redirect.headers.set(header, headerValue));

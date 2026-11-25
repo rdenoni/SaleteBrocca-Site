@@ -4,7 +4,7 @@ import { AnimatePresence, motion, type Variants } from "motion/react";
 import { useCallback, useState } from "react";
 import { SOCIAL_LINKS } from "@/lib/content/site";
 import { useMotionTokens } from "@/motion/useMotionTokens";
-import type { SocialNetwork } from "@/types/content";
+import type { SocialLink, SocialNetwork } from "@/types/content";
 import { SocialButton } from "./SocialButton";
 import styles from "./Footer.module.css";
 
@@ -14,7 +14,7 @@ const PENDING_NOTICE = "Endereço em confirmação";
    (a lista é mais larga que ele, mesmo a 320px) e dois avisos nunca se sobrepõem. Perfis sem endereço confirmado
    (href null) são botões, não links; o aviso fica numa região viva educada (role="status"), então o leitor de tela
    o anuncia sem interromper. */
-export function SocialProfiles() {
+export function SocialProfiles({ links = SOCIAL_LINKS }: { links?: readonly SocialLink[] }) {
   const t = useMotionTokens();
   const [noticeFor, setNoticeFor] = useState<SocialNetwork | null>(null);
 
@@ -23,7 +23,7 @@ export function SocialProfiles() {
     setNoticeFor((current) => (visible ? network : current === network ? null : current));
   }, []);
 
-  if (SOCIAL_LINKS.length === 0) return null;
+  if (links.length === 0) return null;
 
   const entranceVariants = (index: number): Variants => {
     if (t.reduced) {
@@ -42,7 +42,7 @@ export function SocialProfiles() {
     <div className={styles.socialGroup}>
       <div className={styles.socialAnchor}>
         <ul className={styles.social} aria-label="Redes sociais">
-          {SOCIAL_LINKS.map((profile, index) => (
+          {links.map((profile, index) => (
             /* Sem initial/animate próprios: herda hidden/visible do Stagger do rodapé e entra em sequência. */
             <motion.li key={profile.network} data-reveal="" variants={entranceVariants(index)}>
               <SocialButton

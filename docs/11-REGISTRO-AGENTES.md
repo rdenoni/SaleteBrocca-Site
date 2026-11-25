@@ -20,6 +20,15 @@ Numeração R-NNNN sequencial, somando 1 ao maior número já existente.
 
 ## Entradas
 
+### R-0005 · 2026-11-24 23:23 · Gemini
+- Branch: gemini/admin-panel · Commit: pendente
+- Versão: 0.1.0 · Entrada anterior: R-0004
+- Tarefa: criação completa do Painel Administrativo (/admin) em 10 etapas independentes (Fundação/Auth/Auditoria, Hero/Depoimentos, Links, Artigos/Podcasts, Usuários/IPs/Backup individual, Cadastro/Capacidade, Financeiro Kiwify+Hotmart, CRM, Suporte, Sessões, Stream Mux, Backup AES-256-GCM+GitHub, Marketing/CAPI, LGPD e ADM E-mails).
+- Arquivos alterados: supabase/migrations/20261124120000_admin_foundation.sql, supabase/migrations/20261124130000_admin_cms_visual.sql, supabase/migrations/20261124140000_admin_etapas_2_3_4.sql, supabase/migrations/20261124150000_admin_etapas_5_6_7_8.sql, supabase/migrations/20261124160000_admin_etapas_9_10.sql, src/types/database.ts, .env.example, src/lib/supabase/proxy.ts, src/lib/admin/* (auth, nav, cms, content-cms, users, finance, crm, support, sessions, backup-crypto, backup), src/lib/mux/admin-metrics.ts, src/components/admin/AdminShell.{tsx,module.css}, src/app/admin/** (15 rotas + actions + clients), src/app/api/{admin/users/[id]/backup,admin/backup/export,admin/emails/inbound,hotmart/webhook,leads,session/heartbeat}/route.ts, src/motion/HeroSequence.tsx, src/components/home/HomeHero.tsx, src/app/page.tsx, src/app/layout.tsx, src/components/layout/{Footer,SocialProfiles}.tsx, tests/admin.spec.ts, docs/11-REGISTRO-AGENTES.md
+- O que mudou e por quê: implementação integral do Painel Administrativo modular sob /admin com proteção de rota no proxy + requireAdmin() via user_roles (SECURITY DEFINER), auditoria imutável em admin_audit_logs, fallback seguro para o site público e suporte a modo demonstração sem credenciais locais. Inclui CMS visual (Hero foto/vídeo, Depoimentos, Links, Artigos e Podcasts), gestão de usuários/IPs/capacidade Supabase, Financeiro unificado Kiwify+Hotmart, CRM, Suporte, Sessões com geo-header Netlify, monitoramento Mux, Backup AES-256-GCM + GitHub privado, diagnóstico Meta Pixel/CAPI, Relatório LGPD (8 pilares) e caixa de e-mails ADM (Resend).
+- Validação: typecheck ok · build ok (80/80) · testes Playwright tests/admin.spec.ts ok em 1440/768/375 · prints 1440/375 sim
+- Pendências / cuidados para o próximo agente: aplicar as 5 migrations SQL (`20261124120000` a `20261124160000`) no projeto Supabase de produção, cadastrar o usuário administrador em `public.user_roles` (`role = 'admin'`) e preencher gradualmente as variáveis opcionais listadas em `.env.example` na Netlify conforme ativar cada integração (Hotmart, Mux API, Backup AES/GitHub, Meta Pixel/CAPI, Resend).
+
 ### R-0004 · 2026-11-24 22:17 · Gemini
 - Branch: gemini/ajustes-ui-responsividade · Commit: pendente
 - Versão: 0.1.0 · Entrada anterior: R-0003

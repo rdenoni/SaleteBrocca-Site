@@ -15,11 +15,12 @@ import { useScrollWillChange } from "./useScrollWillChange";
 
 /* Slides reais do Hero: alterna continuamente em fade leve entre o curso disponível
    (Conheça nossos cursos — tratamento azul) e o Curso de Alfabetização (Em breve — foto colorida). */
-interface HeroSlide {
+export interface HeroSlide {
   id: string;
   title: string;
   text: string;
   image: string;
+  mediaType?: "image" | "video";
   imagePosition?: string;
   tone: "blue" | "color";
   badge?: string;
@@ -89,6 +90,8 @@ export interface HeroSequenceProps {
   ctaLabel?: string;
   ctaHref?: string;
   imageSrc?: string;
+  /** Slides vindos do CMS (/admin/hero); sem eles, usa DEFAULT_SLIDES. */
+  slides?: readonly HeroSlide[];
   /** Opcional: intercepta o clique do botão (ex.: rolar até uma âncora e mover o foco). Sem ele, link comum. */
   onCtaClick?: MouseEventHandler<HTMLAnchorElement>;
 }
@@ -103,6 +106,7 @@ export function HeroSequence({
   ctaLabel,
   ctaHref,
   imageSrc,
+  slides: customSlides,
   onCtaClick,
 }: HeroSequenceProps) {
   const t = useMotionTokens();
@@ -110,17 +114,21 @@ export function HeroSequence({
   const heroRef = useRef<HTMLElement>(null);
   const photoLayerRef = useRef<HTMLDivElement>(null);
 
-  const slides: readonly HeroSlide[] = [
-    {
-      ...DEFAULT_SLIDES[0],
-      ...(title ? { title } : {}),
-      ...(text ? { text } : {}),
-      ...(ctaLabel ? { ctaLabel } : {}),
-      ...(ctaHref ? { ctaHref } : {}),
-      ...(imageSrc ? { image: imageSrc } : {}),
-    },
-    ...DEFAULT_SLIDES.slice(1),
-  ];
+  const baseSlides = customSlides && customSlides.length > 0 ? customSlides : DEFAULT_SLIDES;
+  const slides: readonly HeroSlide[] =
+    customSlides && customSlides.length > 0
+      ? baseSlides
+      : [
+          {
+            ...baseSlides[0],
+            ...(title ? { title } : {}),
+            ...(text ? { text } : {}),
+            ...(ctaLabel ? { ctaLabel } : {}),
+            ...(ctaHref ? { ctaHref } : {}),
+            ...(imageSrc ? { image: imageSrc } : {}),
+          },
+          ...baseSlides.slice(1),
+        ];
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
@@ -193,16 +201,33 @@ export function HeroSequence({
               animate={{ opacity: index === activeIndex ? 1 : 0 }}
               transition={{ duration: t.reduced ? 0 : CROSSFADE_SECONDS, ease: "easeInOut" }}
             >
-              <Image
-                src={slide.image}
-                alt=""
-                fill
-                priority={index === 0}
-                loading={index === 0 ? "eager" : "lazy"}
-                sizes="100vw"
-                className={styles.photo}
-                style={slide.imagePosition ? { objectPosition: slide.imagePosition } : undefined}
-              />
+              {slide.mediaType === "video" ? (
+                <video
+                  src={slide.image}
+                  autoPlay={!t.reduced}
+                  muted
+                  loop
+                  playsInline
+                  aria-hidden="true"
+                  className={styles.photo}
+                  style={
+                    slide.imagePosition
+                      ? { width: "100%", height: "100%", objectPosition: slide.imagePosition }
+                      : { width: "100%", height: "100%" }
+                  }
+                />
+              ) : (
+                <Image
+                  src={slide.image}
+                  alt=""
+                  fill
+                  priority={index === 0}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  sizes="100vw"
+                  className={styles.photo}
+                  style={slide.imagePosition ? { objectPosition: slide.imagePosition } : undefined}
+                />
+              )}
             </motion.div>
           ))}
         </motion.div>

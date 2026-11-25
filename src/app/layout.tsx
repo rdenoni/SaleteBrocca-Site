@@ -6,6 +6,7 @@ import "@/styles/motion.css";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { CookieConsent } from "@/components/privacy/CookieConsent";
+import { getPublicSocialLinks } from "@/lib/admin/cms";
 import { getFooterColumns } from "@/lib/content/footer";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/content/site";
 import { SITE_URL } from "@/lib/site-url";
@@ -55,10 +56,11 @@ export const viewport: Viewport = {
   themeColor: "#0f2438",
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
   /* Ano no servidor, passado como prop: o rodapé (componente de cliente) não calcula a data e a hidratação bate. */
   const year = new Date().getFullYear();
   const footerColumns = getFooterColumns();
+  const socialLinks = await getPublicSocialLinks();
   return (
     /* data-scroll-behavior: rolagem suave só nas âncoras, não ao trocar de página. */
     <html lang="pt-BR" className={`${notoSans.variable} ${martel.variable}`} data-scroll-behavior="smooth">
@@ -77,7 +79,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <main id="conteudo" tabIndex={-1}>
               {children}
             </main>
-            <Footer columns={footerColumns} year={year} />
+            <Footer columns={footerColumns} year={year} socialLinks={socialLinks} />
           </PageTransitionProvider>
         </MotionProvider>
         {/* Fora do <main> e das transições de página: o aviso de cookies não some nem é recriado ao navegar. */}
