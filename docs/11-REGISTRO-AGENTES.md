@@ -20,6 +20,15 @@ Numeração R-NNNN sequencial, somando 1 ao maior número já existente.
 
 ## Entradas
 
+### R-0007 · 2026-11-25 00:18 · Gemini
+- Branch: gemini/admin-panel · Commit: pendente
+- Versão: 0.1.0 · Entrada anterior: R-0006
+- Tarefa: aplicar migrations do painel admin no Supabase, ativar conta admin e configurar variáveis autônomas na Netlify com redeploy de produção.
+- Arquivos alterados: docs/11-REGISTRO-AGENTES.md
+- O que mudou e por quê: aplicadas as 5 migrations SQL no Supabase (`dhshqcrcusuuiqlvikha`, 22/22 tabelas com RLS ativo), configurado `rdenoni@gmail.com` como `admin` em `public.user_roles`, criadas as variáveis `BACKUP_ENCRYPTION_KEY`, `ADMIN_EMAIL_INBOUND_TOKEN`, `ADMIN_FROM_EMAIL` e `NEXT_PUBLIC_SITE_URL` na Netlify e disparado novo deploy em produção para ativá-las nas Functions.
+- Validação: typecheck ok · build ok (sem alteração de código) · verificação SQL RLS 22/22 ok
+- Pendências / cuidados para o próximo agente: preencher chaves externas opcionais (Hotmart, Mux API, GitHub privado, Meta Pixel/CAPI, Resend) via `/admin/integracoes` ou Netlify conforme ativação de cada serviço.
+
 ### R-0006 · 2026-11-25 00:09 · Gemini
 - Branch: gemini/admin-panel · Commit: pendente
 - Versão: 0.1.0 · Entrada anterior: R-0005
