@@ -20,6 +20,15 @@ Numeração R-NNNN sequencial, somando 1 ao maior número já existente.
 
 ## Entradas
 
+### R-0015 · 2026-11-26 17:17 · Gemini
+- Branch: gemini/admin-panel · Commit: pendente
+- Versão: 0.1.0 · Entrada anterior: R-0014
+- Tarefa: restringir toda a Loja (`/loja`, `/loja/[slug]` e `/loja/checkout`) exclusivamente a administradores e ocultar links públicos da Loja até a liberação das vendas.
+- Arquivos alterados: src/app/loja/{layout.tsx,layout.module.css}, src/proxy.ts, src/lib/content/{site.ts,footer.ts}, src/app/area-do-aluno/page.tsx, src/app/{robots.ts,sitemap.ts}, src/lib/admin/nav.ts, src/components/admin/AdminShell.tsx, tests/{chrome,home,seo}.spec.ts, docs/11-REGISTRO-AGENTES.md
+- O que mudou e por quê: (1) `ShopLayout` agora roda com `dynamic = "force-dynamic"`, `noindex/nofollow` e `await requireAdmin("/loja")`, redirecionando visitantes e alunos comuns para `/admin/login` e exibindo a faixa "Modo restrito (Admin)" para administradores logados; (2) incluído `/loja/:path*` no matcher de `src/proxy.ts` para renovação de sessão; (3) removidos links públicos da Loja no cabeçalho, menu mobile, rodapé (coluna "Temas"), Área do Aluno, `sitemap.xml` e bloqueada em `robots.txt`; (4) adicionado atalho "Loja (Prévia Admin)" na barra lateral do Painel Admin.
+- Validação: typecheck ok · build ok · testes Playwright (`chrome`, `home` menu, `loja-galeria` e `seo` em 1440/768/375) ok · prints 1440/768/375 sim
+- Pendências / cuidados para o próximo agente: quando a titular liberar as vendas da Loja, remover `requireAdmin` de `src/app/loja/layout.tsx`, recolocar `/loja` no menu/rodapé/sitemap e remover `/loja` de `robots.ts`.
+
 ### R-0014 · 2026-11-25 14:51 · Gemini
 - Branch: gemini/admin-panel · Commit: pendente
 - Versão: 0.1.0 · Entrada anterior: R-0013

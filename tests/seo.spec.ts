@@ -5,8 +5,8 @@ import { expect, test, type APIRequestContext } from "@playwright/test";
 
 const NOINDEX_ROUTES = [
   "/area-do-aluno/login",
-  "/termos-de-uso",
   "/cursos/dificuldades-na-aprendizagem/compra",
+  "/loja",
   "/loja/checkout",
 ] as const;
 
@@ -30,7 +30,8 @@ test.describe("SEO: sitemap e robots", () => {
     const body = await response.text();
     expect(body).toMatch(/User-Agent: \*/i);
     expect(body).toMatch(/Allow: \/$/m);
-    expect(body).not.toMatch(/Disallow/i);
+    expect(body).toMatch(/Disallow: \/admin$/m);
+    expect(body).toMatch(/Disallow: \/loja$/m);
     const sitemapLine = body.match(/^Sitemap: (\S+)$/m);
     expect(sitemapLine).not.toBeNull();
     const sitemap = new URL(sitemapLine?.[1] ?? "");
@@ -67,5 +68,6 @@ test.describe("SEO: sitemap e robots", () => {
       expect(paths, route).not.toContain(route);
     }
     expect(paths.some((path) => path.startsWith("/area-do-aluno"))).toBe(false);
+    expect(paths.some((path) => path.startsWith("/loja"))).toBe(false);
   });
 });

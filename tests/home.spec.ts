@@ -132,7 +132,7 @@ test.describe("Home", () => {
     if (isDesktop(width)) {
       await expect(desktopNav).toBeVisible();
       await expect(menuButton).toBeHidden();
-      for (const label of ["Cursos", "Loja", "Avaliação", "Conteúdo", "Sobre", "Contato"]) {
+      for (const label of ["Cursos", "Avaliação", "Conteúdo", "Sobre", "Contato"]) {
         await expect(desktopNav.getByRole("link", { name: label, exact: true })).toBeVisible();
       }
       return;

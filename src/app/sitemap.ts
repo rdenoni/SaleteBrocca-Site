@@ -8,7 +8,7 @@ import { absoluteUrl } from "@/lib/site-url";
    - /termos-de-uso, enquanto o texto não existir;
    - toda a árvore /conteudo enquanto os artigos forem de exemplo (a mesma flag que põe o noindex no layout).
    Sem lastModified, changeFrequency ou priority: não há datas reais para informar. */
-const STATIC_ROUTES = ["/", "/cursos", "/avaliacao", "/sobre", "/contato", "/loja", "/privacidade"] as const;
+const STATIC_ROUTES = ["/", "/cursos", "/avaliacao", "/sobre", "/contato", "/privacidade"] as const;
 
 function contentRoutes(): string[] {
   if (ARTICLES_ARE_EXAMPLES) return [];

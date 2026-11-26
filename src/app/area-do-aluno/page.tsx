@@ -181,7 +181,7 @@ export default async function StudentDashboardPage() {
               )}
             </StaggerItem>
             <StaggerItem>
-              <LinkArrow href="/loja">Ver a loja</LinkArrow>
+              <LinkArrow href="/cursos">Ver os cursos</LinkArrow>
             </StaggerItem>
           </Panel>
         </div>

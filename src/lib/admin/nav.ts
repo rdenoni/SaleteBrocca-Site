@@ -15,7 +15,8 @@ export type AdminNavIcon =
   | "shield-check"
   | "mail"
   | "key-round"
-  | "receipt";
+  | "receipt"
+  | "shopping-bag";
 
 export interface AdminNavItem {
   id: string;
@@ -79,6 +80,15 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
         stage: 2,
         ready: true,
         description: "Adicionar e editar artigos e episódios de podcast.",
+      },
+      {
+        id: "loja-preview",
+        label: "Loja (Prévia Admin)",
+        href: "/loja",
+        icon: "shopping-bag",
+        stage: 2,
+        ready: true,
+        description: "Acesso exclusivo de administradores à vitrine e checkout da Loja.",
       },
     ],
   },

@@ -36,8 +36,8 @@ export function getFooterColumns(): FooterColumn[] {
       ],
     },
     {
-      title: "Loja e temas",
-      links: [{ label: "Loja", href: "/loja" }, ...categoryLinks.slice(1, 3)],
+      title: "Temas",
+      links: categoryLinks.slice(1, 4),
     },
   ];
 }

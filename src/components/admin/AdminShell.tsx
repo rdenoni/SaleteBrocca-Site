@@ -18,6 +18,7 @@ import {
   Receipt,
   Search,
   ShieldCheck,
+  ShoppingBag,
   Target,
   UserPlus,
   Users,
@@ -51,6 +52,7 @@ const ICONS: Record<AdminNavIcon, typeof LayoutDashboard> = {
   mail: Mail,
   "key-round": KeyRound,
   receipt: Receipt,
+  "shopping-bag": ShoppingBag,
 };
 
 interface AdminShellProps {
